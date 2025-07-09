@@ -1,0 +1,26 @@
+<h2>Lista de Alunos</h2>
+
+<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+<div *ngIf="students.length > 0">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Matrícula (ID TCS)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of students">
+        <td>{{ student.id }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.idTcs }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="students.length === 0 && !errorMessage">
+  <p>Nenhum aluno encontrado.</p>
+</div>
