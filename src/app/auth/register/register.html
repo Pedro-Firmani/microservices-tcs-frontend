@@ -1,22 +1,24 @@
-<h2>Registrar Nova Conta</h2>
-<form (ngSubmit)="onRegister()">
-  <div>
-    <label for="regUsername">Usuário:</label>
-    <input type="text" id="regUsername" [(ngModel)]="username" name="regUsername" required>
-  </div>
-  <div>
-    <label for="regPassword">Senha:</label>
-    <input type="password" id="regPassword" [(ngModel)]="password" name="regPassword" required>
-  </div>
-  <div>
-    <label for="role">Tipo de Usuário:</label>
-    <select id="role" [(ngModel)]="selectedRole" name="role">
-      <option value="PROFESSOR">Professor</option>
-      <option value="ALUNO">Aluno</option>
-    </select>
-  </div>
-  <button type="submit">Registrar</button>
-  <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
-  <p *ngIf="successMessage" style="color: green;">{{ successMessage }}</p>
-</form>
-<p>Já tem uma conta? <a routerLink="/login">Faça Login aqui</a></p>
+<div class="register-container">
+  <h2>Registrar Nova Conta</h2>
+  <form (ngSubmit)="onRegister()">
+    <div>
+      <label for="regUsername">Usuário:</label>
+      <input type="text" id="regUsername" [(ngModel)]="username" name="regUsername" required>
+    </div>
+    <div>
+      <label for="regPassword">Senha:</label>
+      <input type="password" id="regPassword" [(ngModel)]="password" name="regPassword" required>
+    </div>
+    <div>
+      <label for="role">Tipo de Usuário:</label>
+      <select id="role" [(ngModel)]="selectedRole" name="role">
+        <option value="PROFESSOR">Professor</option>
+        <option value="ALUNO">Aluno</option>
+      </select>
+    </div>
+    <button type="submit">Registrar</button>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+  </form>
+  <p>Já tem uma conta? <a routerLink="/login">Faça Login aqui</a></p>
+</div>

@@ -1,0 +1,136 @@
+/* Estilos para register.component.scss */
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: 'Arial', sans-serif;
+}
+
+.register-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px; /* Um pouco mais largo para acomodar o select */
+  text-align: center;
+}
+
+h2 {
+  color: #333333;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+div {
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555555;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+/* Estilos para inputs de texto e senha */
+input[type="text"],
+input[type="password"] {
+  width: calc(100% - 20px); /* Largura total menos o padding */
+  padding: 12px 10px; /* Espaçamento interno */
+  border: 1px solid #dddddd; /* Borda suave */
+  border-radius: 5px; /* Cantos arredondados */
+  font-size: 1em; /* Tamanho da fonte */
+  transition: border-color 0.3s ease; /* Transição suave na borda */
+
+  &:focus {
+    border-color: #007bff; /* Cor da borda ao focar */
+    outline: none; /* Remove o outline padrão */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra ao focar */
+  }
+}
+
+/* Estilos específicos para o select */
+select {
+  width: calc(100% - 20px); /* Largura total menos o padding */
+  padding: 12px 10px; /* Espaçamento interno */
+  border: 1px solid #dddddd; /* Borda suave */
+  border-radius: 5px; /* Cantos arredondados */
+  font-size: 1em; /* Tamanho da fonte */
+  transition: border-color 0.3s ease; /* Transição suave na borda */
+  background-color: #ffffff; /* Garante fundo branco para o select */
+  -webkit-appearance: none; /* Remove estilo padrão do select em navegadores webkit */
+  -moz-appearance: none; /* Remove estilo padrão do select em navegadores mozilla */
+  appearance: none; /* Remove estilo padrão do select */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.7L146.2%20202.7%2018.7%2075.1a17.6%2017.6%200%200%200-25.7%2023.1L133.5%20247.2a17.6%2017.6%200%200%200%2025.7%200L287%2092.5c4.6-4.6%204.6-12.2%200-16.9z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  }
+}
+
+button[type="submit"] {
+  background-color: #28a745; /* Cor de fundo do botão de registro (verde) */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #218838; /* Cor de fundo ao passar o mouse */
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+p {
+  margin-top: 20px;
+  color: #666666;
+  font-size: 0.9em;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+}
+
+.error-message {
+  color: #dc3545; /* Vermelho para mensagens de erro */
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.success-message {
+  color: #28a745; /* Verde para mensagens de sucesso */
+  margin-top: 10px;
+  font-size: 0.9em;
+}

@@ -6,8 +6,8 @@ import { StudentListComponent } from './students/student-list/student-list';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }, // Adicione esta rota
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'register', component: RegisterComponent }, 
+  { path: '', redirectTo: '/register', pathMatch: 'full' },
   { path: 'students', component: StudentListComponent },
   // ...outras rotas
 ];
