@@ -123,14 +123,27 @@ a {
   }
 }
 
-.error-message {
-  color: #dc3545; /* Vermelho para mensagens de erro */
-  margin-top: 10px;
-  font-size: 0.9em;
+.error-message-box {
+  background-color: #ffebee; 
+  color: #c62828;
+  border: 1px solid #ef9a9a; 
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-top: 15px; 
+  text-align: center;
+  font-size: 0.95em;
+  font-weight: bold;
 }
 
 .success-message {
-  color: #28a745; /* Verde para mensagens de sucesso */
+  color: #28a745; 
+  margin-top: 10px;
+  font-size: 0.9em;
+  font-weight: bold; 
+}
+
+.error-message { 
+  color: #dc3545; 
   margin-top: 10px;
   font-size: 0.9em;
 }
