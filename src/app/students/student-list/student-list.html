@@ -3,60 +3,70 @@
 <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
 
 <div style="margin-bottom: 15px;">
-  <button routerLink="/students/create">➕ Adicionar Novo Aluno</button>
+  <button (click)="startCreating()" *ngIf="!creatingNew">➕ Adicionar Novo Aluno</button>
 </div>
 
-<div *ngIf="students.length > 0">
+<div *ngIf="students.length > 0 || creatingNew">
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
     <thead style="background-color: #f0f0f0;">
       <tr>
         <th>ID</th>
         <th>Nome</th>
         <th>Matrícula (ID TCS)</th>
-         <th>Ações</th> 
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
+
+      <!-- LINHA DE CRIAÇÃO -->
+      <tr *ngIf="creatingNew">
+        <td>Nova</td>
+        <td><input [(ngModel)]="newStudentName" placeholder="Nome do aluno" /></td>
+        <td><input [(ngModel)]="newStudentIdTcs" placeholder="Matrícula" /></td>
+        <td>
+          <button (click)="saveNewStudent()">💾 Salvar</button>
+          <button (click)="cancelCreating()">✖️ Cancelar</button>
+        </td>
+      </tr>
+
+      <!-- LINHAS EXISTENTES -->
       <tr *ngFor="let student of students">
-  <td>{{ student.id }}</td>
+        <td>{{ student.id }}</td>
 
-  <!-- Nome -->
-  <td>
-    <ng-container *ngIf="editingStudentId === student.id; else viewName">
-      <input [(ngModel)]="editedName" />
-    </ng-container>
-    <ng-template #viewName>
-      {{ student.name }}
-    </ng-template>
-  </td>
+        <td>
+          <ng-container *ngIf="editingStudentId === student.id; else viewName">
+            <input [(ngModel)]="editedName" />
+          </ng-container>
+          <ng-template #viewName>
+            {{ student.name }}
+          </ng-template>
+        </td>
 
-  <!-- Matrícula -->
-  <td>
-    <ng-container *ngIf="editingStudentId === student.id; else viewIdTcs">
-      <input [(ngModel)]="editedIdTcs" />
-    </ng-container>
-    <ng-template #viewIdTcs>
-      {{ student.idTcs }}
-    </ng-template>
-  </td>
+        <td>
+          <ng-container *ngIf="editingStudentId === student.id; else viewIdTcs">
+            <input [(ngModel)]="editedIdTcs" />
+          </ng-container>
+          <ng-template #viewIdTcs>
+            {{ student.idTcs }}
+          </ng-template>
+        </td>
 
-  <!-- Ações -->
-  <td>
-    <ng-container *ngIf="editingStudentId === student.id; else actionButtons">
-      <button (click)="saveStudent(student.id)">💾 Salvar</button>
-      <button (click)="editingStudentId = null">✖️ Cancelar</button>
-    </ng-container>
-    <ng-template #actionButtons>
-      <button (click)="editStudent(student)">✏️ Editar</button>
-      <button (click)="deleteStudent(student.id)">🗑️ Excluir</button>
-    </ng-template>
-  </td>
-</tr>
+        <td>
+          <ng-container *ngIf="editingStudentId === student.id; else actionButtons">
+            <button (click)="saveStudent(student.id)">💾 Salvar</button>
+            <button (click)="editingStudentId = null">✖️ Cancelar</button>
+          </ng-container>
+          <ng-template #actionButtons>
+            <button (click)="editStudent(student)">✏️ Editar</button>
+            <button (click)="deleteStudent(student.id)">🗑️ Excluir</button>
+          </ng-template>
+        </td>
+      </tr>
 
     </tbody>
   </table>
 </div>
 
-<div *ngIf="students.length === 0 && !errorMessage">
+<div *ngIf="students.length === 0 && !errorMessage && !creatingNew">
   <p>Nenhum aluno encontrado.</p>
 </div>

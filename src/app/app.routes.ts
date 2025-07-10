@@ -1,7 +1,7 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login';
-import { RegisterComponent } from './auth/register/register'; 
+import { RegisterComponent } from './auth/register/register';
 import { StudentListComponent } from './students/student-list/student-list';
 import { GrupoListComponent } from './grupos/grupo-list';
 import { StudentCreateComponent } from './students/student-create/student-create';

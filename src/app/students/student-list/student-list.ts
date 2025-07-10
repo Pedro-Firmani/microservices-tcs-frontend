@@ -29,6 +29,10 @@ export class StudentListComponent implements OnInit {
   editedIdTcs: string = '';
   students: StudentResponse[] = []; // Array para armazenar os alunos
   errorMessage: string | null = null;
+    creatingNew: boolean = false;
+  newStudentName: string = '';
+  newStudentIdTcs: string = '';
+
 
   constructor(
     private studentService: StudentService,
@@ -82,6 +86,36 @@ saveStudent(id: number): void {
     }
   });
 }
+
+startCreating(): void {
+  this.creatingNew = true;
+  this.newStudentName = '';
+  this.newStudentIdTcs = '';
+}
+
+cancelCreating(): void {
+  this.creatingNew = false;
+}
+
+saveNewStudent(): void {
+  const newStudent = {
+    name: this.newStudentName,
+    idTcs: this.newStudentIdTcs,
+    grupoId: null
+  };
+
+  this.studentService.createStudent(newStudent).subscribe({
+    next: (created) => {
+      this.students.push(created);
+      this.creatingNew = false;
+    },
+    error: (err) => {
+      console.error('Erro ao criar aluno:', err);
+      alert('Erro ao criar aluno.');
+    }
+  });
+}
+
 
 
 
