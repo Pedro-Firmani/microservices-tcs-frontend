@@ -1,0 +1,83 @@
+/* src/app/app.scss */
+
+/* Estilos globais ou body reset (opcional, mas boa prática) */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7f6; /* Um fundo leve para o corpo */
+  color: #333;
+}
+
+/* --- Estilos da Barra de Navegação (Header) --- */
+nav {
+  background-color: #2c3e50; /* Cor de fundo escura para o header */
+  padding: 15px 20px; /* Espaçamento interno */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Sombra suave */
+  display: flex; /* Para alinhar os links horizontalmente */
+  justify-content: center; /* Centraliza os links */
+  align-items: center; /* Alinha verticalmente */
+  flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
+  gap: 20px; /* Espaçamento entre os links */
+}
+
+nav a {
+  color: #ecf0f1; /* Cor do texto dos links (cinza claro) */
+  text-decoration: none; /* Remove sublinhado padrão */
+  font-weight: 600; /* Negrito */
+  font-size: 1.1em; /* Tamanho da fonte */
+  padding: 8px 12px; /* Espaçamento interno dos links */
+  border-radius: 5px; /* Bordas arredondadas */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; /* Transições suaves */
+
+  &:hover {
+    background-color: #34495e; /* Cor de fundo ao passar o mouse */
+    color: #ffffff; /* Cor do texto ao passar o mouse */
+    transform: translateY(-2px); /* Efeito de "levantar" */
+  }
+
+  &.active {
+    background-color: #3498db; /* Cor de fundo para o link ativo (azul vibrante) */
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para o item ativo */
+    font-weight: 700; /* Mais negrito para o ativo */
+  }
+}
+
+/* Remover o separador '|' para um design mais limpo com gap */
+/* Você pode remover os '|' do HTML ou escondê-los com CSS */
+nav .separator {
+  color: #7f8c8d; /* Cor do separador */
+  margin: 0 5px; /* Espaçamento */
+  font-size: 1.1em;
+}
+
+/* Estilo para a linha horizontal */
+hr {
+  border: none;
+  border-top: 1px solid #dfe6e9; /* Linha mais discreta */
+  margin: 0; /* Remove margem padrão */
+}
+
+/* --- Estilo para o Conteúdo Principal (router-outlet) --- */
+router-outlet {
+  display: block; /* Garante que o router-outlet ocupe seu próprio bloco */
+  padding: 20px; /* Espaçamento do conteúdo em relação à nav e hr */
+}
+
+/* Responsividade básica para nav */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column; /* Links em coluna em telas pequenas */
+    gap: 10px; /* Reduz o espaçamento entre os links */
+    padding: 10px;
+  }
+
+  nav a {
+    width: 100%; /* Links ocupam a largura total */
+    text-align: center;
+  }
+
+  nav .separator {
+    display: none; /* Esconde os separadores em modo mobile */
+  }
+}   

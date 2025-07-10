@@ -1,33 +1,89 @@
-<h2>Lista de Grupos</h2>
+<div class="grupo-list-container">
+  <h2>Lista de Grupos</h2>
 
-<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-<div *ngIf="grupos.length > 0">
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome do Grupo</th>
-        <th>Descrição</th>
-        <th>Alunos (Nomes)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let grupo of grupos">
-        <td>{{ grupo.id }}</td>
-        <td>{{ grupo.nome }}</td>
-        <td>{{ grupo.descricao }}</td>
-        <td>
-          <ul *ngIf="grupo.nomesDosAlunos && grupo.nomesDosAlunos.length > 0">
-            <li *ngFor="let alunoNome of grupo.nomesDosAlunos">{{ alunoNome }}</li>
+  <div class="grupo-form-section">
+    <h3>{{ editMode ? 'Editar Grupo' : 'Novo Grupo' }}</h3>
+    <div class="form-controls">
+      <input [(ngModel)]="currentGrupo.nome" placeholder="Nome do Grupo" type="text">
+      <input [(ngModel)]="currentGrupo.descricao" placeholder="Descrição do Grupo" type="text">
+      <button (click)="saveGrupo()" class="primary-button">{{ editMode ? 'Salvar Edição' : 'Criar Grupo' }}</button>
+      <button *ngIf="editMode" (click)="cancelEdit()" class="cancel-button">Cancelar</button>
+    </div>
+
+    <div *ngIf="editMode && currentGrupo.id" class="manage-students-section">
+      <h4>Gerenciar Alunos para o Grupo "{{ currentGrupo.nome }}"</h4>
+
+      <h5>Alunos neste Grupo:</h5>
+      <ng-container *ngIf="getStudentsInCurrentGroup() as alunosDoGrupoAtual">
+        <div *ngIf="alunosDoGrupoAtual.length > 0; else noStudentsInGroup">
+          <ul class="student-list">
+            <li *ngFor="let student of alunosDoGrupoAtual">
+              <span>{{ student.name }} ({{ student.idTcs }})</span>
+              <button (click)="removeStudentFromGroup(student)" class="remove-button">Remover do Grupo</button>
+            </li>
           </ul>
-          <span *ngIf="!grupo.nomesDosAlunos || grupo.nomesDosAlunos.length === 0" class="no-alunos">Nenhum aluno</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+        </div>
+        <ng-template #noStudentsInGroup>
+          <p class="no-alunos">Nenhum aluno neste grupo.</p>
+        </ng-template>
+      </ng-container>
 
-<div *ngIf="grupos.length === 0 && !errorMessage">
-  <p>Nenhum grupo encontrado.</p>
+      <h5>Adicionar Aluno ao Grupo:</h5>
+      <div *ngIf="allStudents.length > 0; else noAvailableStudents">
+        <ul class="available-students">
+          <li *ngFor="let student of allStudents">
+            <ng-container *ngIf="!isStudentInCurrentGroup(student)">
+              <span>
+                {{ student.name }} ({{ student.idTcs }})
+                <span *ngIf="student.grupoNome" class="grupo-info"> (No grupo: {{ student.grupoNome }})</span>
+              </span>
+              <button (click)="addStudentToCurrentGroup(student)" class="add-button">Adicionar</button>
+            </ng-container>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noAvailableStudents>
+        <p class="no-alunos">Nenhum aluno disponível para adicionar ou todos já estão em grupos.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <br>
+
+  <div *ngIf="grupos.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome do Grupo</th>
+          <th>Descrição</th>
+          <th>Alunos (Nomes)</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let grupo of grupos">
+          <td data-label="ID">{{ grupo.id }}</td>
+          <td data-label="Nome do Grupo">{{ grupo.nome }}</td>
+          <td data-label="Descrição">{{ grupo.descricao }}</td>
+          <td data-label="Alunos">
+            <ul *ngIf="grupo.nomesDosAlunos && grupo.nomesDosAlunos.length > 0">
+              <li *ngFor="let alunoNome of grupo.nomesDosAlunos">{{ alunoNome }}</li>
+            </ul>
+            <span *ngIf="!grupo.nomesDosAlunos || grupo.nomesDosAlunos.length === 0" class="no-alunos">Nenhum aluno</span>
+          </td>
+          <td data-label="Ações" class="table-actions">
+            <button (click)="editGrupo(grupo)" class="edit-button">Editar</button>
+            <button (click)="deleteGrupo(grupo.id!)" class="delete-button">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="grupos.length === 0 && !errorMessage">
+    <p class="no-items-message">Nenhum grupo encontrado.</p>
+  </div>
 </div>
