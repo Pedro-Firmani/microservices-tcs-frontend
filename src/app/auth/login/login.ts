@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // Import RouterLink here
 import { LoginRequest } from '../dto/login-request';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink], // Add RouterLink here
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
@@ -23,13 +23,12 @@ export class LoginComponent {
   onLogin(): void {
     this.errorMessage = null;
 
-    // <<< CRIE O OBJETO LoginRequest AQUI
     const request: LoginRequest = {
       username: this.username,
       password: this.password
     };
 
-    this.authService.login(request).subscribe({ // <<< PASSE O OBJETO 'request'
+    this.authService.login(request).subscribe({
       next: (token) => {
         console.log('Login bem-sucedido. Token:', token);
         this.router.navigate(['/students']);

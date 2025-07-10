@@ -1,0 +1,112 @@
+/* Estilos para login.component.scss */
+
+:host {
+  display: flex; /* Usa flexbox para centralizar o conteúdo */
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  min-height: 100vh; /* Garante que ocupe a altura total da viewport */
+  background-color: #f0f2f5; /* Cor de fundo suave */
+  font-family: 'Arial', sans-serif; /* Fonte padrão */
+}
+
+.login-container {
+  background-color: #ffffff; /* Fundo branco para o container */
+  padding: 40px; /* Espaçamento interno */
+  border-radius: 8px; /* Cantos arredondados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  width: 100%; /* Largura total */
+  max-width: 400px; /* Largura máxima para o formulário */
+  text-align: center; /* Centraliza o texto dentro do container */
+}
+
+h2 {
+  color: #333333; /* Cor do título */
+  margin-bottom: 30px; /* Espaço abaixo do título */
+  font-size: 2em; /* Tamanho da fonte do título */
+}
+
+form {
+  display: flex; /* Flexbox para organizar os campos */
+  flex-direction: column; /* Organiza os itens em coluna */
+  gap: 20px; /* Espaço entre os elementos do formulário */
+}
+
+div {
+  text-align: left; /* Alinha o texto dos labels à esquerda */
+}
+
+label {
+  display: block; /* Ocupa toda a largura disponível */
+  margin-bottom: 8px; /* Espaço abaixo do label */
+  color: #555555; /* Cor do texto do label */
+  font-weight: bold; /* Negrito */
+  font-size: 0.9em; /* Tamanho da fonte */
+}
+
+input[type="text"],
+input[type="password"] {
+  width: calc(100% - 20px); /* Largura total menos o padding */
+  padding: 12px 10px; /* Espaçamento interno */
+  border: 1px solid #dddddd; /* Borda suave */
+  border-radius: 5px; /* Cantos arredondados */
+  font-size: 1em; /* Tamanho da fonte */
+  transition: border-color 0.3s ease; /* Transição suave na borda */
+
+  &:focus {
+    border-color: #007bff; /* Cor da borda ao focar */
+    outline: none; /* Remove o outline padrão */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra ao focar */
+  }
+}
+
+button[type="submit"] {
+  background-color: #007bff; /* Cor de fundo do botão primário */
+  color: white; /* Cor do texto do botão */
+  padding: 12px 20px; /* Espaçamento interno */
+  border: none; /* Remove a borda */
+  border-radius: 5px; /* Cantos arredondados */
+  cursor: pointer; /* Cursor de clique */
+  font-size: 1.1em; /* Tamanho da fonte */
+  font-weight: bold; /* Negrito */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transições suaves */
+
+  &:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+    transform: translateY(-2px); /* Efeito de leve levantamento */
+  }
+
+  &:active {
+    transform: translateY(0); /* Retorna à posição original ao clicar */
+  }
+}
+
+p {
+  margin-top: 20px; /* Espaço acima do parágrafo */
+  color: #666666; /* Cor do texto */
+  font-size: 0.9em; /* Tamanho da fonte */
+}
+
+a {
+  color: #007bff; /* Cor do link */
+  text-decoration: none; /* Remove sublinhado */
+  font-weight: bold; /* Negrito */
+  transition: color 0.3s ease; /* Transição suave na cor */
+
+  &:hover {
+    color: #0056b3; /* Cor do link ao passar o mouse */
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+  }
+}
+
+.error-message {
+  color: #dc3545; /* Vermelho para mensagens de erro */
+  margin-top: 10px; /* Espaço acima da mensagem de erro */
+  font-size: 0.9em; /* Tamanho da fonte */
+}
+
+/* Para aplicar ao p *ngIf="errorMessage" */
+p[style="color: red;"] {
+  color: #dc3545 !important; /* Sobrescreve inline style se necessário */
+  margin-top: 10px;
+  font-size: 0.9em;
+}
