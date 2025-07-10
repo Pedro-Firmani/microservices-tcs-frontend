@@ -26,15 +26,10 @@ export interface GrupoComAlunosResponse {
 }
 
 // Interface para o GrupoModel que será enviado/recebido nas operações de CRUD
-// É essencial que ela reflita a estrutura do seu GrupoModel no backend,
-// mas para o PUT/POST de grupo, geralmente você não envia a lista de 'alunos' completa.
-// Apenas id, nome e descricao.
 export interface GrupoModelRequest {
   id?: number; // Opcional para criação, necessário para edição
   nome: string;
   descricao: string;
-  // Não inclua 'alunos' aqui para operações de POST/PUT de grupo,
-  // a menos que você tenha um endpoint específico para gerenciar alunos dentro do grupo.
 }
 
 
@@ -54,19 +49,19 @@ export class GrupoService {
     return this.http.get<GrupoComAlunosResponse[]>(`${this.baseUrl}/com-alunos`);
   }
 
-  // Novo método para criar um grupo
+  // Método para criar um grupo
   criarGrupo(grupo: GrupoModelRequest): Observable<GrupoModelRequest> {
     return this.http.post<GrupoModelRequest>(this.baseUrl, grupo);
   }
 
-  // Novo método para buscar um grupo por ID (útil para preencher formulário de edição)
+  // Método para buscar um grupo por ID (útil para preencher formulário de edição)
   getGrupoById(id: number): Observable<GrupoModelRequest> {
     return this.http.get<GrupoModelRequest>(`${this.baseUrl}/${id}`);
   }
 
-  // Novo método para atualizar um grupo
-  atualizarGrupo(id: number, grupo: GrupoModelRequest): Observable<GrupoModelRequest> {
-    return this.http.put<GrupoModelRequest>(`${this.baseUrl}/${id}`, grupo);
+  // NOVO MÉTODO para atualizar um grupo: O backend agora retorna GrupoComNomesAlunosResponse
+  atualizarGrupo(id: number, grupo: GrupoModelRequest): Observable<GrupoComNomesAlunosResponse> { // <<< MUDANÇA AQUI
+    return this.http.put<GrupoComNomesAlunosResponse>(`${this.baseUrl}/${id}`, grupo);
   }
 
   // Novo método para excluir um grupo

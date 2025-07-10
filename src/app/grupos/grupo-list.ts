@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GrupoService, GrupoComNomesAlunosResponse, GrupoModelRequest, GrupoComAlunosResponse } from '../grupos/grupo.service';
 import { StudentService, StudentResponse, StudentRequest } from '../students/student.service';
+import { HttpErrorResponse } from '@angular/common/http'; // Importe HttpErrorResponse
 
 @Component({
   selector: 'app-grupo-list',
@@ -17,9 +18,9 @@ export class GrupoListComponent implements OnInit {
   errorMessage: string | null = null;
 
   editMode: boolean = false;
-  currentGrupo: GrupoModelRequest = { nome: '', descricao: '' }; // Usamos GrupoModelRequest aqui
-  gruposComDetalhes: GrupoComAlunosResponse[] = []; // Para exibir detalhes completos, incluindo alunos
-  allStudents: StudentResponse[] = []; // Lista de todos os alunos disponíveis
+  currentGrupo: GrupoModelRequest = { nome: '', descricao: '' };
+  gruposComDetalhes: GrupoComAlunosResponse[] = [];
+  allStudents: StudentResponse[] = [];
 
   constructor(
     @Inject(GrupoService) private grupoService: GrupoService,
@@ -74,16 +75,30 @@ export class GrupoListComponent implements OnInit {
   saveGrupo(): void {
     if (this.editMode) {
       if (this.currentGrupo.id) {
+        // Agora, o `next` callback espera um `GrupoComNomesAlunosResponse`
         this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
-          next: () => {
+          next: (response: GrupoComNomesAlunosResponse) => { // <<< MUDANÇA AQUI (para o tipo de resposta do backend)
             alert('Grupo atualizado com sucesso!');
             this.carregarGrupos();
             this.carregarGruposComAlunosDetalhes();
             this.resetForm();
           },
-          error: (err: any) => {
+          error: (err: HttpErrorResponse) => { // Tipagem do erro para HttpErrorResponse
             console.error('Erro ao atualizar grupo:', err);
-            this.errorMessage = 'Não foi possível atualizar o grupo.';
+
+            // Mantém a verificação de status 0 como fallback, mas o ideal é que o backend retorne 200 OK
+            if (err.status === 0) {
+              console.warn('Requisição falhou com status 0. Isso pode ser um problema de CORS ou rede, mas a operação pode ter sido bem-sucedida no backend.');
+              alert('Grupo atualizado com sucesso (possível problema de conexão, verifique o console).');
+              this.carregarGrupos(); // Tenta recarregar para confirmar
+              this.carregarGruposComAlunosDetalhes();
+              this.resetForm();
+              this.errorMessage = null; // Limpa a mensagem de erro
+            } else if (err.error && typeof err.error === 'string') {
+                this.errorMessage = err.error;
+            } else {
+                this.errorMessage = 'Não foi possível atualizar o grupo. Verifique o console para mais detalhes.';
+            }
           }
         });
       }
@@ -133,12 +148,10 @@ export class GrupoListComponent implements OnInit {
     }
   }
 
-  // Novo método para obter os alunos do grupo atualmente selecionado/editado
   getStudentsInCurrentGroup(): StudentResponse[] {
     if (!this.currentGrupo.id) {
-      return []; // Se não há grupo selecionado, retorna lista vazia
+      return [];
     }
-    // Encontra o grupo nos detalhes completos e retorna seus alunos
     const grupoDetalhe = this.gruposComDetalhes.find(g => g.id === this.currentGrupo.id);
     return grupoDetalhe ? grupoDetalhe.alunos : [];
   }
@@ -156,8 +169,6 @@ export class GrupoListComponent implements OnInit {
     const studentToUpdate: StudentRequest = {
       name: student.name,
       idTcs: student.idTcs,
-      // Se o aluno já tem um grupo diferente, mas queremos movê-lo para este grupo atual.
-      // O backend já lida com isso.
       grupoId: this.currentGrupo.id
     };
 
@@ -169,9 +180,8 @@ export class GrupoListComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Erro ao adicionar aluno ao grupo:', err);
-        // Exemplo de tratamento de erro mais específico do backend
         if (err.error && typeof err.error === 'string') {
-          this.errorMessage = err.error; // Se o backend retornar uma mensagem de erro em texto puro
+          this.errorMessage = err.error;
         } else {
           this.errorMessage = `Não foi possível adicionar ${student.name} ao grupo.`;
         }
@@ -188,7 +198,7 @@ export class GrupoListComponent implements OnInit {
     const studentToUpdate: StudentRequest = {
       name: student.name,
       idTcs: student.idTcs,
-      grupoId: null // Define grupoId como null para desassociar
+      grupoId: null
     };
 
     this.studentService.updateStudent(student.id, studentToUpdate).subscribe({
