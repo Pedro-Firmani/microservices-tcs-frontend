@@ -1,0 +1,19 @@
+<h2>Criar Novo Aluno</h2>
+
+<p *ngIf="successMessage" style="color: green;">{{ successMessage }}</p>
+<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+<form (ngSubmit)="createStudent()" #studentForm="ngForm">
+  <label>
+    Nome:
+    <input type="text" name="name" [(ngModel)]="newStudent.name" required />
+  </label>
+  <br><br>
+  <label>
+    Matrícula (ID TCS):
+    <input type="text" name="idTcs" [(ngModel)]="newStudent.idTcs" required />
+  </label>
+  <br><br>
+  <button type="submit" [disabled]="studentForm.invalid">Salvar</button>
+  <button type="button" (click)="goBack()">Cancelar</button>
+</form>

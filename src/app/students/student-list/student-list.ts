@@ -2,6 +2,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Importe este
 import { StudentService } from '../student'; // Vamos criar este serviço em breve
+import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+
+
 
 // Interface para o DTO de Resposta do Aluno (ajuste conforme seu backend)
 interface StudentResponse {
@@ -13,15 +19,21 @@ interface StudentResponse {
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [CommonModule,], // HttpClientModule pode ser opcional aqui se já está em app.config.ts
+imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
 })
 export class StudentListComponent implements OnInit {
+  editingStudentId: number | null = null;
+  editedName: string = '';
+  editedIdTcs: string = '';
   students: StudentResponse[] = []; // Array para armazenar os alunos
   errorMessage: string | null = null;
 
-  constructor(private studentService: StudentService) { }
+  constructor(
+    private studentService: StudentService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadStudents();
@@ -42,4 +54,49 @@ export class StudentListComponent implements OnInit {
       }
     });
   }
+
+  editStudent(student: StudentResponse): void {
+  this.editingStudentId = student.id;
+  this.editedName = student.name;
+  this.editedIdTcs = student.idTcs;
+}
+
+saveStudent(id: number): void {
+  const updatedStudent = {
+    name: this.editedName,
+    idTcs: this.editedIdTcs
+  };
+
+  this.studentService.updateStudent(id, updatedStudent).subscribe({
+    next: () => {
+      const index = this.students.findIndex(s => s.id === id);
+      if (index !== -1) {
+        this.students[index].name = this.editedName;
+        this.students[index].idTcs = this.editedIdTcs;
+      }
+      this.editingStudentId = null;
+    },
+    error: (err) => {
+      console.error('Erro ao atualizar aluno:', err);
+      alert('Erro ao atualizar aluno.');
+    }
+  });
+}
+
+
+
+deleteStudent(id: number): void {
+  if (confirm('Tem certeza que deseja excluir este aluno?')) {
+    this.studentService.deleteStudent(id).subscribe({
+      next: () => {
+        this.students = this.students.filter(s => s.id !== id);
+      },
+      error: (err) => {
+        console.error('Erro ao excluir aluno:', err);
+        alert('Erro ao excluir aluno.');
+      }
+    });
+  }
+}
+
 }
