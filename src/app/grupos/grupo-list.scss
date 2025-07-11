@@ -1,434 +1,367 @@
-/* src/app/grupos/grupo-list/grupo-list.scss */
+/* Cores Base (Paleta Púrpura/Azul) */
+$primary-color: #673ab7;
+$primary-dark-color: #512da8;
+$primary-light-color: #d1c4e9;
+$accent-color: #ff4081;
+$warn-color: #f44336;
+$text-color: #333;
+$light-text-color: #666;
+$border-color: #e0e0e0;
+$background-color: #f5f5f5;
 
-@use '@angular/material' as mat;
-@use 'sass:color'; // Importa o módulo de cores do Sass
+/* SOBRESCREVENDO AS VARIÁVEIS CSS DO ANGULAR MATERIAL */
+:root {
+  --mdc-theme-primary: #{$primary-color};
+  --mdc-theme-on-primary: #ffffff;
+  --mdc-theme-secondary: #{$accent-color};
+  --mdc-theme-on-secondary: #ffffff;
+  --mdc-theme-error: #{$warn-color};
+  --mdc-theme-on-error: #ffffff;
 
-// --- Variáveis de Cores ---
-$primary-color: #6A0DAD; // Roxo Principal
-$danger-color: #F44336;  // Vermelho Material (melhor para warn/danger)
-$success-color: #4CAF50; // Verde Material (para sucesso/adicionar)
-$info-color: #2196F3;    // Azul Material (para informações/editar)
-$text-color: #333333;    // Cinza escuro (para texto geral)
-$light-bg: #F4F2FA;      // Roxo Mais Claro (para fundo da página e hover)
-$card-bg: #FFFFFF;       // Fundo branco para cards
-$border-color: #D0D0D0;  // Cinza claro (para bordas e divisores)
-$shadow-color: rgba(0, 0, 0, 0.15); // Sombra padrão
+  /* ESSAS LINHAS ALTERAM A COR DO TEXTO DO LABEL para #e0e2ec */
+  --mat-form-field-label-text-color: #e0e2ec;
+  --mat-form-field-focus-label-text-color: #e0e2ec;
+  --mat-form-field-floating-label-text-color: #e0e2ec;
 
+  --mat-form-field-underline-color: #{$border-color};
+  --mat-form-field-focus-underline-color: #{$primary-dark-color};
+  --mat-form-field-filled-indicator-color: transparent; /* Certifica que não há cor extra */
 
-// --- Estilos Gerais do Contêiner da Página ---
-.grupo-list-card {
+  --mat-form-field-error-text-color: #{$warn-color};
+  --mat-form-field-disabled-label-text-color: #9e9e9e;
+  --mat-form-field-disabled-underline-color: #bdbdbd;
+
+  /* Cores para os botões do Material */
+  --mat-button-toggle-text-color: #{$primary-color};
+  --mat-button-toggle-checked-text-color: #ffffff;
+  --mat-button-toggle-checked-background-color: #{$primary-color};
+  --mat-raised-button-text-color: #ffffff;
+  --mat-raised-button-background-color: #{$primary-color};
+}
+
+/* Garante que o autofill do navegador tenha o fundo #e0e2ec e o texto padrão */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #e0e2ec inset !important;
+  -webkit-text-fill-color: #{$text-color} !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* *** ATUALIZAÇÃO IMPORTANTE AQUI PARA O FUNDO DO CAMPO *** Este é o seletor mais comum para a cor de fundo em 'filled'.
+   Adicionamos :not(.mat-form-field-empty) e focus para garantir.
+*/
+.mat-mdc-form-field-has-flat-underline.mat-mdc-form-field-appearance-fill .mat-mdc-form-field-flex,
+.mat-mdc-form-field-has-flat-underline.mat-mdc-form-field-appearance-fill .mat-mdc-form-field-flex:hover,
+.mat-mdc-form-field-has-flat-underline.mat-mdc-form-field-appearance-fill.mat-focused .mat-mdc-form-field-flex {
+  background-color: #e0e2ec !important;
+}
+
+/* Garante que o input real dentro do flex também não tenha um fundo diferente e a cor do texto digitado */
+.mat-form-field-appearance-fill .mat-mdc-input-element.mdc-text-field__input {
+  background-color: transparent !important; /* O input em si é transparente para mostrar o fundo do pai */
+  color: #{$text-color} !important; /* Cor do texto que você digita */
+}
+
+/* SE PRECISAR SER AINDA MAIS ESPECÍFICO PARA O TEXTO DA LABEL FLUTUANTE (em foco/com valor) */
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label.mat-mdc-floating-label,
+.mat-mdc-form-field-has-value .mat-mdc-floating-label.mat-mdc-floating-label {
+  color: #e0e2ec !important;
+}
+
+/* Estilos para o container principal da lista de grupos */
+.grupo-list-container {
   padding: 20px;
-  font-family: 'Roboto', sans-serif; /* Roboto é a fonte padrão do Angular Material */
-  background-color: $light-bg;
-  min-height: 100vh;
-  box-sizing: border-box;
-  display: block;
   max-width: 1200px;
   margin: 20px auto;
+  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-// --- Títulos e Mensagens ---
-mat-card-title {
+/* Título principal da página */
+h2 {
+  text-align: center;
   color: $primary-color;
-  margin-bottom: 25px;
-  text-align: center;
-  font-size: 2.5em;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-mat-card-subtitle {
-  color: $text-color;
   margin-bottom: 20px;
-  font-size: 1.5em;
-  border-bottom: 2px solid $primary-color;
-  padding-bottom: 10px;
-  font-weight: 500;
+  font-size: 2.2em;
+  font-weight: 600;
 }
 
-.section-heading {
-  color: $primary-color;
-  font-size: 1.4em;
-  margin-top: 25px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid $border-color;
-  padding-bottom: 5px;
+/* Mensagens de erro */
+.error-message {
+  color: $warn-color;
+  background-color: lighten($warn-color, 40%);
+  border: 1px solid $warn-color;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
   text-align: center;
-  font-weight: 500;
+  font-weight: bold;
 }
 
-h5 {
-  color: $text-color;
-  font-size: 1.1em;
-  margin-top: 20px;
-  margin-bottom: 8px;
-  border-bottom: 1px dashed $border-color;
-  padding-bottom: 5px;
-  font-weight: 400;
-}
-
-p {
-  margin-top: 15px;
-  color: $text-color;
-  text-align: center;
-  font-size: 1em;
-}
-
-mat-error.error-message {
-  color: #D32F2F;
-  background-color: #FFEBEE;
-  border: 1px solid #D32F2F;
-  padding: 12px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  display: block;
-  text-align: center;
-  font-weight: 500;
-}
-
-/* --- Seção de Formulário (Criar/Editar Grupo) --- */
+/* Estilos para a seção do formulário (criar/editar grupo) */
 .grupo-form-section {
-  background-color: $card-bg;
+  background-color: #ffffff;
   padding: 25px;
   border-radius: 8px;
-  box-shadow: 0 4px 15px $shadow-color;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   margin-bottom: 30px;
-  border: 1px solid $border-color;
-
-  .form-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 20px;
-    align-items: flex-end;
-  }
-
-  mat-form-field.full-width-input {
-    flex: 1;
-    min-width: 250px;
-  }
-
-  button {
-    padding: 10px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    min-width: 120px;
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-  }
-
-  button[mat-raised-button][color="primary"] {
-    background-color: $primary-color;
-    color: #FFFFFF;
-
-    &:hover {
-      background-color: color.adjust($primary-color, $lightness: -10%);
-    }
-  }
-
-  button[mat-stroked-button][color="warn"] {
-    background-color: transparent;
-    color: $danger-color;
-    border: 1px solid $danger-color;
-
-    &:hover {
-      background-color: rgba($danger-color, 0.05);
-      color: $danger-color;
-    }
-  }
+  border-top: 5px solid $primary-color;
 }
 
-/* --- Seção de Gerenciamento de Alunos (dentro do formulário de grupo) --- */
+.grupo-form-section h3 {
+  color: $primary-dark-color;
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: 500;
+}
+
+.form-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.form-controls mat-form-field {
+  flex: 1;
+  min-width: 280px;
+}
+
+.form-controls button {
+  margin-top: 15px;
+  min-width: 150px;
+  height: 48px;
+}
+
+button[mat-raised-button][color="primary"] {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="accent"] {
+  background-color: lighten($primary-color, 15%) !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="warn"],
+button[mat-stroked-button][color="warn"] {
+  background-color: lighten($warn-color, 15%) !important;
+  color: #ffffff !important;
+  border-color: lighten($warn-color, 15%) !important;
+}
+
+button[mat-stroked-button] {
+  color: $primary-color !important;
+  border-color: $primary-color !important;
+  background-color: transparent !important;
+}
+
 .manage-students-section {
   margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px dashed $border-color;
+}
 
-  mat-divider {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: $border-color;
-  }
+.manage-students-section mat-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid $border-color;
+  background-color: $background-color;
+}
 
-  .no-alunos {
-    color: $border-color;
-    font-style: italic;
-    font-size: 0.9em;
-    text-align: center;
-    margin-top: 10px;
-  }
+.manage-students-section mat-card-header {
+  background-color: $primary-light-color;
+  padding: 16px;
+  border-bottom: 1px solid darken($primary-light-color, 10%);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
 
-  mat-list {
-    padding: 0;
-    margin: 0;
-    max-height: 250px;
-    overflow-y: auto;
-    border: 1px solid $border-color;
-    border-radius: 5px;
-    background-color: $card-bg;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-  }
+.manage-students-section mat-card-title {
+  color: $primary-dark-color;
+  font-size: 1.4em;
+}
 
-  mat-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid color.adjust($border-color, $lightness: 5%);
-    font-size: 0.95em;
-    color: $text-color;
-    transition: background-color 0.3s ease;
+.manage-students-section h4 {
+  color: $text-color;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 10px;
+  font-size: 1.3em;
+  font-weight: 500;
+}
 
-    &:last-child {
-      border-bottom: none;
-    }
+.manage-students-section mat-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px dashed lighten($border-color, 10%);
 
-    &:nth-child(even) {
-      background-color: #fcfcfc;
-    }
-
-    &:hover {
-      background-color: $light-bg;
-    }
-
-    .grupo-info {
-      font-size: 0.8em;
-      color: $border-color;
-      margin-left: 10px;
-    }
-
-    button[mat-icon-button] {
-      width: 36px;
-      height: 36px;
-      line-height: 36px;
-      font-size: 20px;
-      border-radius: 50%;
-      transition: background-color 0.3s ease;
-
-      &[color="warn"] {
-        &:hover {
-          background-color: rgba($danger-color, 0.1);
-        }
-      }
-
-      &[color="primary"] {
-        &:hover {
-          background-color: rgba($primary-color, 0.1);
-        }
-      }
-    }
+  &:last-child {
+    border-bottom: none;
   }
 }
 
----
+.no-alunos {
+  font-style: italic;
+  color: $light-text-color;
+  padding: 10px 0;
+  text-align: center;
+}
 
-/* --- Nova Seção: Lista de Grupos como Cards --- */
-.grupos-cards-container {
+.grupo-info {
+  font-size: 0.88em;
+  color: $primary-dark-color;
+  font-style: italic;
+  margin-left: 10px;
+}
+
+.grupos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
-  margin-top: 30px;
+  padding: 20px 0;
 }
 
-.grupo-item-card {
-  background-color: $card-bg;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px $shadow-color;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+.grupo-card {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 10px;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  border: 1px solid $border-color;
-  min-height: 250px;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba($shadow-color, 0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   }
 
   mat-card-header {
-    padding: 15px 20px 10px;
-    background-color: color.adjust($primary-color, $lightness: 50%); /* Corrigido: usando color.adjust() */
-    border-bottom: 1px solid $border-color;
-    border-radius: 12px 12px 0 0;
-    .mat-card-title {
-      font-size: 1.4em;
-      color: $primary-color;
-      text-align: left;
-      margin-bottom: 5px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-    .mat-card-subtitle {
-      font-size: 0.9em;
-      color: $text-color;
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
+    background-color: $primary-light-color;
+    padding: 18px;
+    border-bottom: 1px solid darken($primary-light-color, 10%);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  mat-card-title {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: $primary-dark-color;
+  }
+
+  mat-card-subtitle {
+    color: $light-text-color;
+    margin-top: 5px;
   }
 
   mat-card-content {
     padding: 20px;
     flex-grow: 1;
-  }
 
-  .grupo-description {
-    font-size: 0.95em;
-    color: $text-color;
-    margin-bottom: 15px;
-    line-height: 1.5;
-    text-align: left;
-    strong {
-      color: $primary-color;
-    }
-  }
-
-  .card-divider {
-    margin: 15px 0;
-    background-color: $border-color;
-  }
-
-  .card-students-heading {
-    font-size: 1.1em;
-    color: $primary-color;
-    margin-top: 0;
-    margin-bottom: 10px;
-    border-bottom: 1px dashed $border-color;
-    padding-bottom: 5px;
-    text-align: left;
-  }
-
-  .grupo-aluno-list {
-    padding: 0;
-    margin: 0;
-    max-height: 100px;
-    overflow-y: auto;
-    border: 1px solid $border-color;
-    border-radius: 5px;
-    background-color: #fcfcfc;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-
-    mat-list-item {
-      display: flex; /* Garante que os itens da lista usem flexbox */
-      align-items: center; /* Centraliza verticalmente ícone e texto */
-      padding: 8px 12px;
-      font-size: 0.9em;
+    p {
+      margin-bottom: 10px;
+      line-height: 1.6;
       color: $text-color;
-      border-bottom: 1px dashed color.adjust($border-color, $lightness: 10%); /* Corrigido: usando color.adjust() */
+    }
 
-      &:last-child {
-        border-bottom: none;
-      }
-      .aluno-icon {
-        font-size: 16px;
-        height: 16px;
-        width: 16px;
-        color: $primary-color;
-        margin-right: 8px; /* Espaçamento entre ícone e texto */
-      }
-      .aluno-nome-text {
-        flex-grow: 1; /* Permite que o texto do nome preencha o espaço */
+    strong {
+      color: $text-color;
+    }
+
+    ul {
+      padding-left: 25px;
+      margin-top: 8px;
+      list-style-type: disc;
+      color: $text-color;
+
+      li {
+        margin-bottom: 5px;
       }
     }
   }
 
-  .no-alunos-card {
-    color: $border-color;
-    font-style: italic;
-    font-size: 0.9em;
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  mat-card-actions.grupo-card-actions {
+  mat-card-actions {
     display: flex;
-    justify-content: flex-end; /* Alinha os botões à direita */
-    padding: 10px 15px;
-    border-top: 1px solid $border-color; /* Linha divisória para as ações */
-    background-color: color.adjust($light-bg, $lightness: 3%); /* Corrigido: usando color.adjust() */
-    gap: 8px; /* Espaçamento entre os botões */
+    justify-content: flex-end;
+    padding: 12px 20px 20px 20px;
+    border-top: 1px solid lighten($border-color, 5%);
+    margin-top: auto;
 
-    button[mat-icon-button] {
-      width: 40px; /* Aumenta um pouco o tamanho dos botões */
-      height: 40px;
-      line-height: 40px;
-      border-radius: 50%; /* Garante que sejam círculos */
-      transition: background-color 0.2s ease, transform 0.1s ease;
-
-      &:hover {
-        transform: translateY(-2px); /* Efeito de "lift" sutil no hover */
-      }
-
-      &[color="primary"] {
-        color: $primary-color; /* Cor do ícone */
-        &:hover {
-          background-color: rgba($primary-color, 0.1);
-        }
-      }
-
-      &[color="warn"] {
-        color: $danger-color; /* Cor do ícone */
-        &:hover {
-          background-color: rgba($danger-color, 0.1);
-        }
-      }
+    button {
+      margin-left: 10px;
     }
   }
 }
 
-/* Template para quando não há grupos */
+/* Mensagem quando não há itens na lista principal */
 .no-items-message {
-  color: $text-color;
-  font-style: italic;
-  font-size: 1.2em;
   text-align: center;
-  margin-top: 40px;
-  padding: 30px;
-  background-color: $card-bg;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  border: 1px solid $border-color;
+  color: $light-text-color;
+  margin-top: 30px;
+  font-size: 1.2em;
+  padding: 20px;
+  border: 2px dashed $border-color;
+  border-radius: 5px;
+  background-color: #ffffff;
 }
 
-.section-divider {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  background-color: $border-color;
-  height: 2px; /* Linha divisória mais grossa */
-  border-radius: 1px;
-}
-
-/* --- Responsividade para os Cards (Mobile First) --- */
+/* Ajustes para telas menores (responsividade) */
 @media (max-width: 768px) {
-  .grupos-cards-container {
-    grid-template-columns: 1fr; /* Uma coluna em telas menores */
-    gap: 20px;
-  }
-
-  .grupo-item-card {
-    padding: 0;
-    margin: 0;
-  }
-
-  mat-card-header {
-    padding: 12px 15px 8px;
-  }
-
-  mat-card-content {
+  .grupo-list-container {
     padding: 15px;
   }
 
-  mat-card-actions.grupo-card-actions {
-    padding: 8px 12px;
+  h2 {
+    font-size: 2em;
+  }
+
+  .grupo-form-section h3 {
+    font-size: 1.6em;
+  }
+
+  .form-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .form-controls mat-form-field {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .grupo-card {
+    mat-card-title {
+      font-size: 1.6em;
+    }
+    mat-card-content {
+      font-size: 0.9em;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .grupo-list-container {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.8em;
+  }
+
+  .grupos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  mat-card-actions button {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
   }
 }
