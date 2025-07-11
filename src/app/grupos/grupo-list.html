@@ -46,6 +46,7 @@
 
           <mat-divider></mat-divider>
 
+<<<<<<< HEAD
           <h4>Adicionar Aluno ao Grupo:</h4>
           <div *ngIf="availableStudentsForAddition.length > 0; else noAvailableStudents">
             <mat-list>
@@ -67,14 +68,34 @@
           </ng-template>
         </mat-card-content>
       </mat-card>
+=======
+      <h5>Adicionar Aluno ao Grupo:</h5>
+      <div *ngIf="allStudents.length > 0; else noAvailableStudents">
+        <ul class="available-students">
+          <li *ngFor="let student of allStudents">
+            <ng-container *ngIf="!isStudentInCurrentGroup(student)">
+              <span>
+                {{ student.name }} ({{ student.idTcs }})
+                <span *ngIf="student.grupoNome" class="grupo-info"> (No grupo: {{ student.grupoNome }})</span>
+              </span>
+              <button (click)="addStudentToCurrentGroup(student)" class="add-button">Adicionar</button>
+            </ng-container>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noAvailableStudents>
+        <p class="no-alunos">Nenhum aluno disponível para adicionar.</p>
+      </ng-template>
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
     </div>
-  </div>
+    </div>
 
   <br>
   <mat-divider></mat-divider>
   <br>
 
   <div *ngIf="grupos.length > 0">
+<<<<<<< HEAD
     <mat-card>
       <mat-card-header>
         <mat-card-title>Grupos Cadastrados</mat-card-title>
@@ -124,6 +145,36 @@
         </table>
       </mat-card-content>
     </mat-card>
+=======
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome do Grupo</th>
+          <th>Descrição</th>
+          <th>Alunos (Nomes)</th>
+          <th *ngIf="isProfessor">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let grupo of grupos">
+          <td data-label="ID">{{ grupo.id }}</td>
+          <td data-label="Nome do Grupo">{{ grupo.nome }}</td>
+          <td data-label="Descrição">{{ grupo.descricao }}</td>
+          <td data-label="Alunos">
+            <ul *ngIf="grupo.nomesDosAlunos && grupo.nomesDosAlunos.length > 0">
+              <li *ngFor="let alunoNome of grupo.nomesDosAlunos">{{ alunoNome }}</li>
+            </ul>
+            <span *ngIf="!grupo.nomesDosAlunos || grupo.nomesDosAlunos.length === 0" class="no-alunos">Nenhum aluno</span>
+          </td>
+          <td *ngIf="isProfessor" data-label="Ações" class="table-actions">
+            <button (click)="editGrupo(grupo)" class="edit-button">Editar</button>
+            <button (click)="deleteGrupo(grupo.id!)" class="delete-button">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
   </div>
 
   <div *ngIf="grupos.length === 0 && !errorMessage">

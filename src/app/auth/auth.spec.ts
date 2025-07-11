@@ -1,13 +1,16 @@
+// src/app/auth/auth.spec.ts
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AuthService } from './auth'; // Corrigido de 'Auth' para 'AuthService'
 
-import { Auth } from './auth';
-
-describe('Auth', () => {
-  let service: Auth;
+describe('AuthService', () => { // Corrigido de 'Auth' para 'AuthService'
+  let service: AuthService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Auth);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule] // Adiciona o módulo para testes de HTTP
+    });
+    service = TestBed.inject(AuthService); // Corrigido de 'Auth' para 'AuthService'
   });
 
   it('should be created', () => {

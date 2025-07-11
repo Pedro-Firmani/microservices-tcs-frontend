@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
+=======
+// src/app/grupos/grupo-list.ts
+import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { GrupoService, GrupoComNomesAlunosResponse, GrupoModelRequest, GrupoComAlunosResponse } from '../grupos/grupo.service'; // Ajuste o caminho se necessário
+import { StudentService, StudentResponse, StudentRequest } from '../students/student.service'; // Ajuste o caminho se necessário
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../auth/auth'; // <<< NOVO: Importe o AuthService
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
 
 @Component({
   selector: 'app-grupo-list',
@@ -43,6 +54,7 @@ export class GrupoListComponent implements OnInit {
   gruposComDetalhes: GrupoComAlunosResponse[] = [];
   allStudents: StudentResponse[] = [];
 
+<<<<<<< HEAD
   public isProfessor: boolean = false;
 
   // Colunas para a tabela Angular Material, se estiver usando-a
@@ -56,47 +68,58 @@ export class GrupoListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isProfessor = this.authService.hasRole('PROFESSOR');
+=======
+  public isProfessor: boolean = false; // <<< NOVO: Propriedade para controlar a visibilidade
+
+  constructor(
+    private grupoService: GrupoService,
+    private studentService: StudentService,
+    private authService: AuthService // <<< NOVO: Injete o AuthService
+  ) { }
+
+  ngOnInit(): void {
+    // <<< NOVO: Verifica a role do usuário assim que o componente é carregado
+    this.isProfessor = this.authService.hasRole('PROFESSOR');
+
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
     this.carregarGrupos();
     this.carregarGruposComAlunosDetalhes();
     this.carregarTodosAlunos();
   }
 
+  // ... O RESTANTE DO SEU CÓDIGO PERMANECE IGUAL ...
+  // (carregarGrupos, saveGrupo, deleteGrupo, etc.)
+
   carregarGrupos(): void {
     this.grupoService.getGruposComNomesAlunos().subscribe({
-      next: (data: GrupoComNomesAlunosResponse[]) => {
-        this.grupos = data;
-        console.log('Grupos carregados (nomes):', this.grupos);
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar grupos (nomes):', err);
-        this.errorMessage = 'Não foi possível carregar a lista de grupos.';
-      }
+        next: (data: GrupoComNomesAlunosResponse[]) => {
+            this.grupos = data;
+        },
+        error: (err: any) => {
+            this.errorMessage = 'Não foi possível carregar a lista de grupos.';
+        }
     });
   }
 
   carregarGruposComAlunosDetalhes(): void {
     this.grupoService.getGruposComAlunosDetalhes().subscribe({
-      next: (data: GrupoComAlunosResponse[]) => {
-        this.gruposComDetalhes = data;
-        console.log('Grupos carregados (detalhes):', this.gruposComDetalhes);
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar grupos com detalhes dos alunos:', err);
-        this.errorMessage = 'Não foi possível carregar os detalhes dos alunos nos grupos.';
-      }
+        next: (data: GrupoComAlunosResponse[]) => {
+            this.gruposComDetalhes = data;
+        },
+        error: (err: any) => {
+            this.errorMessage = 'Não foi possível carregar os detalhes dos alunos nos grupos.';
+        }
     });
   }
 
   carregarTodosAlunos(): void {
     this.studentService.getAllStudents().subscribe({
-      next: (data: StudentResponse[]) => {
-        this.allStudents = data;
-        console.log('Todos os alunos carregados:', this.allStudents);
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar todos os alunos:', err);
-        this.errorMessage = 'Não foi possível carregar a lista de alunos.';
-      }
+        next: (data: StudentResponse[]) => {
+            this.allStudents = data;
+        },
+        error: (err: any) => {
+            this.errorMessage = 'Não foi possível carregar a lista de alunos.';
+        }
     });
   }
 
@@ -108,6 +131,7 @@ export class GrupoListComponent implements OnInit {
     this.errorMessage = null; // Limpa qualquer erro anterior de validação do formulário
 
     if (this.editMode) {
+<<<<<<< HEAD
       if (this.currentGrupo.id) {
         this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
           next: (response: GrupoComNomesAlunosResponse) => {
@@ -150,21 +174,51 @@ export class GrupoListComponent implements OnInit {
           } else {
             this.errorMessage = 'Não foi possível criar o grupo.';
           }
+=======
+        if (this.currentGrupo.id) {
+            this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
+                next: (response: GrupoComNomesAlunosResponse) => {
+                    alert('Grupo atualizado com sucesso!');
+                    this.carregarGrupos();
+                    this.carregarGruposComAlunosDetalhes();
+                    this.resetForm();
+                },
+                error: (err: HttpErrorResponse) => {
+                    if (err.error && typeof err.error === 'string') {
+                        this.errorMessage = err.error;
+                    } else {
+                        this.errorMessage = 'Não foi possível atualizar o grupo.';
+                    }
+                }
+            });
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
         }
-      });
+    } else {
+        this.grupoService.criarGrupo(this.currentGrupo).subscribe({
+            next: () => {
+                alert('Grupo criado com sucesso!');
+                this.carregarGrupos();
+                this.carregarGruposComAlunosDetalhes();
+                this.resetForm();
+            },
+            error: (err: any) => {
+                this.errorMessage = 'Não foi possível criar o grupo.';
+            }
+        });
     }
   }
 
   editGrupo(grupo: GrupoComNomesAlunosResponse): void {
-    this.editMode = true;
-    this.currentGrupo = { id: grupo.id, nome: grupo.nome, descricao: grupo.descricao };
+      this.editMode = true;
+      this.currentGrupo = { id: grupo.id, nome: grupo.nome, descricao: grupo.descricao };
   }
 
   cancelEdit(): void {
-    this.resetForm();
+      this.resetForm();
   }
 
   deleteGrupo(id: number): void {
+<<<<<<< HEAD
     if (confirm('Tem certeza que deseja excluir este grupo? Isso também desassociará os alunos!')) {
       this.grupoService.deletarGrupo(id).subscribe({
         next: () => {
@@ -185,11 +239,25 @@ export class GrupoListComponent implements OnInit {
         }
       });
     }
+=======
+      if (confirm('Tem certeza que deseja excluir este grupo?')) {
+          this.grupoService.deletarGrupo(id).subscribe({
+              next: () => {
+                  alert('Grupo excluído com sucesso!');
+                  this.carregarGrupos();
+                  this.carregarGruposComAlunosDetalhes();
+              },
+              error: (err: any) => {
+                  this.errorMessage = 'Não foi possível excluir o grupo.';
+              }
+          });
+      }
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
   }
-
+  
   getStudentsInCurrentGroup(): StudentResponse[] {
     if (!this.currentGrupo.id) {
-      return [];
+        return [];
     }
     const grupoDetalhe = this.gruposComDetalhes.find(g => g.id === this.currentGrupo.id);
     return grupoDetalhe ? grupoDetalhe.alunos : [];
@@ -214,11 +282,12 @@ export class GrupoListComponent implements OnInit {
 
   addStudentToCurrentGroup(student: StudentResponse): void {
     if (!this.currentGrupo.id) {
-      alert('Selecione ou crie um grupo primeiro para adicionar alunos.');
-      return;
+        alert('Selecione ou crie um grupo primeiro.');
+        return;
     }
 
     const studentToUpdate: StudentRequest = {
+<<<<<<< HEAD
       name: student.name,
       idTcs: student.idTcs,
       grupoId: this.currentGrupo.id,
@@ -238,18 +307,30 @@ export class GrupoListComponent implements OnInit {
           this.errorMessage = err.error;
         } else {
           this.errorMessage = `Não foi possível adicionar ${student.name} ao grupo.`;
+=======
+        name: student.name,
+        idTcs: student.idTcs,
+        grupoId: this.currentGrupo.id,
+        description: student.description
+    };
+
+    this.studentService.updateStudent(student.id!, studentToUpdate).subscribe({
+        next: () => {
+            alert(`${student.name} adicionado ao grupo.`);
+            this.carregarGrupos();
+            this.carregarGruposComAlunosDetalhes();
+            this.carregarTodosAlunos();
+        },
+        error: (err) => {
+            this.errorMessage = `Não foi possível adicionar ${student.name}.`;
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
         }
-      }
     });
   }
 
   removeStudentFromGroup(student: StudentResponse): void {
-    if (!student.id) {
-      console.error('ID do aluno não encontrado para remoção.');
-      return;
-    }
-
     const studentToUpdate: StudentRequest = {
+<<<<<<< HEAD
       name: student.name,
       idTcs: student.idTcs,
       grupoId: null, // Para desassociar
@@ -269,14 +350,30 @@ export class GrupoListComponent implements OnInit {
           this.errorMessage = err.error;
         } else {
           this.errorMessage = `Não foi possível remover ${student.name} do grupo.`;
+=======
+        name: student.name,
+        idTcs: student.idTcs,
+        grupoId: null, // Desvincula o grupo
+        description: student.description
+    };
+
+    this.studentService.updateStudent(student.id!, studentToUpdate).subscribe({
+        next: () => {
+            alert(`${student.name} removido do grupo.`);
+            this.carregarGrupos();
+            this.carregarGruposComAlunosDetalhes();
+            this.carregarTodosAlunos();
+        },
+        error: (err) => {
+            this.errorMessage = `Não foi possível remover ${student.name}.`;
+>>>>>>> f8f3bbf1a1f654567dcec7ce724bc0d4a51a2647
         }
-      }
     });
   }
 
   private resetForm(): void {
-    this.editMode = false;
-    this.currentGrupo = { nome: '', descricao: '' };
-    this.errorMessage = null;
+      this.editMode = false;
+      this.currentGrupo = { nome: '', descricao: '' };
+      this.errorMessage = null;
   }
 }
