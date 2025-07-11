@@ -1,23 +1,36 @@
-<h2>Criar Novo Aluno</h2>
+<div class="student-create-container">
+  <h2>Criar Novo Aluno</h2>
 
-<p *ngIf="successMessage" style="color: green;">{{ successMessage }}</p>
-<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+  <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-<form (ngSubmit)="createStudent()" #studentForm="ngForm">
-  <label>
-    Nome:
-    <input type="text" name="name" [(ngModel)]="newStudent.name" required />
-  </label>
-  <br><br>
-  <label>
-    Matrícula (ID TCS):
-    <input type="text" name="idTcs" [(ngModel)]="newStudent.idTcs" required />
-  </label>
-  <br><br>
-  <label>
-    Descrição: <textarea name="description" [(ngModel)]="newStudent.description"></textarea>
-  </label>
-  <br><br>
-  <button type="submit" [disabled]="studentForm.invalid">Salvar</button>
-  <button type="button" (click)="goBack()">Cancelar</button>
-</form>
+  <mat-card class="student-form-card">
+    <mat-card-content>
+      <form (ngSubmit)="createStudent()" #studentForm="ngForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Nome do Aluno</mat-label>
+          <input matInput type="text" name="name" [(ngModel)]="newStudent.name" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Matrícula (ID TCS)</mat-label>
+          <input matInput type="text" name="idTcs" [(ngModel)]="newStudent.idTcs" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Descrição</mat-label>
+          <textarea matInput name="description" [(ngModel)]="newStudent.description"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="studentForm.invalid">
+            <mat-icon>save</mat-icon> Salvar
+          </button>
+          <button mat-stroked-button color="warn" type="button" (click)="goBack()">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

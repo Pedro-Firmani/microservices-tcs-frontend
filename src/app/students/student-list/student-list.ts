@@ -1,117 +1,126 @@
-// src/app/students/student-list/student-list.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StudentService, StudentResponse, StudentRequest } from '../student.service';
-import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../auth/auth';
+import { Router } from '@angular/router';
+// Import StudentService e StudentResponse do arquivo de serviço correto
+import { StudentService, StudentResponse, StudentRequest } from '../student.service';
+import { Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http'; // Para tipagem de erros
+
+// Angular Material Imports
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
 })
-// V ↓↓↓ VERIFIQUE SE O 'export' ESTÁ AQUI ↓↓↓
 export class StudentListComponent implements OnInit {
-  editingStudentId: number | null = null;
+  students: StudentResponse[] = []; // Alterado para StudentResponse[]
+  errorMessage: string | null = null;
+  isProfessor: boolean = true; // Considere obter isso de um serviço de autenticação
+  editingStudentId: number | null = null; // Alterado para number | null para consistência com id: number
   editedName: string = '';
   editedIdTcs: string = '';
-  editedDescription: string = '';
-  students: StudentResponse[] = [];
-  errorMessage: string | null = null;
-  creatingNew: boolean = false;
-  newStudentName: string = '';
-  newStudentIdTcs: string = '';
-  newStudentDescription: string = '';
-
-  public isProfessor: boolean = false;
+  editedDescription: string = ''; // Corrigido para 'description'
 
   constructor(
     private studentService: StudentService,
-    private router: Router,
-    private authService: AuthService
-  ) { }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.isProfessor = this.authService.hasRole('PROFESSOR');
     this.loadStudents();
   }
 
-  // ... resto do código ...
   loadStudents(): void {
     this.studentService.getAllStudents().subscribe({
-      next: (data) => {
+      next: (data: StudentResponse[]) => { // Tipagem explícita
         this.students = data;
+        this.errorMessage = null;
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => { // Tipagem explícita
         console.error('Erro ao carregar alunos:', err);
         this.errorMessage = 'Não foi possível carregar a lista de alunos.';
+        this.students = [];
       }
     });
   }
 
-  editStudent(student: StudentResponse): void {
+  goToCreateStudent(): void {
+    this.router.navigate(['/students/create']);
+  }
+
+  editStudent(student: StudentResponse): void { // Alterado para StudentResponse
     this.editingStudentId = student.id;
     this.editedName = student.name;
     this.editedIdTcs = student.idTcs;
+    // Garante que a descrição seja definida, mesmo que nula ou indefinida
     this.editedDescription = student.description || '';
   }
 
-  saveStudent(id: number): void {
-    const updatedStudent: StudentRequest = {
-      name: this.editedName,
-      idTcs: this.editedIdTcs,
-      description: this.editedDescription
-    };
-    this.studentService.updateStudent(id, updatedStudent).subscribe({
-      next: () => {
-        this.loadStudents();
-        this.editingStudentId = null;
-      },
-      error: (err: any) => {
-        alert('Erro ao atualizar aluno.');
-      }
-    });
+  saveStudent(id: number): void { // ID como number
+    const studentToUpdate = this.students.find(s => s.id === id);
+    if (studentToUpdate) {
+      const updatedStudentData: StudentResponse = { // Tipagem explícita
+        ...studentToUpdate, // Mantém outras propriedades como grupoId, grupoNome
+        name: this.editedName,
+        idTcs: this.editedIdTcs,
+        description: this.editedDescription
+      };
+
+      // Agora, o método updateStudent no serviço espera StudentRequest.
+      // Você pode criar um objeto StudentRequest a partir de StudentResponse.
+      const requestData: StudentRequest = {
+        name: updatedStudentData.name,
+        idTcs: updatedStudentData.idTcs,
+        description: updatedStudentData.description,
+        grupoId: updatedStudentData.grupoId
+      };
+
+
+      this.studentService.updateStudent(id, requestData).subscribe({ // Passando requestData
+        next: () => {
+          this.loadStudents();
+          this.editingStudentId = null;
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao salvar aluno:', err);
+          this.errorMessage = 'Não foi possível salvar as alterações.';
+        }
+      });
+    }
   }
 
-  startCreating(): void {
-    this.creatingNew = true;
+  cancelEditing(): void {
+    this.editingStudentId = null;
   }
 
-  cancelCreating(): void {
-    this.creatingNew = false;
-  }
-
-  saveNewStudent(): void {
-    const newStudent: StudentRequest = {
-      name: this.newStudentName,
-      idTcs: this.newStudentIdTcs,
-      description: this.newStudentDescription,
-      grupoId: null
-    };
-    this.studentService.createStudent(newStudent).subscribe({
-      next: () => {
-        this.loadStudents();
-        this.creatingNew = false;
-      },
-      error: (err: any) => {
-        alert('Erro ao criar aluno.');
-      }
-    });
-  }
-
-  deleteStudent(id: number): void {
+  deleteStudent(id: number): void { // ID como number
     if (confirm('Tem certeza que deseja excluir este aluno?')) {
       this.studentService.deleteStudent(id).subscribe({
         next: () => {
-          this.students = this.students.filter(s => s.id !== id);
+          this.loadStudents();
         },
-        error: (err: any) => {
+        error: (err: HttpErrorResponse) => {
           console.error('Erro ao excluir aluno:', err);
-          alert('Erro ao excluir aluno.');
+          this.errorMessage = 'Não foi possível excluir o aluno.';
         }
       });
     }

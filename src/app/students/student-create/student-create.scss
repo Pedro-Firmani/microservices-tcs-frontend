@@ -1,0 +1,181 @@
+/* src/app/alunos/aluno-create.scss (Exemplo de nome de arquivo SCSS) */
+
+/* Cores Base (Paleta Púrpura/Azul) - Certifique-se de que estas variáveis estejam acessíveis */
+$primary-color: #673ab7; // Deep Purple 500
+$primary-dark-color: #512da8; // Deep Purple 700
+$primary-light-color: #d1c4e9; // Deep Purple 100
+$accent-color: #ff4081; // Pink A200 (para botões de destaque/ações)
+$warn-color: #f44336; // Red 500 (para avisos/erro/excluir)
+$text-color: #333;
+$light-text-color: #666;
+$border-color: #e0e0e0;
+$background-color: #f5f5f5; // Grey 100
+
+// Import para as novas funções de cor do Sass (essencial para color.adjust)
+@use "sass:color";
+
+/* SOBRESCREVENDO AS VARIÁVEIS CSS DO ANGULAR MATERIAL PARA O TEMA */
+// Estas variáveis podem estar em um arquivo de tema global (ex: styles.scss) ou aqui,
+// dependendo da sua estrutura de projeto.
+:root {
+  --mdc-theme-primary: #{$primary-color};
+  --mdc-theme-on-primary: #ffffff;
+  --mdc-theme-secondary: #{$accent-color};
+  --mdc-theme-on-secondary: #ffffff;
+  --mdc-theme-error: #{$warn-color};
+  --mdc-theme-on-error: #ffffff;
+
+  /* Cores para os campos de texto do Material (mat-form-field, input) */
+  // Cor do label: #e0e2ec
+  --mat-form-field-label-text-color: #e0e2ec;
+  --mat-form-field-focus-label-text-color: #e0e2ec;
+  --mat-form-field-underline-color: #{$border-color};
+  --mat-form-field-focus-underline-color: #{$primary-dark-color};
+  --mat-form-field-floating-label-text-color: #e0e2ec;
+
+  /* Cor de fundo para 'filled' - garante que o fundo não seja colorido por padrão do Material */
+  --mat-form-field-filled-indicator-color: transparent;
+
+  --mat-form-field-error-text-color: #{$warn-color};
+  --mat-form-field-disabled-label-text-color: #9e9e9e;
+  --mat-form-field-disabled-underline-color: #bdbdbd;
+
+  /* Cores para os botões do Material */
+  --mat-button-toggle-text-color: #{$primary-color};
+  --mat-button-toggle-checked-text-color: #ffffff;
+  --mat-button-toggle-checked-background-color: #{$primary-color};
+  --mat-raised-button-text-color: #ffffff;
+  --mat-raised-button-background-color: #{$primary-color};
+}
+
+/* **ESTILOS ESPECÍFICOS PARA O COMPONENTE CREATE STUDENT** */
+
+.student-create-container {
+  padding: 20px;
+  max-width: 600px; /* Tamanho ajustado para um formulário de criação */
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center; // Centraliza o título
+}
+
+.student-create-container h2 {
+  color: $primary-color;
+  margin-bottom: 25px;
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+/* Mensagens de feedback */
+.success-message {
+  color: green;
+  background-color: lighten(green, 40%);
+  border: 1px solid green;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: $warn-color;
+  background-color: lighten($warn-color, 40%);
+  border: 1px solid $warn-color;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.student-form-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  border-top: 5px solid $primary-color;
+  margin-top: 20px;
+  padding: 20px; /* Ajusta o padding do card */
+}
+
+/* Estilos para os campos de formulário do Material */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaçamento entre os campos */
+}
+
+mat-form-field {
+  width: 100%; /* Faz os campos ocuparem a largura total do card */
+}
+
+/* **Fundo do Input e Autofill para #e0e2ec** */
+// Aplica a cor ao container interno do campo 'filled'
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #e0e2ec !important; /* Fundo do campo em #e0e2ec */
+}
+
+// Garante que o input real dentro do flex seja transparente para mostrar o fundo do pai
+.mat-mdc-input-element.mdc-text-field__input {
+  background-color: transparent !important;
+  color: $text-color !important; /* Cor do texto digitado */
+}
+
+// Estilos para o autofill do navegador (fundo e cor do texto)
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #e0e2ec inset !important; /* Fundo #e0e2ec forçado para autofill */
+  -webkit-text-fill-color: #{$text-color} !important; /* Cor do texto digitado no autofill */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+/* Estilos para os botões do formulário */
+.form-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinha os botões à direita */
+  gap: 15px; /* Espaçamento entre os botões */
+  margin-top: 25px; /* Espaçamento acima dos botões */
+}
+
+.form-actions button {
+  min-width: 120px;
+  height: 48px;
+}
+
+// Cores personalizadas para os botões, se necessário (podem ser globais)
+button[mat-raised-button][color="primary"] {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+}
+
+button[mat-stroked-button][color="warn"] {
+  color: $warn-color !important;
+  border-color: $warn-color !important;
+  background-color: transparent !important;
+}
+
+/* Responsividade básica */
+@media (max-width: 768px) {
+  .student-create-container {
+    padding: 15px;
+    margin: 15px auto;
+  }
+
+  .student-create-container h2 {
+    font-size: 1.8em;
+  }
+
+  .form-actions {
+    flex-direction: column; /* Botões empilhados em telas pequenas */
+    align-items: stretch; /* Estica os botões para a largura total */
+  }
+
+  .form-actions button {
+    width: 100%;
+    margin-left: 0; /* Remove margem lateral */
+  }
+}

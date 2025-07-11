@@ -1,86 +1,216 @@
-/* SCSS for your specific component, e.g., students.component.scss */
+/* src/app/students/student-list/student-list.scss */
 
-:host {
-  display: block;
+/* Cores Base (Paleta Púrpura/Azul) - Certifique-se de que estas variáveis estão acessíveis */
+$primary-color: #673ab7; // Deep Purple 500
+$primary-dark-color: #512da8; // Deep Purple 700
+$primary-light-color: #d1c4e9; // Deep Purple 100
+$accent-color: #ff4081; // Pink A200 (para botões de destaque/ações)
+$warn-color: #f44336; // Red 500 (para avisos/erro/excluir)
+$text-color: #333;
+$light-text-color: #666;
+$border-color: #e0e0e0;
+$background-color: #f5f5f5; // Grey 100
+
+// Import para as novas funções de cor do Sass (essencial para color.adjust)
+@use "sass:color";
+
+/* SOBRESCREVENDO AS VARIÁVEIS CSS DO ANGULAR MATERIAL PARA O TEMA GLOBAL (se aplicável) */
+// Se estas variáveis já estão definidas em um arquivo de tema global (como styles.scss),
+// você não precisa repeti-las aqui. Caso contrário, adicione-as para garantir consistência.
+:root {
+  --mdc-theme-primary: #{$primary-color};
+  --mdc-theme-on-primary: #ffffff;
+  --mdc-theme-secondary: #{$accent-color};
+  --mdc-theme-on-secondary: #ffffff;
+  --mdc-theme-error: #{$warn-color};
+  --mdc-theme-on-error: #ffffff;
+
+  /* Cores para os campos de texto do Material (mat-form-field, input) - se houver no mesmo componente */
+  --mat-form-field-label-text-color: #e0e2ec;
+  --mat-form-field-focus-label-text-color: #e0e2ec;
+  --mat-form-field-underline-color: #{$border-color};
+  --mat-form-field-focus-underline-color: #{$primary-dark-color};
+  --mat-form-field-floating-label-text-color: #e0e2ec;
+  --mat-form-field-filled-indicator-color: transparent;
+
+  --mat-form-field-error-text-color: #{$warn-color};
+  --mat-form-field-disabled-label-text-color: #9e9e9e;
+  --mat-form-field-disabled-underline-color: #bdbdbd;
+
+  /* Cores para os botões do Material */
+  --mat-button-toggle-text-color: #{$primary-color};
+  --mat-button-toggle-checked-text-color: #ffffff;
+  --mat-button-toggle-checked-background-color: #{$primary-color};
+  --mat-raised-button-text-color: #ffffff;
+  --mat-raised-button-background-color: #{$primary-color};
+}
+
+/* **ESTILOS ESPECÍFICOS PARA O COMPONENTE DE LISTA DE ALUNOS** */
+
+.student-list-container {
   padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
+.student-list-container h2 {
+  text-align: center;
+  color: $primary-color;
   margin-bottom: 20px;
-  color: #0F0A0A;
+  font-size: 2.2em;
+  font-weight: 600;
 }
 
-button {
-  background-color: #6E7271;
-  color: #FFF7EB;
-  border: none;
-  padding: 8px 14px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  margin-right: 5px;
-}
-
-button:hover {
-  background-color: #0F0A0A;
-}
-
-button.add-button {
-  background-color: #6A0DAD;
-}
-button.add-button:hover {
-  background-color: #D0B8E8;
-}
-
-button.edit-button {
-  background-color: #D0B8E8;
-  color: #0F0A0A;
-}
-button.edit-button:hover {
-  background-color: #6A0DAD;
-  color: #FFF7EB;
-}
-
-button.delete-button {
-  background-color: #0F0A0A;
-}
-button.delete-button:hover {
-  background-color: #6E7271;
-}
-
-p {
-  margin: 10px 0;
-  color: #6E7271;
-}
-
-p[style*="color: red;"] {
-  color: #6A0DAD !important;
-}
-
-p[style*="color: green;"] {
-  color: #0F0A0A !important;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background-color: #D0B8E8;
-}
-
-th,
-td {
+.error-message {
+  color: $warn-color;
+  background-color: lighten($warn-color, 40%);
+  border: 1px solid $warn-color;
   padding: 10px;
-  text-align: left;
-  border: 1px solid #6E7271;
-  color: #0F0A0A;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
 }
 
-tbody tr:hover {
-  background-color: #FFF7EB;
+/* Estilos para a grade de cards de alunos */
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 300px mínimo */
+  gap: 25px; /* Espaçamento entre os cards */
+  padding: 20px 0;
+}
+
+/* Estilos individuais de cada card de aluno */
+.student-card {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12); /* Sombra mais pronunciada */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 10px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-8px); /* Efeito de elevação ao passar o mouse */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  mat-card-header {
+    background-color: $primary-light-color;
+    padding: 18px;
+    border-bottom: 1px solid color.adjust($primary-light-color, $lightness: -10%);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  mat-card-title {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: $primary-dark-color;
+  }
+
+  mat-card-subtitle {
+    color: $light-text-color;
+    margin-top: 5px;
+  }
+
+  mat-card-content {
+    padding: 20px;
+    flex-grow: 1; /* Faz o conteúdo ocupar o espaço restante */
+
+    p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      color: $text-color;
+    }
+
+    strong {
+      color: $text-color;
+    }
+
+    .full-width-field {
+      width: 100%; /* Ensure input/textarea takes full width in card */
+      .mat-mdc-form-field-infix {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita dentro do card */
+    padding: 12px 20px 20px 20px;
+    border-top: 1px solid lighten($border-color, 5%);
+    margin-top: auto; /* Empurra as ações para a parte inferior */
+
+    button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.no-items-message {
+  text-align: center;
+  color: $light-text-color;
+  margin-top: 30px;
+  font-size: 1.2em;
+  padding: 20px;
+  border: 2px dashed $border-color;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+/* Estilos para os botões gerais (se não estiverem em um tema global) */
+button[mat-raised-button][color="primary"] {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="accent"] {
+  background-color: lighten($primary-color, 15%) !important; // Tom mais claro de roxo
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="warn"] {
+  background-color: lighten($warn-color, 15%) !important; // Tom mais claro de vermelho
+  color: #ffffff !important;
+}
+
+button[mat-stroked-button] {
+  color: $primary-color !important;
+  border-color: $primary-color !important;
+  background-color: transparent !important;
+}
+
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .student-list-container {
+    padding: 15px;
+  }
+
+  .student-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Ajuste para telas menores */
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-list-container {
+    padding: 10px;
+  }
+
+  .student-grid {
+    grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+    padding: 10px 0;
+  }
+
+  .student-card mat-card-actions button {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
 }

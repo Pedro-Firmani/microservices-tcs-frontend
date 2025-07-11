@@ -1,77 +1,59 @@
-<h2>Lista de Alunos</h2>
+<div class="student-list-container">
+  <h2>Lista de Alunos</h2>
 
-<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-<div *ngIf="isProfessor">
-  <div style="margin-bottom: 15px;">
-    <button (click)="startCreating()" *ngIf="!creatingNew">➕ Adicionar Novo Aluno</button>
-  </div>
-</div>
+  <button mat-raised-button color="primary" (click)="goToCreateStudent()" *ngIf="isProfessor">
+    <mat-icon>person_add</mat-icon> Adicionar Novo Aluno
+  </button>
+  <br><br>
+  <mat-divider></mat-divider>
+  <br>
 
-<div *ngIf="students.length > 0 || (creatingNew && isProfessor)">
-  <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-    <thead style="background-color: #f0f0f0;">
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Matrícula (ID TCS)</th>
-        <th>Descrição</th>
-        <th *ngIf="isProfessor">Ações</th>
-      </tr>
-    </thead>
-    <tbody>
+  <div *ngIf="students.length > 0; else noStudentsFound" class="student-grid">
+    <mat-card *ngFor="let student of students" class="student-card">
+      <mat-card-header>
+        <mat-card-title>{{ student.name }}</mat-card-title>
+        <mat-card-subtitle>Matrícula: {{ student.idTcs }}</mat-card-subtitle>
+      </mat-card-header>
 
-      <tr *ngIf="creatingNew && isProfessor">
-        <td>Nova</td>
-        <td><input [(ngModel)]="newStudentName" placeholder="Nome do aluno" /></td>
-        <td><input [(ngModel)]="newStudentIdTcs" placeholder="Matrícula" /></td>
-        <td><textarea [(ngModel)]="newStudentDescription" placeholder="Descrição"></textarea></td>
-        <td>
-          <button (click)="saveNewStudent()">💾 Salvar</button>
-          <button (click)="cancelCreating()">✖️ Cancelar</button>
-        </td>
-      </tr>
-
-      <tr *ngFor="let student of students">
-        <td>{{ student.id }}</td>
-
-        <td>
-          <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewName">
-            <input [(ngModel)]="editedName" />
-          </ng-container>
-          <ng-template #viewName>{{ student.name }}</ng-template>
-        </td>
-
-        <td>
-          <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewIdTcs">
-            <input [(ngModel)]="editedIdTcs" />
-          </ng-container>
-          <ng-template #viewIdTcs>{{ student.idTcs }}</ng-template>
-        </td>
-
-        <td>
+      <mat-card-content>
+        <p>
+          <strong>Descrição:</strong>
           <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewDescription">
-            <textarea [(ngModel)]="editedDescription"></textarea>
+            <mat-form-field appearance="fill" class="full-width-field">
+              <mat-label>Descrição</mat-label>
+              <textarea matInput [(ngModel)]="editedDescription"></textarea>
+            </mat-form-field>
           </ng-container>
-          <ng-template #viewDescription>{{ student.description }}</ng-template>
-        </td>
+          <ng-template #viewDescription>{{ student.description || 'Nenhuma descrição' }}</ng-template>
+        </p>
+        <p *ngIf="student.grupoNome"><strong>Grupo:</strong> {{ student.grupoNome }} (ID: {{ student.grupoId }})</p>
+        <p *ngIf="!student.grupoNome"><strong>Grupo:</strong> Nenhum grupo</p>
+      </mat-card-content>
 
-        <td *ngIf="isProfessor">
-          <ng-container *ngIf="editingStudentId === student.id; else actionButtons">
-            <button (click)="saveStudent(student.id)">💾 Salvar</button>
-            <button (click)="editingStudentId = null">✖️ Cancelar</button>
-          </ng-container>
-          <ng-template #actionButtons>
-            <button (click)="editStudent(student)">✏️ Editar</button>
-            <button (click)="deleteStudent(student.id)">🗑️ Excluir</button>
-          </ng-template>
-        </td>
-      </tr>
+      <mat-card-actions *ngIf="isProfessor">
+        <ng-container *ngIf="editingStudentId === student.id; else actionButtons">
+          <button mat-raised-button color="primary" (click)="saveStudent(student.id)">
+            <mat-icon>save</mat-icon> Salvar
+          </button>
+          <button mat-stroked-button color="warn" (click)="cancelEditing()">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+        </ng-container>
+        <ng-template #actionButtons>
+          <button mat-raised-button color="accent" (click)="editStudent(student)">
+            <mat-icon>edit</mat-icon> Editar
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteStudent(student.id)">
+            <mat-icon>delete</mat-icon> Excluir
+          </button>
+        </ng-template>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 
-    </tbody>
-  </table>
-</div>
-
-<div *ngIf="students.length === 0 && !errorMessage && !creatingNew">
-  <p>Nenhum aluno encontrado.</p>
+  <ng-template #noStudentsFound>
+    <p class="no-items-message">Nenhum aluno encontrado.</p>
+  </ng-template>
 </div>
