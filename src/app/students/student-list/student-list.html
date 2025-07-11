@@ -2,27 +2,31 @@
 
 <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
 
-<div style="margin-bottom: 15px;">
-  <button (click)="startCreating()" *ngIf="!creatingNew">➕ Adicionar Novo Aluno</button>
+<div *ngIf="isProfessor">
+  <div style="margin-bottom: 15px;">
+    <button (click)="startCreating()" *ngIf="!creatingNew">➕ Adicionar Novo Aluno</button>
+  </div>
 </div>
 
-<div *ngIf="students.length > 0 || creatingNew">
+<div *ngIf="students.length > 0 || (creatingNew && isProfessor)">
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
     <thead style="background-color: #f0f0f0;">
       <tr>
         <th>ID</th>
         <th>Nome</th>
         <th>Matrícula (ID TCS)</th>
-        <th>Descrição</th> <th>Ações</th>
+        <th>Descrição</th>
+        <th *ngIf="isProfessor">Ações</th>
       </tr>
     </thead>
     <tbody>
 
-      <tr *ngIf="creatingNew">
+      <tr *ngIf="creatingNew && isProfessor">
         <td>Nova</td>
         <td><input [(ngModel)]="newStudentName" placeholder="Nome do aluno" /></td>
         <td><input [(ngModel)]="newStudentIdTcs" placeholder="Matrícula" /></td>
-        <td><textarea [(ngModel)]="newStudentDescription" placeholder="Descrição"></textarea></td> <td>
+        <td><textarea [(ngModel)]="newStudentDescription" placeholder="Descrição"></textarea></td>
+        <td>
           <button (click)="saveNewStudent()">💾 Salvar</button>
           <button (click)="cancelCreating()">✖️ Cancelar</button>
         </td>
@@ -32,31 +36,27 @@
         <td>{{ student.id }}</td>
 
         <td>
-          <ng-container *ngIf="editingStudentId === student.id; else viewName">
+          <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewName">
             <input [(ngModel)]="editedName" />
           </ng-container>
-          <ng-template #viewName>
-            {{ student.name }}
-          </ng-template>
+          <ng-template #viewName>{{ student.name }}</ng-template>
         </td>
 
         <td>
-          <ng-container *ngIf="editingStudentId === student.id; else viewIdTcs">
+          <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewIdTcs">
             <input [(ngModel)]="editedIdTcs" />
           </ng-container>
-          <ng-template #viewIdTcs>
-            {{ student.idTcs }}
-          </ng-template>
+          <ng-template #viewIdTcs>{{ student.idTcs }}</ng-template>
         </td>
 
         <td>
-          <ng-container *ngIf="editingStudentId === student.id; else viewDescription">
-            <textarea [(ngModel)]="editedDescription"></textarea> </ng-container>
-          <ng-template #viewDescription>
-            {{ student.description }} </ng-template>
+          <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewDescription">
+            <textarea [(ngModel)]="editedDescription"></textarea>
+          </ng-container>
+          <ng-template #viewDescription>{{ student.description }}</ng-template>
         </td>
 
-        <td>
+        <td *ngIf="isProfessor">
           <ng-container *ngIf="editingStudentId === student.id; else actionButtons">
             <button (click)="saveStudent(student.id)">💾 Salvar</button>
             <button (click)="editingStudentId = null">✖️ Cancelar</button>

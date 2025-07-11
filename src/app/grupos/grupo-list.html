@@ -1,9 +1,8 @@
 <div class="grupo-list-container">
   <h2>Lista de Grupos</h2>
-
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-  <div class="grupo-form-section">
+  <div *ngIf="isProfessor" class="grupo-form-section">
     <h3>{{ editMode ? 'Editar Grupo' : 'Novo Grupo' }}</h3>
     <div class="form-controls">
       <input [(ngModel)]="currentGrupo.nome" placeholder="Nome do Grupo" type="text">
@@ -45,10 +44,10 @@
         </ul>
       </div>
       <ng-template #noAvailableStudents>
-        <p class="no-alunos">Nenhum aluno disponível para adicionar ou todos já estão em grupos.</p>
+        <p class="no-alunos">Nenhum aluno disponível para adicionar.</p>
       </ng-template>
     </div>
-  </div>
+    </div>
 
   <br>
 
@@ -60,7 +59,7 @@
           <th>Nome do Grupo</th>
           <th>Descrição</th>
           <th>Alunos (Nomes)</th>
-          <th>Ações</th>
+          <th *ngIf="isProfessor">Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -74,7 +73,7 @@
             </ul>
             <span *ngIf="!grupo.nomesDosAlunos || grupo.nomesDosAlunos.length === 0" class="no-alunos">Nenhum aluno</span>
           </td>
-          <td data-label="Ações" class="table-actions">
+          <td *ngIf="isProfessor" data-label="Ações" class="table-actions">
             <button (click)="editGrupo(grupo)" class="edit-button">Editar</button>
             <button (click)="deleteGrupo(grupo.id!)" class="delete-button">Excluir</button>
           </td>

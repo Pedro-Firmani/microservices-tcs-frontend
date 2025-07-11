@@ -1,10 +1,11 @@
-// src/app/grupos/grupo-list/grupo-list.ts
+// src/app/grupos/grupo-list.ts
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { GrupoService, GrupoComNomesAlunosResponse, GrupoModelRequest, GrupoComAlunosResponse } from '../grupos/grupo.service';
-import { StudentService, StudentResponse, StudentRequest } from '../students/student.service';
-import { HttpErrorResponse } from '@angular/common/http'; // Importe HttpErrorResponse
+import { GrupoService, GrupoComNomesAlunosResponse, GrupoModelRequest, GrupoComAlunosResponse } from '../grupos/grupo.service'; // Ajuste o caminho se necessário
+import { StudentService, StudentResponse, StudentRequest } from '../students/student.service'; // Ajuste o caminho se necessário
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../auth/auth'; // <<< NOVO: Importe o AuthService
 
 @Component({
   selector: 'app-grupo-list',
@@ -16,141 +17,125 @@ import { HttpErrorResponse } from '@angular/common/http'; // Importe HttpErrorRe
 export class GrupoListComponent implements OnInit {
   grupos: GrupoComNomesAlunosResponse[] = [];
   errorMessage: string | null = null;
-
   editMode: boolean = false;
   currentGrupo: GrupoModelRequest = { nome: '', descricao: '' };
   gruposComDetalhes: GrupoComAlunosResponse[] = [];
   allStudents: StudentResponse[] = [];
 
+  public isProfessor: boolean = false; // <<< NOVO: Propriedade para controlar a visibilidade
+
   constructor(
-    @Inject(GrupoService) private grupoService: GrupoService,
-    @Inject(StudentService) private studentService: StudentService
+    private grupoService: GrupoService,
+    private studentService: StudentService,
+    private authService: AuthService // <<< NOVO: Injete o AuthService
   ) { }
 
   ngOnInit(): void {
+    // <<< NOVO: Verifica a role do usuário assim que o componente é carregado
+    this.isProfessor = this.authService.hasRole('PROFESSOR');
+
     this.carregarGrupos();
     this.carregarGruposComAlunosDetalhes();
     this.carregarTodosAlunos();
   }
 
+  // ... O RESTANTE DO SEU CÓDIGO PERMANECE IGUAL ...
+  // (carregarGrupos, saveGrupo, deleteGrupo, etc.)
+
   carregarGrupos(): void {
     this.grupoService.getGruposComNomesAlunos().subscribe({
-      next: (data: GrupoComNomesAlunosResponse[]) => {
-        this.grupos = data;
-        console.log('Grupos carregados (nomes):', this.grupos);
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar grupos (nomes):', err);
-        this.errorMessage = 'Não foi possível carregar a lista de grupos.';
-      }
+        next: (data: GrupoComNomesAlunosResponse[]) => {
+            this.grupos = data;
+        },
+        error: (err: any) => {
+            this.errorMessage = 'Não foi possível carregar a lista de grupos.';
+        }
     });
   }
 
   carregarGruposComAlunosDetalhes(): void {
     this.grupoService.getGruposComAlunosDetalhes().subscribe({
-      next: (data: GrupoComAlunosResponse[]) => {
-        this.gruposComDetalhes = data;
-        console.log('Grupos carregados (detalhes):', this.gruposComDetalhes);
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar grupos com detalhes dos alunos:', err);
-        this.errorMessage = 'Não foi possível carregar os detalhes dos alunos nos grupos.';
-      }
+        next: (data: GrupoComAlunosResponse[]) => {
+            this.gruposComDetalhes = data;
+        },
+        error: (err: any) => {
+            this.errorMessage = 'Não foi possível carregar os detalhes dos alunos nos grupos.';
+        }
     });
   }
 
   carregarTodosAlunos(): void {
     this.studentService.getAllStudents().subscribe({
-      next: (data: StudentResponse[]) => {
-        this.allStudents = data;
-        console.log('Todos os alunos carregados:', this.allStudents);
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar todos os alunos:', err);
-        this.errorMessage = 'Não foi possível carregar a lista de alunos.';
-      }
+        next: (data: StudentResponse[]) => {
+            this.allStudents = data;
+        },
+        error: (err: any) => {
+            this.errorMessage = 'Não foi possível carregar a lista de alunos.';
+        }
     });
   }
 
   saveGrupo(): void {
     if (this.editMode) {
-      if (this.currentGrupo.id) {
-        // Agora, o `next` callback espera um `GrupoComNomesAlunosResponse`
-        this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
-          next: (response: GrupoComNomesAlunosResponse) => { // <<< MUDANÇA AQUI (para o tipo de resposta do backend)
-            alert('Grupo atualizado com sucesso!');
-            this.carregarGrupos();
-            this.carregarGruposComAlunosDetalhes();
-            this.resetForm();
-          },
-          error: (err: HttpErrorResponse) => { // Tipagem do erro para HttpErrorResponse
-            console.error('Erro ao atualizar grupo:', err);
-
-            // Mantém a verificação de status 0 como fallback, mas o ideal é que o backend retorne 200 OK
-            if (err.status === 0) {
-              console.warn('Requisição falhou com status 0. Isso pode ser um problema de CORS ou rede, mas a operação pode ter sido bem-sucedida no backend.');
-              alert('Grupo atualizado com sucesso (possível problema de conexão, verifique o console).');
-              this.carregarGrupos(); // Tenta recarregar para confirmar
-              this.carregarGruposComAlunosDetalhes();
-              this.resetForm();
-              this.errorMessage = null; // Limpa a mensagem de erro
-            } else if (err.error && typeof err.error === 'string') {
-                this.errorMessage = err.error;
-            } else {
-                this.errorMessage = 'Não foi possível atualizar o grupo. Verifique o console para mais detalhes.';
-            }
-          }
-        });
-      }
-    } else {
-      this.grupoService.criarGrupo(this.currentGrupo).subscribe({
-        next: () => {
-          alert('Grupo criado com sucesso!');
-          this.carregarGrupos();
-          this.carregarGruposComAlunosDetalhes();
-          this.resetForm();
-        },
-        error: (err: any) => {
-          console.error('Erro ao criar grupo:', err);
-          this.errorMessage = 'Não foi possível criar o grupo.';
+        if (this.currentGrupo.id) {
+            this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
+                next: (response: GrupoComNomesAlunosResponse) => {
+                    alert('Grupo atualizado com sucesso!');
+                    this.carregarGrupos();
+                    this.carregarGruposComAlunosDetalhes();
+                    this.resetForm();
+                },
+                error: (err: HttpErrorResponse) => {
+                    if (err.error && typeof err.error === 'string') {
+                        this.errorMessage = err.error;
+                    } else {
+                        this.errorMessage = 'Não foi possível atualizar o grupo.';
+                    }
+                }
+            });
         }
-      });
+    } else {
+        this.grupoService.criarGrupo(this.currentGrupo).subscribe({
+            next: () => {
+                alert('Grupo criado com sucesso!');
+                this.carregarGrupos();
+                this.carregarGruposComAlunosDetalhes();
+                this.resetForm();
+            },
+            error: (err: any) => {
+                this.errorMessage = 'Não foi possível criar o grupo.';
+            }
+        });
     }
   }
 
   editGrupo(grupo: GrupoComNomesAlunosResponse): void {
-    this.editMode = true;
-    this.currentGrupo = { id: grupo.id, nome: grupo.nome, descricao: grupo.descricao };
+      this.editMode = true;
+      this.currentGrupo = { id: grupo.id, nome: grupo.nome, descricao: grupo.descricao };
   }
 
   cancelEdit(): void {
-    this.resetForm();
+      this.resetForm();
   }
 
   deleteGrupo(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este grupo? Isso também desassociará os alunos!')) {
-      this.grupoService.deletarGrupo(id).subscribe({
-        next: () => {
-          alert('Grupo excluído com sucesso!');
-          this.carregarGrupos();
-          this.carregarGruposComAlunosDetalhes();
-          this.carregarTodosAlunos();
-        },
-        error: (err: any) => {
-          console.error('Erro ao excluir grupo:', err);
-          if (err.status === 404) {
-            this.errorMessage = 'Grupo não encontrado.';
-          } else {
-            this.errorMessage = 'Não foi possível excluir o grupo.';
-          }
-        }
-      });
-    }
+      if (confirm('Tem certeza que deseja excluir este grupo?')) {
+          this.grupoService.deletarGrupo(id).subscribe({
+              next: () => {
+                  alert('Grupo excluído com sucesso!');
+                  this.carregarGrupos();
+                  this.carregarGruposComAlunosDetalhes();
+              },
+              error: (err: any) => {
+                  this.errorMessage = 'Não foi possível excluir o grupo.';
+              }
+          });
+      }
   }
-
+  
   getStudentsInCurrentGroup(): StudentResponse[] {
     if (!this.currentGrupo.id) {
-      return [];
+        return [];
     }
     const grupoDetalhe = this.gruposComDetalhes.find(g => g.id === this.currentGrupo.id);
     return grupoDetalhe ? grupoDetalhe.alunos : [];
@@ -162,65 +147,54 @@ export class GrupoListComponent implements OnInit {
 
   addStudentToCurrentGroup(student: StudentResponse): void {
     if (!this.currentGrupo.id) {
-      alert('Selecione ou crie um grupo primeiro para adicionar alunos.');
-      return;
+        alert('Selecione ou crie um grupo primeiro.');
+        return;
     }
 
     const studentToUpdate: StudentRequest = {
-      name: student.name,
-      idTcs: student.idTcs,
-      grupoId: this.currentGrupo.id
+        name: student.name,
+        idTcs: student.idTcs,
+        grupoId: this.currentGrupo.id,
+        description: student.description
     };
 
     this.studentService.updateStudent(student.id!, studentToUpdate).subscribe({
-      next: (updatedStudent: StudentResponse) => {
-        alert(`${updatedStudent.name} associado ao grupo ${this.currentGrupo.nome}.`);
-        this.carregarGruposComAlunosDetalhes();
-        this.carregarTodosAlunos();
-      },
-      error: (err: any) => {
-        console.error('Erro ao adicionar aluno ao grupo:', err);
-        if (err.error && typeof err.error === 'string') {
-          this.errorMessage = err.error;
-        } else {
-          this.errorMessage = `Não foi possível adicionar ${student.name} ao grupo.`;
+        next: () => {
+            alert(`${student.name} adicionado ao grupo.`);
+            this.carregarGrupos();
+            this.carregarGruposComAlunosDetalhes();
+            this.carregarTodosAlunos();
+        },
+        error: (err) => {
+            this.errorMessage = `Não foi possível adicionar ${student.name}.`;
         }
-      }
     });
   }
 
   removeStudentFromGroup(student: StudentResponse): void {
-    if (!student.id) {
-      console.error('ID do aluno não encontrado para remoção.');
-      return;
-    }
-
     const studentToUpdate: StudentRequest = {
-      name: student.name,
-      idTcs: student.idTcs,
-      grupoId: null
+        name: student.name,
+        idTcs: student.idTcs,
+        grupoId: null, // Desvincula o grupo
+        description: student.description
     };
 
-    this.studentService.updateStudent(student.id, studentToUpdate).subscribe({
-      next: (updatedStudent: StudentResponse) => {
-        alert(`${updatedStudent.name} removido do grupo.`);
-        this.carregarGruposComAlunosDetalhes();
-        this.carregarTodosAlunos();
-      },
-      error: (err: any) => {
-        console.error('Erro ao remover aluno do grupo:', err);
-        if (err.error && typeof err.error === 'string') {
-          this.errorMessage = err.error;
-        } else {
-          this.errorMessage = `Não foi possível remover ${student.name} do grupo.`;
+    this.studentService.updateStudent(student.id!, studentToUpdate).subscribe({
+        next: () => {
+            alert(`${student.name} removido do grupo.`);
+            this.carregarGrupos();
+            this.carregarGruposComAlunosDetalhes();
+            this.carregarTodosAlunos();
+        },
+        error: (err) => {
+            this.errorMessage = `Não foi possível remover ${student.name}.`;
         }
-      }
     });
   }
 
   private resetForm(): void {
-    this.editMode = false;
-    this.currentGrupo = { nome: '', descricao: '' };
-    this.errorMessage = null;
+      this.editMode = false;
+      this.currentGrupo = { nome: '', descricao: '' };
+      this.errorMessage = null;
   }
 }
