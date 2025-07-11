@@ -1,20 +1,20 @@
-/* Container geral */
+/* SCSS for your specific component, e.g., students.component.scss */
+
 :host {
   display: block;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F4F2FA; /* Mantido roxo mais claro */
 }
 
-/* Título */
 h2 {
   margin-bottom: 20px;
-  color: #333;
+  color: #0F0A0A;
 }
 
-/* Botões gerais */
 button {
-  background-color: #575685;
-  color: white;
+  background-color: #6E7271;
+  color: #FFF7EB;
   border: none;
   padding: 8px 14px;
   font-size: 14px;
@@ -25,63 +25,62 @@ button {
 }
 
 button:hover {
-  background-color: #403f5c;
+  background-color: #0F0A0A;
 }
 
-/* Botão de adicionar */
 button.add-button {
-  background-color: #2c3e50;
+  background-color: #6A0DAD;
 }
 button.add-button:hover {
-  background-color: #34495e;
+  background-color: #D0B8E8;
 }
 
-/* Botão de editar */
 button.edit-button {
-  background-color: #2980b9;
+  background-color: #D0B8E8;
+  color: #0F0A0A;
 }
 button.edit-button:hover {
-  background-color: #3498db;
+  background-color: #6A0DAD;
+  color: #FFF7EB;
 }
 
-/* Botão de excluir */
 button.delete-button {
-  background-color: #c0392b;
+  background-color: #0F0A0A;
 }
 button.delete-button:hover {
-  background-color: #e74c3c;
+  background-color: #6E7271;
 }
 
-/* Mensagens */
 p {
   margin: 10px 0;
+  color: #6E7271;
 }
 
 p[style*="color: red;"] {
-  color: #e74c3c !important;
+  color: #6A0DAD !important;
 }
 
 p[style*="color: green;"] {
-  color: #27ae60 !important;
+  color: #0F0A0A !important;
 }
 
-/* Tabela */
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
 thead {
-  background-color: #f5f5f5;
+  background-color: #D0B8E8;
 }
 
 th,
 td {
   padding: 10px;
   text-align: left;
-  border: 1px solid #ddd;
+  border: 1px solid #6E7271;
+  color: #0F0A0A;
 }
 
 tbody tr:hover {
-  background-color: #f9f9f9;
+  background-color: #FFF7EB;
 }

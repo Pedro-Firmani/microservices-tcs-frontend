@@ -1,112 +1,113 @@
 /* Estilos para login.component.scss */
 
 :host {
-  display: flex; /* Usa flexbox para centralizar o conteúdo */
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center; /* Centraliza verticalmente */
-  min-height: 100vh; /* Garante que ocupe a altura total da viewport */
-  background-color: #f0f2f5; /* Cor de fundo suave */
-  font-family: 'Arial', sans-serif; /* Fonte padrão */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-container {
-  background-color: #ffffff; /* Fundo branco para o container */
-  padding: 40px; /* Espaçamento interno */
-  border-radius: 8px; /* Cantos arredondados */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  width: 100%; /* Largura total */
-  max-width: 400px; /* Largura máxima para o formulário */
-  text-align: center; /* Centraliza o texto dentro do container */
+  background-color: #FFFFFF;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
 h2 {
-  color: #333333; /* Cor do título */
-  margin-bottom: 30px; /* Espaço abaixo do título */
-  font-size: 2em; /* Tamanho da fonte do título */
+  color: #0F0A0A;
+  margin-bottom: 30px;
+  font-size: 2em;
 }
 
 form {
-  display: flex; /* Flexbox para organizar os campos */
-  flex-direction: column; /* Organiza os itens em coluna */
-  gap: 20px; /* Espaço entre os elementos do formulário */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 div {
-  text-align: left; /* Alinha o texto dos labels à esquerda */
+  text-align: left;
 }
 
 label {
-  display: block; /* Ocupa toda a largura disponível */
-  margin-bottom: 8px; /* Espaço abaixo do label */
-  color: #555555; /* Cor do texto do label */
-  font-weight: bold; /* Negrito */
-  font-size: 0.9em; /* Tamanho da fonte */
+  display: block;
+  margin-bottom: 8px;
+  color: #6E7271;
+  font-weight: bold;
+  font-size: 0.9em;
 }
 
 input[type="text"],
 input[type="password"] {
-  width: calc(100% - 20px); /* Largura total menos o padding */
-  padding: 12px 10px; /* Espaçamento interno */
-  border: 1px solid #dddddd; /* Borda suave */
-  border-radius: 5px; /* Cantos arredondados */
-  font-size: 1em; /* Tamanho da fonte */
-  transition: border-color 0.3s ease; /* Transição suave na borda */
-
+  width: calc(100% - 20px);
+  padding: 12px 10px;
+  border: 1px solid #6E7271;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+  color: #0F0A0A;
+  background-color: #FFFFFF; /* Alterado para Branco */
   &:focus {
-    border-color: #007bff; /* Cor da borda ao focar */
-    outline: none; /* Remove o outline padrão */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra ao focar */
+    border-color: #6A0DAD;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(#6A0DAD, 0.25);
   }
 }
 
 button[type="submit"] {
-  background-color: #007bff; /* Cor de fundo do botão primário */
-  color: white; /* Cor do texto do botão */
-  padding: 12px 20px; /* Espaçamento interno */
-  border: none; /* Remove a borda */
-  border-radius: 5px; /* Cantos arredondados */
-  cursor: pointer; /* Cursor de clique */
-  font-size: 1.1em; /* Tamanho da fonte */
-  font-weight: bold; /* Negrito */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Transições suaves */
+  background-color: #6A0DAD;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
-    transform: translateY(-2px); /* Efeito de leve levantamento */
+    background-color: #D0B8E8;
+    transform: translateY(-2px);
   }
 
   &:active {
-    transform: translateY(0); /* Retorna à posição original ao clicar */
+    transform: translateY(0);
   }
 }
 
 p {
-  margin-top: 20px; /* Espaço acima do parágrafo */
-  color: #666666; /* Cor do texto */
-  font-size: 0.9em; /* Tamanho da fonte */
+  margin-top: 20px;
+  color: #6E7271;
+  font-size: 0.9em;
 }
 
 a {
-  color: #007bff; /* Cor do link */
-  text-decoration: none; /* Remove sublinhado */
-  font-weight: bold; /* Negrito */
-  transition: color 0.3s ease; /* Transição suave na cor */
+  color: #6A0DAD;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
 
   &:hover {
-    color: #0056b3; /* Cor do link ao passar o mouse */
-    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+    color: #0F0A0A;
+    text-decoration: underline;
   }
 }
 
 .error-message {
-  color: #dc3545; /* Vermelho para mensagens de erro */
-  margin-top: 10px; /* Espaço acima da mensagem de erro */
-  font-size: 0.9em; /* Tamanho da fonte */
+  color: #6A0DAD;
+  margin-top: 10px;
+  font-size: 0.9em;
 }
 
 /* Para aplicar ao p *ngIf="errorMessage" */
 p[style="color: red;"] {
-  color: #dc3545 !important; /* Sobrescreve inline style se necessário */
+  color: #6A0DAD !important;
   margin-top: 10px;
   font-size: 0.9em;
 }

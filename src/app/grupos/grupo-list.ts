@@ -6,10 +6,32 @@ import { GrupoService, GrupoComNomesAlunosResponse, GrupoModelRequest, GrupoComA
 import { StudentService, StudentResponse, StudentRequest } from '../students/student.service';
 import { HttpErrorResponse } from '@angular/common/http'; // Importe HttpErrorResponse
 
+// Importações dos módulos do Angular Material (estes foram movidos para cá!)
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTableModule } from '@angular/material/table';
+
 @Component({
   selector: 'app-grupo-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  // *** AQUI ESTÃO OS IMPORTS DO ANGULAR MATERIAL AGORA ***
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,        // <-- Adicionado
+    MatInputModule,       // <-- Adicionado
+    MatFormFieldModule,   // <-- Adicionado
+    MatButtonModule,      // <-- Adicionado
+    MatIconModule,        // <-- Adicionado
+    MatListModule,        // <-- Adicionado
+    MatDividerModule,     // <-- Adicionado
+    MatTableModule        // <-- Adicionado
+  ],
   templateUrl: './grupo-list.html',
   styleUrls: ['./grupo-list.scss']
 })
@@ -21,6 +43,10 @@ export class GrupoListComponent implements OnInit {
   currentGrupo: GrupoModelRequest = { nome: '', descricao: '' };
   gruposComDetalhes: GrupoComAlunosResponse[] = [];
   allStudents: StudentResponse[] = [];
+
+  // Esta propriedade é para a mat-table, define as colunas a serem exibidas.
+  // Certifique-se que os nomes aqui correspondem aos `matColumnDef` no HTML.
+  displayedColumns: string[] = ['id', 'nome', 'descricao', 'alunos', 'actions'];
 
   constructor(
     @Inject(GrupoService) private grupoService: GrupoService,
@@ -73,27 +99,30 @@ export class GrupoListComponent implements OnInit {
   }
 
   saveGrupo(): void {
+    if (!this.currentGrupo.nome || !this.currentGrupo.descricao) {
+      this.errorMessage = 'Nome e Descrição do grupo são obrigatórios.';
+      return;
+    }
+    this.errorMessage = null; // Limpa qualquer erro anterior de validação do formulário
+
     if (this.editMode) {
       if (this.currentGrupo.id) {
-        // Agora, o `next` callback espera um `GrupoComNomesAlunosResponse`
         this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
-          next: (response: GrupoComNomesAlunosResponse) => { // <<< MUDANÇA AQUI (para o tipo de resposta do backend)
+          next: (response: GrupoComNomesAlunosResponse) => {
             alert('Grupo atualizado com sucesso!');
             this.carregarGrupos();
             this.carregarGruposComAlunosDetalhes();
             this.resetForm();
           },
-          error: (err: HttpErrorResponse) => { // Tipagem do erro para HttpErrorResponse
+          error: (err: HttpErrorResponse) => {
             console.error('Erro ao atualizar grupo:', err);
-
-            // Mantém a verificação de status 0 como fallback, mas o ideal é que o backend retorne 200 OK
             if (err.status === 0) {
               console.warn('Requisição falhou com status 0. Isso pode ser um problema de CORS ou rede, mas a operação pode ter sido bem-sucedida no backend.');
               alert('Grupo atualizado com sucesso (possível problema de conexão, verifique o console).');
-              this.carregarGrupos(); // Tenta recarregar para confirmar
+              this.carregarGrupos();
               this.carregarGruposComAlunosDetalhes();
               this.resetForm();
-              this.errorMessage = null; // Limpa a mensagem de erro
+              this.errorMessage = null;
             } else if (err.error && typeof err.error === 'string') {
                 this.errorMessage = err.error;
             } else {
@@ -112,7 +141,11 @@ export class GrupoListComponent implements OnInit {
         },
         error: (err: any) => {
           console.error('Erro ao criar grupo:', err);
-          this.errorMessage = 'Não foi possível criar o grupo.';
+          if (err.error && typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else {
+            this.errorMessage = 'Não foi possível criar o grupo.';
+          }
         }
       });
     }
@@ -140,6 +173,8 @@ export class GrupoListComponent implements OnInit {
           console.error('Erro ao excluir grupo:', err);
           if (err.status === 404) {
             this.errorMessage = 'Grupo não encontrado.';
+          } else if (err.error && typeof err.error === 'string') {
+            this.errorMessage = err.error;
           } else {
             this.errorMessage = 'Não foi possível excluir o grupo.';
           }
@@ -198,7 +233,7 @@ export class GrupoListComponent implements OnInit {
     const studentToUpdate: StudentRequest = {
       name: student.name,
       idTcs: student.idTcs,
-      grupoId: null
+      grupoId: null // Para desassociar, geralmente enviamos null ou undefined
     };
 
     this.studentService.updateStudent(student.id, studentToUpdate).subscribe({

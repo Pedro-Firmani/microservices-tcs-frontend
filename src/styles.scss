@@ -1,1 +1,136 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}// styles.scss
+
+html, body {
+    height: 100%; /* Garante que HTML e Body ocupem toda a altura */
+    margin: 0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F4F2FA; /* Alterado para Roxo Mais Claro */
+    color: #0F0A0A;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #0F0A0A;
+  }
+  
+  p {
+    color: #6E7271;
+  }
+  
+  a {
+    color: #6A0DAD;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #0F0A0A;
+    text-decoration: underline;
+  }
+  
+  button {
+    background-color: #6A0DAD;
+    color: #FFF7EB;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+  }
+  
+  button:hover {
+    background-color: #D0B8E8;
+    color: #0F0A0A;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    border: 1px solid #6E7271;
+    padding: 8px;
+    border-radius: 4px;
+    color: #0F0A0A;
+    background-color: #FFF7EB; /* Mantido para não afetar aqui, ajustado nos componentes */
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #6A0DAD;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    background-color: #D0B8E8;
+  }
+  
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #6E7271;
+    color: #0F0A0A;
+  }
+  
+  tbody tr:hover {
+    background-color: #FFF7EB;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .card {
+    background-color: #FFFFFF;
+    border: 1px solid #D0B8E8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .error-message {
+    color: #6A0DAD !important;
+    font-weight: bold;
+  }
+  
+  .success-message {
+    color: #0F0A0A !important;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
+    }
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

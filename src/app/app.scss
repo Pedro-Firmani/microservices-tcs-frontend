@@ -1,83 +1,273 @@
 /* src/app/app.scss */
 
-/* Estilos globais ou body reset (opcional, mas boa prática) */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7f6; /* Um fundo leve para o corpo */
-  color: #333;
+  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  color: #0F0A0A;
 }
 
-/* --- Estilos da Barra de Navegação (Header) --- */
 nav {
-  background-color: #2c3e50; /* Cor de fundo escura para o header */
-  padding: 15px 20px; /* Espaçamento interno */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Sombra suave */
-  display: flex; /* Para alinhar os links horizontalmente */
-  justify-content: center; /* Centraliza os links */
-  align-items: center; /* Alinha verticalmente */
-  flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
-  gap: 20px; /* Espaçamento entre os links */
+  background-color: #0F0A0A;
+  padding: 15px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 nav a {
-  color: #ecf0f1; /* Cor do texto dos links (cinza claro) */
-  text-decoration: none; /* Remove sublinhado padrão */
-  font-weight: 600; /* Negrito */
-  font-size: 1.1em; /* Tamanho da fonte */
-  padding: 8px 12px; /* Espaçamento interno dos links */
-  border-radius: 5px; /* Bordas arredondadas */
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; /* Transições suaves */
-
-  &:hover {
-    background-color: #34495e; /* Cor de fundo ao passar o mouse */
-    color: #ffffff; /* Cor do texto ao passar o mouse */
-    transform: translateY(-2px); /* Efeito de "levantar" */
-  }
-
-  &.active {
-    background-color: #3498db; /* Cor de fundo para o link ativo (azul vibrante) */
-    color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para o item ativo */
-    font-weight: 700; /* Mais negrito para o ativo */
-  }
+  color: #FFF7EB;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-/* Remover o separador '|' para um design mais limpo com gap */
-/* Você pode remover os '|' do HTML ou escondê-los com CSS */
+nav a:hover {
+  background-color: #6E7271;
+  color: #FFFFFF;
+}
+
+nav a.active {
+  background-color: #6A0DAD;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+}
+
 nav .separator {
-  color: #7f8c8d; /* Cor do separador */
-  margin: 0 5px; /* Espaçamento */
+  color: #D0B8E8;
+  margin: 0 5px;
   font-size: 1.1em;
 }
 
-/* Estilo para a linha horizontal */
 hr {
   border: none;
-  border-top: 1px solid #dfe6e9; /* Linha mais discreta */
-  margin: 0; /* Remove margem padrão */
+  border-top: 1px solid #6E7271;
+  margin: 0;
 }
 
-/* --- Estilo para o Conteúdo Principal (router-outlet) --- */
 router-outlet {
-  display: block; /* Garante que o router-outlet ocupe seu próprio bloco */
-  padding: 20px; /* Espaçamento do conteúdo em relação à nav e hr */
+  display: block;
+  padding: 20px;
+  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  color: #0F0A0A;
 }
 
-/* Responsividade básica para nav */
+h1, h2, h3, h4, h5, h6 {
+  color: #0F0A0A;
+}
+
+p {
+  color: #6E7271;
+}
+
+button {
+  background-color: #6E7271;
+  color: #FFF7EB;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1em;
+}
+
+button:hover {
+  background-color: #0F0A0A;
+  color: #FFF7EB;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  border: 1px solid #6E7271;
+  padding: 8px;
+  border-radius: 4px;
+  color: #0F0A0A;
+  background-color: #FFF7EB; /* Mantido para não afetar aqui, ajustado nos componentes */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #6A0DAD;
+}
+
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid #D0B8E8;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.error-message {
+  color: #6A0DAD !important;
+  font-weight: bold;
+}
+
+.success-message {
+  color: #0F0A0A !important;
+  font-weight: bold;
+}
+
+.button-group {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.students-table thead {
+  background-color: #D0B8E8;
+}
+
+.students-table th,
+.students-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border: 1px solid #6E7271;
+  color: #0F0A0A;
+}
+
+.students-table tbody tr:hover {
+  background-color: #FFF7EB;
+}
+
+.students-table tbody tr.new-row td {
+  background-color: #FFF7EB;
+}
+
+button.action-button {
+  padding: 6px 10px;
+  font-size: 0.9em;
+  margin-right: 5px;
+  background-color: #6A0DAD;
+  color: #FFF7EB;
+}
+
+button.action-button:hover {
+  background-color: #D0B8E8;
+  color: #0F0A0A;
+}
+
+button.action-button.edit {
+  background-color: #D0B8E8;
+  color: #0F0A0A;
+}
+
+button.action-button.edit:hover {
+  background-color: #6A0DAD;
+  color: #FFF7EB;
+}
+
+button.action-button.delete {
+  background-color: #0F0A0A;
+  color: #FFF7EB;
+}
+
+button.action-button.delete:hover {
+  background-color: #6E7271;
+}
+
+button.action-button.save {
+  background-color: #6A0DAD;
+  color: #FFF7EB;
+}
+
+button.action-button.cancel {
+  background-color: #6E7271;
+  color: #FFF7EB;
+}
+
+.empty-state-message {
+  color: #6E7271;
+  font-style: italic;
+  margin-top: 20px;
+}
+
 @media (max-width: 600px) {
   nav {
-    flex-direction: column; /* Links em coluna em telas pequenas */
-    gap: 10px; /* Reduz o espaçamento entre os links */
+    flex-direction: column;
+    gap: 10px;
     padding: 10px;
   }
 
   nav a {
-    width: 100%; /* Links ocupam a largura total */
+    width: 100%;
     text-align: center;
   }
 
   nav .separator {
-    display: none; /* Esconde os separadores em modo mobile */
+    display: none;
   }
-}   
+}
+
+@media (max-width: 768px) {
+  .students-table, .students-table thead, .students-table tbody, .students-table th, .students-table td, .students-table tr {
+    display: block;
+  }
+
+  .students-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .students-table tr {
+    border: 1px solid #6E7271;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .students-table td {
+    border: none;
+    border-bottom: 1px solid #6E7271;
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+  }
+
+  .students-table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 15px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    color: #0F0A0A;
+  }
+
+  .students-table td:last-child {
+    border-bottom: none;
+  }
+
+  .students-table td input {
+    width: calc(100% - 10px);
+    text-align: right;
+  }
+}
