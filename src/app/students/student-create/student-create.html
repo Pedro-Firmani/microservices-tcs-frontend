@@ -14,6 +14,10 @@
     <input type="text" name="idTcs" [(ngModel)]="newStudent.idTcs" required />
   </label>
   <br><br>
+  <label>
+    Descrição: <textarea name="description" [(ngModel)]="newStudent.description"></textarea>
+  </label>
+  <br><br>
   <button type="submit" [disabled]="studentForm.invalid">Salvar</button>
   <button type="button" (click)="goBack()">Cancelar</button>
 </form>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { StudentService } from '../student'; // ajuste se o caminho do service for diferente
+import { StudentService } from '../student';
 
 @Component({
   selector: 'app-student-create',
@@ -14,7 +14,8 @@ import { StudentService } from '../student'; // ajuste se o caminho do service f
 export class StudentCreateComponent {
   newStudent = {
     name: '',
-    idTcs: ''
+    idTcs: '',
+    description: ''
   };
 
   successMessage: string | null = null;

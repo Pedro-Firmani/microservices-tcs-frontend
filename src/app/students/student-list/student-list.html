@@ -13,23 +13,21 @@
         <th>ID</th>
         <th>Nome</th>
         <th>Matrícula (ID TCS)</th>
-        <th>Ações</th>
+        <th>Descrição</th> <th>Ações</th>
       </tr>
     </thead>
     <tbody>
 
-      <!-- LINHA DE CRIAÇÃO -->
       <tr *ngIf="creatingNew">
         <td>Nova</td>
         <td><input [(ngModel)]="newStudentName" placeholder="Nome do aluno" /></td>
         <td><input [(ngModel)]="newStudentIdTcs" placeholder="Matrícula" /></td>
-        <td>
+        <td><textarea [(ngModel)]="newStudentDescription" placeholder="Descrição"></textarea></td> <td>
           <button (click)="saveNewStudent()">💾 Salvar</button>
           <button (click)="cancelCreating()">✖️ Cancelar</button>
         </td>
       </tr>
 
-      <!-- LINHAS EXISTENTES -->
       <tr *ngFor="let student of students">
         <td>{{ student.id }}</td>
 
@@ -49,6 +47,13 @@
           <ng-template #viewIdTcs>
             {{ student.idTcs }}
           </ng-template>
+        </td>
+
+        <td>
+          <ng-container *ngIf="editingStudentId === student.id; else viewDescription">
+            <textarea [(ngModel)]="editedDescription"></textarea> </ng-container>
+          <ng-template #viewDescription>
+            {{ student.description }} </ng-template>
         </td>
 
         <td>

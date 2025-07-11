@@ -11,12 +11,14 @@ export interface StudentResponse {
   idTcs: string;
   grupoId?: number | null;
   grupoNome?: string;
+  description?: string | null;
 }
 
 export interface StudentRequest {
   name: string;
   idTcs: string;
-  grupoId?: number | null; // Agora pode ser null para desassociar ou um ID para associar
+  grupoId?: number | null; 
+  description?: string | null;
 }
 
 @Injectable({
