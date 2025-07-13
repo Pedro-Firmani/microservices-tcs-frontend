@@ -6,7 +6,10 @@ import { StudentListComponent } from './students/student-list/student-list';
 import { GrupoListComponent } from './grupos/grupo-list';
 import { StudentCreateComponent } from './students/student-create/student-create';
 import { authGuard } from './auth/auth.guard';
-import { loginGuard } from './auth/login.guard'; // <<< NOVO: Importa o guarda de login
+import { loginGuard } from './auth/login.guard';
+import { DailyListComponent } from './dailies/daily-list.component'; 
+// Importe o novo componente de formulário
+import { DailyFormComponent } from './dailies/daily-form/daily-form.component';
 
 export const routes: Routes = [
   // Rotas públicas
@@ -17,12 +20,32 @@ export const routes: Routes = [
   {
     path: 'students',
     component: StudentListComponent,
-    canActivate: [loginGuard] // <<< APLICA O NOVO GUARDA
+    canActivate: [loginGuard]
   },
   {
     path: 'grupos',
     component: GrupoListComponent,
-    canActivate: [loginGuard] // <<< APLICA O NOVO GUARDA
+    canActivate: [loginGuard]
+  },
+  
+  // *** ROTAS PARA DAILIES (AGORA ATIVAS) ***
+  {
+    path: 'dailies',
+    component: DailyListComponent,
+    canActivate: [loginGuard] // Acesso para ALUNO e PROFESSOR
+  },
+  // Rotas para criar e editar, protegidas para PROFESSOR
+  {
+    path: 'dailies/create',
+    component: DailyFormComponent,
+    canActivate: [authGuard],
+    data: { expectedRole: 'PROFESSOR' }
+  },
+  {
+    path: 'dailies/edit/:id',
+    component: DailyFormComponent,
+    canActivate: [authGuard],
+    data: { expectedRole: 'PROFESSOR' }
   },
 
   // Rota protegida que exige a role 'PROFESSOR'

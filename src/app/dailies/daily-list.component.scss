@@ -1,0 +1,37 @@
+/* Você pode adicionar estilos específicos aqui ou usar o seu app.scss global */
+.container {
+  padding: 20px;
+}
+
+.button-group {
+  margin-bottom: 20px;
+}
+
+.btn-create {
+  background-color: #6A0DAD; /* Roxo principal */
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.dailies-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Reutilize os estilos da sua tabela de alunos em app.scss se preferir */
+.dailies-table th, .dailies-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.dailies-table th {
+  background-color: #f2f2f2;
+}
+
+.action-button {
+  margin-right: 5px;
+}

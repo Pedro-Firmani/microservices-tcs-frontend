@@ -1,0 +1,35 @@
+<div class="form-container">
+  <h2>{{ isEditMode ? 'Editar' : 'Nova' }} Anotação Diária</h2>
+
+  <form [formGroup]="dailyForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="studentId">Aluno</label>
+      <select id="studentId" formControlName="studentId" [class.is-invalid]="dailyForm.get('studentId')?.invalid && dailyForm.get('studentId')?.touched">
+        <option value="" disabled>Selecione um aluno</option>
+        <option *ngFor="let student of students$ | async" [value]="student.id">
+          {{ student.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="annotationDate">Data</label>
+      <input type="date" id="annotationDate" formControlName="annotationDate" [class.is-invalid]="dailyForm.get('annotationDate')?.invalid && dailyForm.get('annotationDate')?.touched">
+    </div>
+
+    <div class="form-group">
+      <label for="annotationText">Anotação</label>
+      <textarea id="annotationText" formControlName="annotationText" rows="5" [class.is-invalid]="dailyForm.get('annotationText')?.invalid && dailyForm.get('annotationText')?.touched"></textarea>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div class="button-group">
+      <button type="submit" [disabled]="dailyForm.invalid">Salvar</button>
+      <button type="button" (click)="goBack()">Cancelar</button>
+    </div>
+  </form>
+</div>

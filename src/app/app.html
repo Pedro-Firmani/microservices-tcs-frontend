@@ -2,6 +2,7 @@
   <ng-container *ngIf="authService.isAuthenticated$ | async">
     <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
     <a routerLink="/students" routerLinkActive="active">Alunos</a>
+        <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
   </ng-container>
 
   <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
