@@ -1,20 +1,23 @@
 <nav>
-  <ng-container *ngIf="authService.isAuthenticated$ | async">
-    <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
-    <a routerLink="/students" routerLinkActive="active">Alunos</a>
-        <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
-  </ng-container>
+  <div class="nav-left">
+    <ng-container *ngIf="authService.isAuthenticated$ | async">
+      <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
+      <a routerLink="/students" routerLinkActive="active">Alunos</a>
+      <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
+      <a routerLink="/atividades" routerLinkActive="active">Atividades</a>
+    </ng-container>
 
-  <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
-    <a routerLink="/login" routerLinkActive="active">Login</a>
-    <a routerLink="/register" routerLinkActive="active">Registrar</a>
-  </ng-container>
+    <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/register" routerLinkActive="active">Registrar</a>
+    </ng-container>
+  </div>
 
-  <ng-container *ngIf="authService.isAuthenticated$ | async">
+  <div class="nav-right" *ngIf="authService.isAuthenticated$ | async">
     <a (click)="logout()" class="logout-button">Sair</a>
-  </ng-container>
+  </div>
 </nav>
-
+  
 <hr>
 
 <router-outlet></router-outlet>

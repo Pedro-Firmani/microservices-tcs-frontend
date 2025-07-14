@@ -1,37 +1,48 @@
-<div class="form-container">
-  <h2>{{ isEditMode ? 'Editar' : 'Nova' }} Anotação Diária</h2>
+<div class="daily-form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{
+        isEditMode ? "Editar Daily" : "Registrar Nova Daily"
+      }}</mat-card-title>
+    </mat-card-header>
 
-  <form [formGroup]="dailyForm" (ngSubmit)="onSubmit()">
-    
-    <div class="form-group">
-      <label for="studentId">Aluno</label>
-      <select id="studentId" formControlName="studentId" 
-        [class.is-invalid]="dailyForm.get('studentId')?.invalid && dailyForm.get('studentId')?.touched"
-        [disabled]="isEditMode">
-        <option value="" disabled>Selecione um aluno</option>
-        <option *ngFor="let student of students$ | async" [value]="student.id">
-          {{ student.name }}
-        </option>
-      </select>
-    </div>
+    <form [formGroup]="dailyForm" (ngSubmit)="onSubmit()">
+  <mat-card-content>
+    <div class="form-row">
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Selecione o Aluno</mat-label>
+        <mat-select formControlName="studentId" required>
+          <mat-option *ngFor="let student of students" [value]="student.id">
+            {{ student.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <div class="form-group">
-      <label for="annotationDate">Data</label>
-      <input type="date" id="annotationDate" formControlName="annotationDate" [class.is-invalid]="dailyForm.get('annotationDate')?.invalid && dailyForm.get('annotationDate')?.touched">
-    </div>
-
-    <div class="form-group">
-      <label for="annotationText">Anotação</label>
-      <textarea id="annotationText" formControlName="annotationText" rows="5" [class.is-invalid]="dailyForm.get('annotationText')?.invalid && dailyForm.get('annotationText')?.touched"></textarea>
-    </div>
-    
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Data da Daily</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="annotationDate" required />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
     </div>
 
-    <div class="button-group">
-      <button type="submit" [disabled]="dailyForm.invalid">Salvar</button>
-      <button type="button" (click)="goBack()">Cancelar</button>
-    </div>
-  </form>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Descrição da Daily</mat-label>
+      <textarea matInput formControlName="annotationText" rows="6" required
+        placeholder="Descreva o andamento, dúvidas ou pontos importantes..."></textarea>
+    </mat-form-field>
+
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-stroked-button [routerLink]="['/dailies']">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="dailyForm.invalid">
+      <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
+      {{ isEditMode ? "Salvar Alterações" : "Registrar Daily" }}
+    </button>
+  </mat-card-actions>
+</form>
+ </mat-card>
 </div>

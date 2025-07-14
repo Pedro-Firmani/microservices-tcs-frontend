@@ -8,14 +8,22 @@ body {
 }
 
 nav {
-  background-color: #0F0A0A;
-  padding: 15px 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   display: flex;
-  justify-content: center;
+  justify-content: space-between; // separa os lados
   align-items: center;
   flex-wrap: wrap;
+  padding: 15px 20px;
   gap: 20px;
+  background-color: #0F0A0A;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  content-align: center;
+  margin: 0 auto;
 }
 
 nav a {
@@ -76,6 +84,10 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-size: 1em;
+}
+
+ a.logout-button{
+  text-align: right;
 }
 
 button:hover {
@@ -216,7 +228,7 @@ button.action-button.cancel {
 
   nav a {
     width: 100%;
-    text-align: center;
+    
   }
 
   nav .separator {
@@ -271,3 +283,16 @@ button.action-button.cancel {
     text-align: right;
   }
 }
+
+.nav-right {
+  .logout-button {
+    color: #FFF7EB;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+

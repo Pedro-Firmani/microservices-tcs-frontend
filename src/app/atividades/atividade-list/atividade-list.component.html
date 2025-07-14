@@ -1,0 +1,36 @@
+<div class="atividade-list-container">
+  <h2>Lista de Atividades</h2>
+
+  <button mat-raised-button color="primary" [routerLink]="['/atividades/nova']" *ngIf="isProfessor">
+    <mat-icon>add</mat-icon> Adicionar Nova Atividade
+  </button>
+  <br><br>
+  <mat-divider></mat-divider>
+  <br>
+
+  <div *ngIf="atividades.length > 0; else noAtividadesFound" class="atividade-grid">
+    <mat-card *ngFor="let atividade of atividades" class="atividade-card">
+      <mat-card-header>
+        <mat-card-title>{{ atividade.titulo }}</mat-card-title>
+        <mat-card-subtitle *ngIf="atividade.dataEntrega">
+          Data de Entrega: {{ atividade.dataEntrega | date: 'dd/MM/yyyy HH:mm' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ atividade.descricao }}</p>
+      </mat-card-content>
+      <mat-card-actions *ngIf="isProfessor">
+        <button mat-raised-button color="accent" [routerLink]="['/atividades/editar', atividade.id]">
+          <mat-icon>edit</mat-icon> Editar
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteAtividade(atividade.id)">
+          <mat-icon>delete</mat-icon> Excluir
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <ng-template #noAtividadesFound>
+    <p class="no-items-message">Nenhuma atividade encontrada.</p>
+  </ng-template>
+</div>

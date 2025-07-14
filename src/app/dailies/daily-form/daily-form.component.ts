@@ -1,88 +1,119 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// Serviços e Modelos
 import { DailyService } from '../daily.service';
-import { StudentResponse, StudentService } from '../../students/student.service';
-import { Observable } from 'rxjs';
+import { StudentService } from '../../students/student.service';
+import { StudentResponse } from '../../students/student';
 import { DailyAnnotationRequest } from '../daily.model';
+
+// Angular Material
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-daily-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, ReactiveFormsModule, RouterModule,
+    MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatSelectModule,
+    MatDatepickerModule, MatNativeDateModule
+  ],
   templateUrl: './daily-form.component.html',
   styleUrls: ['./daily-form.component.scss']
 })
 export class DailyFormComponent implements OnInit {
   dailyForm: FormGroup;
-  students$: Observable<StudentResponse[]>;
   isEditMode = false;
   dailyId: number | null = null;
   errorMessage: string | null = null;
+  students: StudentResponse[] = [];
 
   constructor(
     private fb: FormBuilder,
     private dailyService: DailyService,
     private studentService: StudentService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private location: Location
+    private router: Router, // <-- ADICIONADO AQUI
+    private route: ActivatedRoute, // <-- ADICIONADO AQUI
+    private snackBar: MatSnackBar
   ) {
     this.dailyForm = this.fb.group({
-      studentId: ['', Validators.required],
-      annotationDate: ['', Validators.required],
-      annotationText: ['', Validators.required]
+      studentId: [null, Validators.required],
+      annotationText: ['', Validators.required],
+      annotationDate: [new Date(), Validators.required],
     });
-
-    this.students$ = this.studentService.getAllStudents();
   }
 
   ngOnInit(): void {
-    this.dailyId = Number(this.route.snapshot.paramMap.get('id'));
-    if (this.dailyId) {
-      this.isEditMode = true;
-            this.dailyForm.get('studentId')?.disable();
+    this.loadStudents();
 
-      // Carrega os dados da daily para edição
-      this.dailyService.getDailies().subscribe(dailies => {
-        const dailyToEdit = dailies.find(d => d.id === this.dailyId);
-        if (dailyToEdit) {
-          this.dailyForm.patchValue(dailyToEdit);
-        }
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.isEditMode = true;
+      this.dailyId = +idParam;
+      this.dailyService.getDailyById(this.dailyId).subscribe(data => {
+        this.dailyForm.patchValue({
+          studentId: data.studentId,
+          annotationText: data.annotationText,
+          annotationDate: new Date(data.annotationDate)
+        });
       });
     }
   }
 
-  // DENTRO DE daily-form.component.ts
+  loadStudents(): void {
+    this.studentService.getAllStudents().subscribe((students: StudentResponse[]) => {
+      this.students = students;
+    });
+  }
 
   onSubmit(): void {
     if (this.dailyForm.invalid) {
       return;
     }
-
-    const formValue: DailyAnnotationRequest = this.dailyForm.value;
     this.errorMessage = null;
 
-    const request = this.isEditMode && this.dailyId 
-      ? this.dailyService.updateDaily(this.dailyId, formValue)
-      : this.dailyService.createDaily(formValue);
+    const formValue = this.dailyForm.value;
 
-    request.subscribe({
-      next: () => this.router.navigate(['/dailies']),
-      // VVV SUBSTITUA ESTE BLOCO DE ERRO VVV
+    const dailyRequest: DailyAnnotationRequest = {
+      studentId: formValue.studentId,
+      annotationText: formValue.annotationText,
+      annotationDate: this.formatDateToYYYYMMDD(formValue.annotationDate),
+    };
+
+    console.log('Enviando para o backend (NOMES FINAIS):', dailyRequest);
+
+    const action = this.isEditMode && this.dailyId
+      ? this.dailyService.updateDaily(this.dailyId, dailyRequest)
+      : this.dailyService.createDaily(dailyRequest);
+
+    action.subscribe({
+      next: () => {
+        const message = this.isEditMode ? 'Daily atualizada com sucesso!' : 'Daily registrada com sucesso!';
+        this.snackBar.open(message, 'Fechar', { duration: 3000 });
+        this.router.navigate(['/dailies']);
+      },
       error: (err) => {
-        // Agora, o erro exibido será a mensagem exata do backend
-        if (err.error && typeof err.error === 'string') {
-          this.errorMessage = err.error;
-        } else {
-          this.errorMessage = this.isEditMode ? 'Ocorreu um erro ao atualizar.' : 'Ocorreu um erro ao criar.';
-        }
+        this.errorMessage = 'Ocorreu um erro ao salvar a daily.';
+        console.error(err);
       }
     });
   }
 
-  goBack(): void {
-    this.location.back();
+  private formatDateToYYYYMMDD(date: Date): string {
+    const d = new Date(date);
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+    const year = d.getFullYear();
+    return `${year}-${month}-${day}`;
   }
 }

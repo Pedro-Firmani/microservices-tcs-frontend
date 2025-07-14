@@ -1,16 +1,18 @@
+// app/dailies/daily.model.ts
+
+// Esta interface deve corresponder à RESPOSTA do backend (GET)
 export interface DailyAnnotation {
   id: number;
+  annotationDate: Date; // Nome correto
+  annotationText: string; // Nome correto
+  studentId: number;      // Nome correto
+  alunoNome?: string;
   professorId: number;
-  professorUsername: string;
-  studentId: number;
-  studentName: string;
-  studentIdTcs: string;
-  annotationDate: Date; 
-  annotationText: string;
 }
 
+// Esta interface corresponde à REQUISIÇÃO para o backend (POST/PUT)
 export interface DailyAnnotationRequest {
   studentId: number;
-  annotationDate: Date; 
   annotationText: string;
+  annotationDate: string;
 }

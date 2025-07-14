@@ -1,37 +1,32 @@
-<div class="container">
-  <h2>Anotações Diárias (Dailies)</h2>
-  
-  <div class="button-group" *ngIf="authService.hasRole('PROFESSOR')">
-    <a routerLink="/dailies/create" class="btn-create">Nova Anotação</a>
-  </div>
+<div class="daily-list-container">
+  <h2>Dailies</h2>
 
-  <div *ngIf="dailies.length === 0" class="empty-state-message">
-    Nenhuma anotação encontrada.
-  </div>
+  <button mat-raised-button color="primary" [routerLink]="['/dailies/create']" *ngIf="authService.hasRole('PROFESSOR')">
+    <mat-icon>add</mat-icon> Registrar Nova Daily
+  </button>
+  <br><br>
+  <mat-divider></mat-divider>
+  <br>
 
-  <div *ngIf="dailies.length > 0" class="table-container">
-    <table class="dailies-table">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Aluno</th>
-          <th>Professor</th>
-          <th>Anotação</th>
-          <th *ngIf="authService.hasRole('PROFESSOR')">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let daily of dailies">
-          <td>{{ daily.annotationDate | date:'dd/MM/yyyy' }}</td>
-          <td>{{ daily.studentName }}</td>
-          <td>{{ daily.professorUsername }}</td>
-          <td>{{ daily.annotationText }}</td>
-          <td *ngIf="authService.hasRole('PROFESSOR')">
-            <button [routerLink]="['/dailies/edit', daily.id]" class="action-button edit">Editar</button>
-            <button (click)="deleteDaily(daily.id)" class="action-button delete">Excluir</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+  <div *ngIf="dailies.length > 0; else noDailiesFound" class="daily-grid">
+  <mat-card *ngFor="let daily of dailies" class="daily-card">
+    <mat-card-header>
+      <mat-card-title>Daily de {{ daily.alunoNome || 'Aluno' }}</mat-card-title>
+      <mat-card-subtitle>
+        Data: {{ daily.annotationDate | date: 'dd/MM/yyyy' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Descrição:</strong><br>{{ daily.annotationText }}</p>
+    </mat-card-content>
+    <mat-card-actions *ngIf="authService.hasRole('PROFESSOR')">
+      </mat-card-actions>
+  </mat-card>
+</div>
+
+  <ng-template #noDailiesFound>
+    <p class="no-items-message">Nenhuma daily encontrada.</p>
+  </ng-template>
 </div>

@@ -2,10 +2,14 @@
 $primary-color: #673ab7;
 $warn-color: #f44336;
 
-.daily-form-container {
-  max-width: 800px;
+.atividade-form-container {
+  max-width: 700px;
   margin: 40px auto;
   padding: 20px;
+}
+
+mat-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 mat-card-header {
@@ -37,10 +41,4 @@ mat-card-actions {
   gap: 10px;
   border-top: 1px solid #e0e0e0;
   margin-top: 20px;
-}
-
-.error-message {
-  color: $warn-color;
-  text-align: center;
-  margin-top: 10px;
 }

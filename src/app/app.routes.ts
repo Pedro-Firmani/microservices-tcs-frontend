@@ -7,9 +7,12 @@ import { GrupoListComponent } from './grupos/grupo-list';
 import { StudentCreateComponent } from './students/student-create/student-create';
 import { authGuard } from './auth/auth.guard';
 import { loginGuard } from './auth/login.guard';
-import { DailyListComponent } from './dailies/daily-list.component'; 
-// Importe o novo componente de formulário
+import { DailyListComponent } from './dailies/daily-list.component';
 import { DailyFormComponent } from './dailies/daily-form/daily-form.component';
+
+// --- NOVOS IMPORTS PARA ATIVIDADES ---
+import { AtividadeListComponent } from './atividades/atividade-list/atividade-list.component';
+import { AtividadeFormComponent } from './atividades/atividade-form/atividade-form.component';
 
 export const routes: Routes = [
   // Rotas públicas
@@ -27,14 +30,13 @@ export const routes: Routes = [
     component: GrupoListComponent,
     canActivate: [loginGuard]
   },
-  
-  // *** ROTAS PARA DAILIES (AGORA ATIVAS) ***
+
+  // *** ROTAS PARA DAILIES ***
   {
     path: 'dailies',
     component: DailyListComponent,
     canActivate: [loginGuard] // Acesso para ALUNO e PROFESSOR
   },
-  // Rotas para criar e editar, protegidas para PROFESSOR
   {
     path: 'dailies/create',
     component: DailyFormComponent,
@@ -47,6 +49,32 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { expectedRole: 'PROFESSOR' }
   },
+
+  // --- ROTAS PARA ATIVIDADES ---
+  {
+    path: 'atividades',
+    component: AtividadeListComponent,
+    canActivate: [loginGuard] // Acesso para ALUNO e PROFESSOR, conforme SecurityConfig.java
+  },
+  {
+    path: 'atividades/nova',
+    component: AtividadeFormComponent,
+    canActivate: [authGuard], // Apenas PROFESSOR pode criar
+    data: { expectedRole: 'PROFESSOR' }
+  },
+  {
+    path: 'atividades/editar/:id',
+    component: AtividadeFormComponent,
+    canActivate: [authGuard], // Apenas PROFESSOR pode editar
+    data: { expectedRole: 'PROFESSOR' }
+  },
+  // Opcional: Rota para visualizar detalhes. Pode usar o mesmo form ou um componente dedicado.
+  {
+    path: 'atividades/:id',
+    component: AtividadeFormComponent, // Reutilizando o form para visualização/edição
+    canActivate: [loginGuard]
+  },
+
 
   // Rota protegida que exige a role 'PROFESSOR'
   {
