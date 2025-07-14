@@ -1,25 +1,26 @@
 <div class="student-create-container">
-  <h2>Criar Novo Aluno</h2>
+  <h2>{{ isEditMode ? 'Editar Aluno' : 'Criar Novo Aluno' }}</h2>
 
   <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
   <mat-card class="student-form-card">
     <mat-card-content>
-      <form (ngSubmit)="createStudent()" #studentForm="ngForm">
+      <form (ngSubmit)="saveStudent()" #studentForm="ngForm">
+        
         <mat-form-field appearance="fill">
           <mat-label>Nome do Aluno</mat-label>
-          <input matInput type="text" name="name" [(ngModel)]="newStudent.name" required />
+          <input matInput type="text" name="name" [(ngModel)]="student.name" required />
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Matrícula (ID TCS)</mat-label>
-          <input matInput type="text" name="idTcs" [(ngModel)]="newStudent.idTcs" required />
+          <input matInput type="text" name="idTcs" [(ngModel)]="student.idTcs" required />
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Descrição</mat-label>
-          <textarea matInput name="description" [(ngModel)]="newStudent.description"></textarea>
+          <textarea matInput name="description" [(ngModel)]="student.description"></textarea>
         </mat-form-field>
 
         <div class="form-actions">
@@ -30,6 +31,7 @@
             <mat-icon>cancel</mat-icon> Cancelar
           </button>
         </div>
+        
       </form>
     </mat-card-content>
   </mat-card>

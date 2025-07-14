@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../auth/auth'; 
 // Import StudentService e StudentResponse do arquivo de serviço correto
 import { StudentService, StudentResponse, StudentRequest } from '../student.service';
-import { Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http'; // Para tipagem de erros
 
 // Angular Material Imports
@@ -42,7 +42,8 @@ export class StudentListComponent implements OnInit {
 
   constructor(
     private studentService: StudentService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {

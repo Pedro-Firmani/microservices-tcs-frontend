@@ -3,7 +3,7 @@
 
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-  <button mat-raised-button color="primary" (click)="goToCreateStudent()" *ngIf="isProfessor">
+  <button mat-raised-button color="primary" (click)="goToCreateStudent()" *ngIf="authService.hasRole('PROFESSOR')">
     <mat-icon>person_add</mat-icon> Adicionar Novo Aluno
   </button>
   <br><br>
@@ -12,44 +12,51 @@
 
   <div *ngIf="students.length > 0; else noStudentsFound" class="student-grid">
     <mat-card *ngFor="let student of students" class="student-card">
-      <mat-card-header>
-        <mat-card-title>{{ student.name }}</mat-card-title>
-        <mat-card-subtitle>Matrícula: {{ student.idTcs }}</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <p>
-          <strong>Descrição:</strong>
-          <ng-container *ngIf="editingStudentId === student.id && isProfessor; else viewDescription">
-            <mat-form-field appearance="fill" class="full-width-field">
-              <mat-label>Descrição</mat-label>
-              <textarea matInput [(ngModel)]="editedDescription"></textarea>
-            </mat-form-field>
-          </ng-container>
-          <ng-template #viewDescription>{{ student.description || 'Nenhuma descrição' }}</ng-template>
-        </p>
-        <p *ngIf="student.grupoNome"><strong>Grupo:</strong> {{ student.grupoNome }} (ID: {{ student.grupoId }})</p>
-        <p *ngIf="!student.grupoNome"><strong>Grupo:</strong> Nenhum grupo</p>
-      </mat-card-content>
-
-      <mat-card-actions *ngIf="isProfessor">
-        <ng-container *ngIf="editingStudentId === student.id; else actionButtons">
-          <button mat-raised-button color="primary" (click)="saveStudent(student.id)">
-            <mat-icon>save</mat-icon> Salvar
-          </button>
-          <button mat-stroked-button color="warn" (click)="cancelEditing()">
-            <mat-icon>cancel</mat-icon> Cancelar
-          </button>
-        </ng-container>
-        <ng-template #actionButtons>
+      
+      <ng-container *ngIf="editingStudentId !== student.id">
+        <mat-card-header>
+          <mat-card-title>{{ student.name }}</mat-card-title>
+          <mat-card-subtitle>Matrícula: {{ student.idTcs }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>Descrição:</strong> {{ student.description || 'Nenhuma descrição' }}</p>
+          <p *ngIf="student.grupoNome"><strong>Grupo:</strong> {{ student.grupoNome }}</p>
+        </mat-card-content>
+        <mat-card-actions *ngIf="authService.hasRole('PROFESSOR')">
           <button mat-raised-button color="accent" (click)="editStudent(student)">
             <mat-icon>edit</mat-icon> Editar
           </button>
           <button mat-raised-button color="warn" (click)="deleteStudent(student.id)">
             <mat-icon>delete</mat-icon> Excluir
           </button>
-        </ng-template>
-      </mat-card-actions>
+        </mat-card-actions>
+      </ng-container>
+
+      <ng-container *ngIf="editingStudentId === student.id">
+        <mat-card-content>
+          <mat-form-field appearance="fill" class="full-width-field">
+            <mat-label>Nome do Aluno</mat-label>
+            <input matInput [(ngModel)]="editedName">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width-field">
+            <mat-label>Matrícula (ID TCS)</mat-label>
+            <input matInput [(ngModel)]="editedIdTcs">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width-field">
+            <mat-label>Descrição</mat-label>
+            <textarea matInput [(ngModel)]="editedDescription"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="saveStudent(student.id)">
+            <mat-icon>save</mat-icon> Salvar
+          </button>
+          <button mat-stroked-button color="warn" (click)="cancelEditing()">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+        </mat-card-actions>
+      </ng-container>
+      
     </mat-card>
   </div>
 

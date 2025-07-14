@@ -5,7 +5,9 @@
     
     <div class="form-group">
       <label for="studentId">Aluno</label>
-      <select id="studentId" formControlName="studentId" [class.is-invalid]="dailyForm.get('studentId')?.invalid && dailyForm.get('studentId')?.touched">
+      <select id="studentId" formControlName="studentId" 
+        [class.is-invalid]="dailyForm.get('studentId')?.invalid && dailyForm.get('studentId')?.touched"
+        [disabled]="isEditMode">
         <option value="" disabled>Selecione um aluno</option>
         <option *ngFor="let student of students$ | async" [value]="student.id">
           {{ student.name }}

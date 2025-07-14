@@ -42,6 +42,8 @@ export class DailyFormComponent implements OnInit {
     this.dailyId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.dailyId) {
       this.isEditMode = true;
+            this.dailyForm.get('studentId')?.disable();
+
       // Carrega os dados da daily para edição
       this.dailyService.getDailies().subscribe(dailies => {
         const dailyToEdit = dailies.find(d => d.id === this.dailyId);
@@ -52,6 +54,8 @@ export class DailyFormComponent implements OnInit {
     }
   }
 
+  // DENTRO DE daily-form.component.ts
+
   onSubmit(): void {
     if (this.dailyForm.invalid) {
       return;
@@ -60,17 +64,22 @@ export class DailyFormComponent implements OnInit {
     const formValue: DailyAnnotationRequest = this.dailyForm.value;
     this.errorMessage = null;
 
-    if (this.isEditMode && this.dailyId) {
-      this.dailyService.updateDaily(this.dailyId, formValue).subscribe({
-        next: () => this.router.navigate(['/dailies']),
-        error: (err) => this.errorMessage = err.error?.message || 'Ocorreu um erro ao atualizar.'
-      });
-    } else {
-      this.dailyService.createDaily(formValue).subscribe({
-        next: () => this.router.navigate(['/dailies']),
-        error: (err) => this.errorMessage = err.error || 'Ocorreu um erro ao criar.'
-      });
-    }
+    const request = this.isEditMode && this.dailyId 
+      ? this.dailyService.updateDaily(this.dailyId, formValue)
+      : this.dailyService.createDaily(formValue);
+
+    request.subscribe({
+      next: () => this.router.navigate(['/dailies']),
+      // VVV SUBSTITUA ESTE BLOCO DE ERRO VVV
+      error: (err) => {
+        // Agora, o erro exibido será a mensagem exata do backend
+        if (err.error && typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else {
+          this.errorMessage = this.isEditMode ? 'Ocorreu um erro ao atualizar.' : 'Ocorreu um erro ao criar.';
+        }
+      }
+    });
   }
 
   goBack(): void {
