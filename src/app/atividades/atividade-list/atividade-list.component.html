@@ -13,7 +13,7 @@
       <mat-card-header>
         <mat-card-title>{{ atividade.titulo }}</mat-card-title>
         <mat-card-subtitle *ngIf="atividade.dataEntrega">
-          Data de Entrega: {{ atividade.dataEntrega | date: 'dd/MM/yyyy HH:mm' }}
+          Data de Entrega: {{ atividade.dataEntrega | date: 'dd/MM/yyyy' }}
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>

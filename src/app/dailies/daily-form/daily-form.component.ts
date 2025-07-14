@@ -42,8 +42,8 @@ export class DailyFormComponent implements OnInit {
     private fb: FormBuilder,
     private dailyService: DailyService,
     private studentService: StudentService,
-    private router: Router, // <-- ADICIONADO AQUI
-    private route: ActivatedRoute, // <-- ADICIONADO AQUI
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
     this.dailyForm = this.fb.group({
@@ -60,6 +60,11 @@ export class DailyFormComponent implements OnInit {
     if (idParam) {
       this.isEditMode = true;
       this.dailyId = +idParam;
+      
+      // --- ALTERAÇÃO IMPORTANTE AQUI ---
+      // Desativa o controlo do aluno SE estiver em modo de edição
+      this.dailyForm.get('studentId')?.disable();
+
       this.dailyService.getDailyById(this.dailyId).subscribe(data => {
         this.dailyForm.patchValue({
           studentId: data.studentId,
@@ -78,11 +83,18 @@ export class DailyFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.dailyForm.invalid) {
-      return;
+      // Se o controlo estiver desativado, o seu valor não é incluído em 'this.dailyForm.value'.
+      // Usamos 'getRawValue()' para obter todos os valores, incluindo os desativados.
+      if (this.isEditMode && this.dailyForm.get('annotationText')?.valid && this.dailyForm.get('annotationDate')?.valid) {
+        // Permite o envio se apenas os campos editáveis forem válidos
+      } else {
+        return;
+      }
     }
     this.errorMessage = null;
 
-    const formValue = this.dailyForm.value;
+    // Usamos getRawValue() para garantir que o studentId (que está desativado) seja incluído no payload
+    const formValue = this.dailyForm.getRawValue();
 
     const dailyRequest: DailyAnnotationRequest = {
       studentId: formValue.studentId,
@@ -90,7 +102,7 @@ export class DailyFormComponent implements OnInit {
       annotationDate: this.formatDateToYYYYMMDD(formValue.annotationDate),
     };
 
-    console.log('Enviando para o backend (NOMES FINAIS):', dailyRequest);
+    console.log('Enviando para o backend:', dailyRequest);
 
     const action = this.isEditMode && this.dailyId
       ? this.dailyService.updateDaily(this.dailyId, dailyRequest)
