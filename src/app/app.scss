@@ -3,13 +3,13 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  background-color: #F4F2FA;
   color: #0F0A0A;
 }
 
 nav {
   display: flex;
-  justify-content: space-between; // separa os lados
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   padding: 15px 20px;
@@ -22,7 +22,7 @@ nav {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  content-align: center;
+  align-items: center;
   margin: 0 auto;
 }
 
@@ -63,7 +63,7 @@ hr {
 router-outlet {
   display: block;
   padding: 20px;
-  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  background-color: #F4F2FA;
   color: #0F0A0A;
 }
 
@@ -86,10 +86,6 @@ button {
   font-size: 1em;
 }
 
- a.logout-button{
-  text-align: right;
-}
-
 button:hover {
   background-color: #0F0A0A;
   color: #FFF7EB;
@@ -103,7 +99,7 @@ textarea {
   padding: 8px;
   border-radius: 4px;
   color: #0F0A0A;
-  background-color: #FFF7EB; /* Mantido para não afetar aqui, ajustado nos componentes */
+  background-color: #FFF7EB;
   width: 100%;
   box-sizing: border-box;
 }
@@ -219,6 +215,26 @@ button.action-button.cancel {
   margin-top: 20px;
 }
 
+.nav-right {
+  .logout-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #FFF7EB;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    .material-icons {
+      font-size: 1.2em;
+    }
+  }
+}
+
 @media (max-width: 600px) {
   nav {
     flex-direction: column;
@@ -228,7 +244,6 @@ button.action-button.cancel {
 
   nav a {
     width: 100%;
-    
   }
 
   nav .separator {
@@ -283,16 +298,3 @@ button.action-button.cancel {
     text-align: right;
   }
 }
-
-.nav-right {
-  .logout-button {
-    color: #FFF7EB;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1em;
-    padding: 8px 12px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-}
-

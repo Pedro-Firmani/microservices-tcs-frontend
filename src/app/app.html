@@ -1,10 +1,10 @@
 <nav>
   <div class="nav-left">
     <ng-container *ngIf="authService.isAuthenticated$ | async">
-      <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
-      <a routerLink="/students" routerLinkActive="active">Alunos</a>
-      <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
-      <a routerLink="/atividades" routerLinkActive="active">Atividades</a>
+        <a routerLink="/students" routerLinkActive="active">Alunos</a>
+        <a routerLink="/atividades" routerLinkActive="active">Atividades</a>
+        <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
+        <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
     </ng-container>
 
     <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
@@ -14,10 +14,13 @@
   </div>
 
   <div class="nav-right" *ngIf="authService.isAuthenticated$ | async">
-    <a (click)="logout()" class="logout-button">Sair</a>
+    <a (click)="logout()" class="logout-button">
+      <span>Sair</span>
+      <span class="material-icons">logout</span>
+    </a>
   </div>
 </nav>
-  
+
 <hr>
 
 <router-outlet></router-outlet>
