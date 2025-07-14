@@ -1,30 +1,48 @@
 <div class="daily-list-container">
   <h2>Dailies</h2>
 
-  <button mat-raised-button color="primary" [routerLink]="['/dailies/create']" *ngIf="authService.hasRole('PROFESSOR')">
+  <button
+    mat-raised-button
+    color="primary"
+    [routerLink]="['/dailies/create']"
+    *ngIf="authService.hasRole('PROFESSOR')"
+  >
     <mat-icon>add</mat-icon> Registrar Nova Daily
   </button>
-  <br><br>
+  <br /><br />
   <mat-divider></mat-divider>
-  <br>
+  <br />
 
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
   <div *ngIf="dailies.length > 0; else noDailiesFound" class="daily-grid">
-  <mat-card *ngFor="let daily of dailies" class="daily-card">
-    <mat-card-header>
-      <mat-card-title>Daily de {{ daily.alunoNome || 'Aluno' }}</mat-card-title>
-      <mat-card-subtitle>
-        Data: {{ daily.annotationDate | date: 'dd/MM/yyyy' }}
-      </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p><strong>Descrição:</strong><br>{{ daily.annotationText }}</p>
-    </mat-card-content>
-    <mat-card-actions *ngIf="authService.hasRole('PROFESSOR')">
+    <mat-card *ngFor="let daily of dailies" class="daily-card">
+      <mat-card-header>
+        <mat-card-title
+          >Daily de {{ daily.alunoNome || "Aluno" }}</mat-card-title
+        >
+        <mat-card-subtitle>
+          Data: {{ daily.annotationDate | date : "dd/MM/yyyy" }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Descrição:</strong><br />{{ daily.annotationText }}</p>
+      </mat-card-content>
+
+      <mat-card-actions *ngIf="authService.hasRole('PROFESSOR')">
+        <button
+          mat-raised-button
+          color="accent"
+          [routerLink]="['/dailies/edit', daily.id]"
+        >
+          <mat-icon>edit</mat-icon> Editar
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteDaily(daily.id)">
+          <mat-icon>delete</mat-icon> Excluir
+        </button>
       </mat-card-actions>
-  </mat-card>
-</div>
+    </mat-card>
+  </div>
 
   <ng-template #noDailiesFound>
     <p class="no-items-message">Nenhuma daily encontrada.</p>
