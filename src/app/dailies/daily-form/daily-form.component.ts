@@ -48,7 +48,7 @@ export class DailyFormComponent implements OnInit {
   ) {
     this.dailyForm = this.fb.group({
       studentId: [null, Validators.required],
-      annotationText: ['', Validators.required],
+      annotationText: ['', Validators.required], // Este é o campo que vamos preencher
       annotationDate: [new Date(), Validators.required],
     });
   }
@@ -61,8 +61,6 @@ export class DailyFormComponent implements OnInit {
       this.isEditMode = true;
       this.dailyId = +idParam;
       
-      // --- ALTERAÇÃO IMPORTANTE AQUI ---
-      // Desativa o controlo do aluno SE estiver em modo de edição
       this.dailyForm.get('studentId')?.disable();
 
       this.dailyService.getDailyById(this.dailyId).subscribe(data => {
@@ -81,10 +79,46 @@ export class DailyFormComponent implements OnInit {
     });
   }
 
+  // ===================================================================
+  // NOVA FUNÇÃO PARA IMPORTAR O ARQUIVO
+  // ===================================================================
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      if (file.type !== 'text/plain') {
+        this.snackBar.open('Erro: Por favor, selecione um arquivo .txt', 'Fechar', { duration: 3000 });
+        return;
+      }
+      
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const text = reader.result as string;
+        
+        // Atualiza o valor do campo 'annotationText' no formulário
+        this.dailyForm.patchValue({
+          annotationText: text
+        });
+
+        // Limpa o valor do input para permitir selecionar o mesmo arquivo novamente
+        input.value = '';
+      };
+
+      reader.onerror = () => {
+          this.snackBar.open('Erro ao ler o arquivo.', 'Fechar', { duration: 3000 });
+          console.error("Erro ao ler o arquivo", reader.error);
+      };
+
+      reader.readAsText(file);
+    }
+  }
+  // ===================================================================
+
   onSubmit(): void {
     if (this.dailyForm.invalid) {
-      // Se o controlo estiver desativado, o seu valor não é incluído em 'this.dailyForm.value'.
-      // Usamos 'getRawValue()' para obter todos os valores, incluindo os desativados.
       if (this.isEditMode && this.dailyForm.get('annotationText')?.valid && this.dailyForm.get('annotationDate')?.valid) {
         // Permite o envio se apenas os campos editáveis forem válidos
       } else {
@@ -93,7 +127,6 @@ export class DailyFormComponent implements OnInit {
     }
     this.errorMessage = null;
 
-    // Usamos getRawValue() para garantir que o studentId (que está desativado) seja incluído no payload
     const formValue = this.dailyForm.getRawValue();
 
     const dailyRequest: DailyAnnotationRequest = {

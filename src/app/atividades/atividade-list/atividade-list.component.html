@@ -1,8 +1,7 @@
 <div class="atividade-list-container">
   <h2>Lista de Atividades</h2>
 
-  <!-- 3. CORREÇÃO APLICADA AQUI -->
-  <!-- O botão agora usa o authService para verificar a role -->
+
   <button mat-raised-button color="primary" [routerLink]="['/atividades/nova']" *ngIf="authService.hasRole('PROFESSOR')">
     <mat-icon>add</mat-icon> Adicionar Nova Atividade
   </button>
