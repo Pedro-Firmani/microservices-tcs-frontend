@@ -1,4 +1,5 @@
 // src/app/app.routes.ts
+
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login';
 import { RegisterComponent } from './auth/register/register';
@@ -9,10 +10,9 @@ import { authGuard } from './auth/auth.guard';
 import { loginGuard } from './auth/login.guard';
 import { DailyListComponent } from './dailies/daily-list.component';
 import { DailyFormComponent } from './dailies/daily-form/daily-form.component';
-
-// --- NOVOS IMPORTS PARA ATIVIDADES ---
 import { AtividadeListComponent } from './atividades/atividade-list/atividade-list.component';
 import { AtividadeFormComponent } from './atividades/atividade-form/atividade-form.component';
+import { HomeComponent } from './home/home';
 
 export const routes: Routes = [
   // Rotas públicas
@@ -35,7 +35,7 @@ export const routes: Routes = [
   {
     path: 'dailies',
     component: DailyListComponent,
-    canActivate: [loginGuard] // Acesso para ALUNO e PROFESSOR
+    canActivate: [loginGuard]
   },
   {
     path: 'dailies/create',
@@ -54,27 +54,25 @@ export const routes: Routes = [
   {
     path: 'atividades',
     component: AtividadeListComponent,
-    canActivate: [loginGuard] // Acesso para ALUNO e PROFESSOR, conforme SecurityConfig.java
+    canActivate: [loginGuard]
   },
   {
     path: 'atividades/nova',
     component: AtividadeFormComponent,
-    canActivate: [authGuard], // Apenas PROFESSOR pode criar
+    canActivate: [authGuard],
     data: { expectedRole: 'PROFESSOR' }
   },
   {
     path: 'atividades/editar/:id',
     component: AtividadeFormComponent,
-    canActivate: [authGuard], // Apenas PROFESSOR pode editar
+    canActivate: [authGuard],
     data: { expectedRole: 'PROFESSOR' }
   },
-  // Opcional: Rota para visualizar detalhes. Pode usar o mesmo form ou um componente dedicado.
   {
     path: 'atividades/:id',
-    component: AtividadeFormComponent, // Reutilizando o form para visualização/edição
+    component: AtividadeFormComponent,
     canActivate: [loginGuard]
   },
-
 
   // Rota protegida que exige a role 'PROFESSOR'
   {
@@ -84,7 +82,9 @@ export const routes: Routes = [
     data: { expectedRole: 'PROFESSOR' }
   },
 
-  // Redirecionamento padrão
-  { path: '', redirectTo: '/grupos', pathMatch: 'full' },
+  // ✅ Página inicial
+  { path: '', component: HomeComponent },
+
+  // Rota coringa para qualquer URL inválida
   { path: '**', redirectTo: '/grupos' }
 ];

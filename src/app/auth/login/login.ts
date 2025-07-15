@@ -31,7 +31,7 @@ export class LoginComponent {
     this.authService.login(request).subscribe({
       next: (token) => {
         console.log('Login bem-sucedido. Token:', token);
-        this.router.navigate(['/students']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         console.error('Erro no login:', err);

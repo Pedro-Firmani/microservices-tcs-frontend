@@ -1,12 +1,17 @@
 <nav>
-  <div class="nav-left">
-    <ng-container *ngIf="authService.isAuthenticated$ | async">
-        <a routerLink="/students" routerLinkActive="active">Alunos</a>
-        <a routerLink="/atividades" routerLinkActive="active">Atividades</a>
-        <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
-        <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
-    </ng-container>
+  <div class="nav-logo">
+    <a routerLink="/">
+      <img src="/logo.png" alt="Logo" class="logo">
+    </a>
+  </div>
 
+  <div class="nav-links">
+    <ng-container *ngIf="authService.isAuthenticated$ | async">
+      <a routerLink="/students" routerLinkActive="active">Alunos</a>
+      <a routerLink="/atividades" routerLinkActive="active">Atividades</a>
+      <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
+      <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
+    </ng-container>
     <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
       <a routerLink="/login" routerLinkActive="active">Login</a>
       <a routerLink="/register" routerLinkActive="active">Registrar</a>
