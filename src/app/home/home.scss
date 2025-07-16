@@ -43,3 +43,18 @@
 .home-button:hover {
   background-color: #5a0991;
 }
+
+.intro-video {
+  display: block;
+  margin: 0px auto;      /* centraliza horizontalmente */
+  max-width: 300px;       /* limite de largura */
+  width: 100%;            /* ocupa até 100% do container */
+  height: auto;           /* mantém proporção */
+  border-radius: 8px;     /* opcional: cantos arredondados */
+}
+
+:host {
+  display: block;
+  background-color: #0e1c18;
+  min-height: 100vh;
+}
