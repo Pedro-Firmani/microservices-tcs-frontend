@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DailyAnnotation } from './daily.model';
 import { DailyService } from './daily.service';
 import { AuthService } from '../auth/auth';
-import { StudentService } from './../students/student.service'; // <-- 1. IMPORTAR O SERVIÇO DE ALUNOS
+import { StudentService } from './../students/student.service';
 import { StudentResponse } from './../students/student';
 
 // Angular Material
@@ -15,6 +15,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-daily-list',
@@ -22,54 +25,42 @@ import { MatDividerModule } from '@angular/material/divider';
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatDividerModule
+    MatDividerModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   templateUrl: './daily-list.component.html',
   styleUrls: ['./daily-list.component.scss']
 })
 export class DailyListComponent implements OnInit {
   dailies: DailyAnnotation[] = [];
+  students: StudentResponse[] = [];
+  selectedStudentId: number | null = null;
   errorMessage: string | null = null;
-  private studentsMap = new Map<number, string>(); // <-- 2. MAPA PARA GUARDAR OS NOMES DOS ALUNOS
+  private studentsMap = new Map<number, string>();
 
   constructor(
     private dailyService: DailyService,
-    private studentService: StudentService, // <-- 3. INJETAR O SERVIÇO DE ALUNOS
+    private studentService: StudentService,
     public authService: AuthService,
     private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
+    this.loadStudents();
     this.loadDailies();
   }
 
-  loadDailies(): void {
-    // 4. PRIMEIRO, CARREGAMOS OS ALUNOS
+  loadStudents(): void {
     this.studentService.getAllStudents().subscribe({
-      next: (students: StudentResponse[]) => {
-        // Criamos um mapa de ID -> Nome para fácil acesso
-        students.forEach(student => {
+      next: (studentsData) => {
+        this.students = studentsData;
+        studentsData.forEach(student => {
           this.studentsMap.set(student.id, student.name);
-        });
-
-        // 5. DEPOIS DE TER OS ALUNOS, CARREGAMOS AS DAILIES
-        this.dailyService.getDailies().subscribe({
-          next: (dailiesData) => {
-            // 6. PARA CADA DAILY, ADICIONAMOS O NOME DO ALUNO
-            this.dailies = dailiesData.map(daily => {
-              return {
-                ...daily, // Copia todas as propriedades existentes da daily
-                alunoNome: this.studentsMap.get(daily.studentId) // Adiciona/sobrescreve a propriedade alunoNome
-              };
-            });
-          },
-          error: (err) => {
-            this.errorMessage = 'Falha ao carregar as dailies.';
-            console.error(err);
-          }
         });
       },
       error: (err) => {
@@ -79,12 +70,39 @@ export class DailyListComponent implements OnInit {
     });
   }
 
+  loadDailies(studentId?: number): void {
+    const request$ = studentId
+      ? this.dailyService.getDailiesByStudent(studentId)
+      : this.dailyService.getDailies();
+
+    request$.subscribe({
+      next: (dailiesData) => {
+        this.dailies = dailiesData.map(daily => ({
+          ...daily,
+          alunoNome: this.studentsMap.get(daily.studentId)
+        }));
+      },
+      error: (err) => {
+        this.errorMessage = 'Falha ao carregar as dailies.';
+        console.error(err);
+      }
+    });
+  }
+
+  filterByStudent(): void {
+    if (this.selectedStudentId) {
+      this.loadDailies(this.selectedStudentId);
+    } else {
+      this.loadDailies();
+    }
+  }
+
   deleteDaily(id: number): void {
-    if (confirm('Tem a certeza que deseja excluir esta daily?')) {
+    if (confirm('Tem certeza que deseja excluir esta daily?')) {
       this.dailyService.deleteDaily(id).subscribe({
         next: () => {
           this.snackBar.open('Daily excluída com sucesso!', 'Fechar', { duration: 3000 });
-          this.loadDailies();
+          this.loadDailies(this.selectedStudentId || undefined);
         },
         error: (err) => {
           this.errorMessage = 'Falha ao excluir a daily.';
