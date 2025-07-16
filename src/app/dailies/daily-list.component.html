@@ -1,28 +1,47 @@
 <div class="daily-list-container">
   <h2>Dailies</h2>
 
+  <!-- Botão de criar nova Daily -->
   <button
     mat-raised-button
     color="primary"
     [routerLink]="['/dailies/create']"
     *ngIf="authService.hasRole('PROFESSOR')"
   >
-    <mat-icon>add</mat-icon> Registrar Nova Daily
+    <mat-icon>add</mat-icon>
+    Registrar Nova Daily
   </button>
+
   <br /><br />
+
+  <!-- Filtro por Aluno -->
+  <mat-form-field appearance="fill" style="width: 300px;">
+    <mat-label>Filtrar por Aluno</mat-label>
+    <mat-select [(ngModel)]="selectedStudentId" (selectionChange)="filterByStudent()">
+      <mat-option [value]="null">Todos os alunos</mat-option>
+      <mat-option *ngFor="let student of students" [value]="student.id">
+        {{ student.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <br />
+
   <mat-divider></mat-divider>
   <br />
 
+  <!-- Mensagem de erro -->
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
+  <!-- Lista de Dailies -->
   <div *ngIf="dailies.length > 0; else noDailiesFound" class="daily-grid">
     <mat-card *ngFor="let daily of dailies" class="daily-card">
       <mat-card-header>
-        <mat-card-title
-          >Daily de {{ daily.alunoNome || "Aluno" }}</mat-card-title
-        >
+        <mat-card-title>
+          Daily de {{ daily.alunoNome || "Aluno" }}
+        </mat-card-title>
         <mat-card-subtitle>
-          Data: {{ daily.annotationDate | date : "dd/MM/yyyy" }}
+          Data: {{ daily.annotationDate | date: "dd/MM/yyyy" }}
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
@@ -44,6 +63,7 @@
     </mat-card>
   </div>
 
+  <!-- Mensagem quando não há dailies -->
   <ng-template #noDailiesFound>
     <p class="no-items-message">Nenhuma daily encontrada.</p>
   </ng-template>
