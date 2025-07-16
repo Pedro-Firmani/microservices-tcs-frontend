@@ -1,21 +1,66 @@
-<video autoplay muted playsinline class="intro-video" onended="this.pause(); this.currentTime=this.duration;">
-  <source src="/videoMM.mp4" type="video/mp4">
-  Seu navegador não suporta a reprodução de vídeo.
-</video>
-
-
 <div class="home-container">
+
+  <!-- Vídeo de introdução -->
+  <video autoplay muted playsinline class="intro-video" onended="this.pause(); this.currentTime=this.duration;">
+    <source src="/videoMM.mp4" type="video/mp4">
+    Seu navegador não suporta a reprodução de vídeo.
+  </video>
+
+  <!-- Título -->
   <h1>MentorManager</h1>
   <h2>Gerenciamento Educacional Simplificado</h2>
-  <p>
-    O MentorManager é uma plataforma que facilita o controle de alunos, atividades, dailies e grupos em um ambiente integrado e prático.
+
+  <!-- Descrição -->
+  <p class="description">
+    O MentorManager é uma plataforma que facilita o controle de alunos, atividades, dailies e grupos em um ambiente
+    integrado e eficiente.
   </p>
-  <p>
-    Este projeto foi desenvolvido com <strong>Spring Boot</strong> e <strong>Angular</strong>, visando eficiência, aprendizado e facilidade de uso.
-  </p>
-  <div class="home-actions">
-    <a routerLink="/students" class="home-button">Ver Alunos</a>
-    <a routerLink="/atividades" class="home-button">Criar Atividade</a>
-    <a routerLink="/grupos" class="home-button">Acessar Grupos</a>
+
+  <!-- Tecnologias -->
+  <div class="tech-stack">
+    <h3>Tecnologias Utilizadas</h3>
+    <div class="icons">
+      <div class="icon">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg" alt="Angular">
+        <span>Angular</span>
+      </div>
+      <div class="icon">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot">
+        <span>Spring Boot</span>
+      </div>
+      <div class="icon">
+        <img
+          src="https://dbdb.io/media/logos/h2-logo.svg"
+          alt="H2 Database">
+        <span>H2 Database</span>
+      </div>
+      <div class="icon">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+        <span>Java</span>
+      </div>
+    </div>
   </div>
+
+  <!-- Desenvolvedores -->
+  <div class="team">
+    <h3>Desenvolvedores</h3>
+    <div class="members">
+      <div class="member">
+        <img src="/ginafoto.jpg" alt="Dev 1">
+        <h4>Pedro H. F. Azevedo</h4>
+        <p>Full Stack Developer</p>
+      </div>
+      <div class="member">
+        <img src="/zuccolifoto.jpg" alt="Dev 2">
+        <h4>Victor Scheller Zuccoli</h4>
+        <p>Full Stack Developer</p>
+      </div>
+      <div class="member">
+        <img src="/igorfoto.jpg" alt="Dev 3">
+        <h4>Igor Duim Moro</h4>
+        <p>Full Stack Developer</p>
+      </div>
+    </div>
+  </div>
+
 </div>
