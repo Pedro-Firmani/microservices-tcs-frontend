@@ -1,10 +1,15 @@
 :host {
   display: block;
-  background-color: #0e1c18;
+  background: 
+    linear-gradient(to bottom, #0A1714 0%, #110015 100%),
+    url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-repeat: repeat;
+  background-size: cover;
   min-height: 100vh;
   color: #EEE;
   padding: 40px 20px;
 }
+
 
 .home-container {
   max-width: 1000px;
@@ -34,6 +39,7 @@
     pointer-events: none;
   }
 }
+
 
 h1 {
   font-size: 2.8em;
@@ -213,4 +219,15 @@ h2 {
       max-width: 260px;
     }
   }
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
 }
