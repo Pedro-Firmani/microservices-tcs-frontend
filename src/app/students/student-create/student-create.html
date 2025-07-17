@@ -1,9 +1,9 @@
 <div class="student-create-container">
-  <h2>Criar Novo Aluno</h2>
+  <h2>{{ isEditMode ? 'Editar Aluno' : 'Criar Novo Aluno' }}</h2>
 
   <mat-card class="student-form-card">
     <mat-card-content>
-      <form #studentForm="ngForm" (ngSubmit)="saveStudent(studentForm)">
+      <form (ngSubmit)="saveStudent()" #studentForm="ngForm">
 
         <mat-form-field appearance="fill">
           <mat-label>Nome do Aluno</mat-label>

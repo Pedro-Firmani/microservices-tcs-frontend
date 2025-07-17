@@ -1,8 +1,6 @@
 <div class="student-list-container">
   <h2>Lista de Alunos</h2>
 
-  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-
   <button mat-raised-button color="primary" (click)="goToCreateStudent()" *ngIf="authService.hasRole('PROFESSOR')">
     <mat-icon>person_add</mat-icon> Adicionar Novo Aluno
   </button>
@@ -12,7 +10,7 @@
 
   <div *ngIf="students.length > 0; else noStudentsFound" class="student-grid">
     <mat-card *ngFor="let student of students" class="student-card">
-      
+
       <ng-container *ngIf="editingStudentId !== student.id">
         <mat-card-header>
           <mat-card-title>{{ student.name }}</mat-card-title>
@@ -56,7 +54,7 @@
           </button>
         </mat-card-actions>
       </ng-container>
-      
+
     </mat-card>
   </div>
 

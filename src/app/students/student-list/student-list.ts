@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-
 import { AuthService } from '../../auth/auth';
 import { StudentService, StudentResponse, StudentRequest } from '../student.service';
-import { NotificationService } from '../../shared/notification.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-student-list',
@@ -26,28 +25,25 @@ import { MatInputModule } from '@angular/material/input';
     MatIconModule,
     MatDividerModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
 })
 export class StudentListComponent implements OnInit {
   students: StudentResponse[] = [];
-  errorMessage: string | null = null;
   isProfessor: boolean = true;
   editingStudentId: number | null = null;
   editedName: string = '';
   editedIdTcs: string = '';
   editedDescription: string = '';
 
-  notificationMessage: string | null = null;
-  notificationType: 'success' | 'error' | null = null;
-
   constructor(
     private studentService: StudentService,
     private router: Router,
     public authService: AuthService,
-    private notificationService: NotificationService
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -69,11 +65,15 @@ export class StudentListComponent implements OnInit {
     this.studentService.getAllStudents().subscribe({
       next: (data: StudentResponse[]) => {
         this.students = data;
-        this.errorMessage = null;
       },
       error: (err: HttpErrorResponse) => {
         console.error('Erro ao carregar alunos:', err);
-        this.errorMessage = 'Não foi possível carregar a lista de alunos.';
+        this.snackBar.open('Não foi possível carregar a lista de alunos. ❌', 'Fechar', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+          horizontalPosition: 'right', // Adiciona esta linha
+          verticalPosition: 'bottom' // Adiciona esta linha
+        });
         this.students = [];
       }
     });
@@ -93,23 +93,39 @@ export class StudentListComponent implements OnInit {
   saveStudent(id: number): void {
     const studentToUpdate = this.students.find(s => s.id === id);
     if (studentToUpdate) {
-      const requestData: StudentRequest = {
+      const updatedStudentData: StudentResponse = {
+        ...studentToUpdate,
         name: this.editedName,
         idTcs: this.editedIdTcs,
-        description: this.editedDescription,
-        grupoId: studentToUpdate.grupoId
+        description: this.editedDescription
+      };
+
+      const requestData: StudentRequest = {
+        name: updatedStudentData.name,
+        idTcs: updatedStudentData.idTcs,
+        description: updatedStudentData.description,
+        grupoId: updatedStudentData.grupoId
       };
 
       this.studentService.updateStudent(id, requestData).subscribe({
         next: () => {
           this.loadStudents();
           this.editingStudentId = null;
-          this.notificationService.setMessage('Aluno atualizado com sucesso!', 'success');
+          this.snackBar.open('Aluno salvo com sucesso! ✅', 'Fechar', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+            horizontalPosition: 'right', // Adiciona esta linha
+            verticalPosition: 'bottom' // Adiciona esta linha
+          });
         },
         error: (err: HttpErrorResponse) => {
           console.error('Erro ao salvar aluno:', err);
-          this.errorMessage = 'Não foi possível salvar as alterações.';
-          this.notificationService.setMessage('Erro ao atualizar aluno.', 'error');
+          this.snackBar.open('Não foi possível salvar as alterações. ❌', 'Fechar', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+            horizontalPosition: 'right', // Adiciona esta linha
+            verticalPosition: 'bottom' // Adiciona esta linha
+          });
         }
       });
     }
@@ -124,12 +140,21 @@ export class StudentListComponent implements OnInit {
       this.studentService.deleteStudent(id).subscribe({
         next: () => {
           this.loadStudents();
-          this.notificationService.setMessage('Aluno excluído com sucesso.', 'success');
+          this.snackBar.open('Aluno excluído com sucesso! ✅', 'Fechar', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+            horizontalPosition: 'right', // Adiciona esta linha
+            verticalPosition: 'bottom' // Adiciona esta linha
+          });
         },
         error: (err: HttpErrorResponse) => {
           console.error('Erro ao excluir aluno:', err);
-          this.errorMessage = 'Não foi possível excluir o aluno.';
-          this.notificationService.setMessage('Erro ao excluir aluno.', 'error');
+          this.snackBar.open('Não foi possível excluir o aluno. ❌', 'Fechar', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+            horizontalPosition: 'right', // Adiciona esta linha
+            verticalPosition: 'bottom' // Adiciona esta linha
+          });
         }
       });
     }
