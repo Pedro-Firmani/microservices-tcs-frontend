@@ -1,0 +1,49 @@
+/* src/app/shared/components/confirm-snackbar/confirm-snackbar.component.scss */
+
+// Cores Base (certifique-se de que estão definidas globalmente ou acessíveis)
+$primary-color: #673ab7;   // Deep Purple 500
+$warn-color: #f44336;     // Red 500
+$text-color-light: #ffffff; // Branco para texto em fundos escuros
+
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  min-width: 320px;
+  background-color: transparent; // Fundo transparente, o fundo do snackbar virá do container Material
+  color: $text-color-light; // Cor do texto principal do snackbar de confirmação (branco para o fundo default escuro)
+  border-radius: 4px;
+  box-shadow: none; // A sombra virá do container do Material
+}
+
+.confirm-snackbar-message {
+  flex-grow: 1;
+  margin-right: 20px;
+  font-size: 1.05em;
+  font-weight: 500;
+  color: $text-color-light; // Mensagem em branco para contrastar com o fundo padrão escuro do snackbar
+}
+
+.confirm-button {
+  background-color: $primary-color !important; // Roxo para o botão "Sim"
+  color: $text-color-light !important; // Texto branco no botão roxo
+  margin-right: 10px;
+  min-width: 80px;
+}
+
+.cancel-button {
+  color: $warn-color !important; // Cor do texto do botão "Não" (vermelho)
+  border: 1px solid $warn-color !important; // Borda vermelha
+  background-color: transparent !important; // Fundo transparente
+  min-width: 80px;
+}
+
+// Estilos de hover para os botões
+.confirm-button:hover {
+  background-color: darken($primary-color, 5%) !important;
+}
+
+.cancel-button:hover {
+  background-color: rgba($warn-color, 0.1) !important; // Fundo levemente colorido no hover
+}

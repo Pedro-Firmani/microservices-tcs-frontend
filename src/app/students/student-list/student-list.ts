@@ -15,7 +15,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-// REMOVIDO: import { NotificationService } from 'caminho/para/o/seu/notification.service';
+// Importe o novo componente de confirmação do snackbar
+import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confirm-snackbar.component';
 
 @Component({
   selector: 'app-student-list',
@@ -29,7 +30,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    // Adicione o ConfirmSnackbarComponent aqui se ele for usado como parte do módulo,
+    // mas se ele for um componente para ser injetado, não precisa estar nos imports do @Component.
+    // MatSnackBar já faz a injeção do componente dinamicamente.
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
@@ -42,33 +46,15 @@ export class StudentListComponent implements OnInit {
   editedIdTcs: string = '';
   editedDescription: string = '';
 
-  // REMOVIDO: notificationMessage: string | null = null;
-  // REMOVIDO: notificationType: string | null = null;
-
   constructor(
     private studentService: StudentService,
     private router: Router,
     public authService: AuthService,
     private snackBar: MatSnackBar
-    // REMOVIDO: private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     this.loadStudents();
-
-    // REMOVIDO: Todo o bloco de código que usava notificationService, notificationMessage e notificationType
-    /*
-    const messageData = this.notificationService.consumeMessage();
-    if (messageData) {
-      this.notificationMessage = messageData.message;
-      this.notificationType = messageData.type;
-
-      setTimeout(() => {
-        this.notificationMessage = null;
-        this.notificationType = null;
-      }, 5000);
-    }
-    */
   }
 
   loadStudents(): void {
@@ -146,7 +132,21 @@ export class StudentListComponent implements OnInit {
   }
 
   deleteStudent(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este aluno?')) {
+    // Substitui o confirm() nativo pelo MatSnackBar com componente de confirmação
+    const snackBarRef = this.snackBar.openFromComponent(ConfirmSnackbarComponent, {
+      data: {
+        message: 'Tem certeza que deseja excluir este aluno?',
+        confirmText: 'Sim',
+        cancelText: 'Não'
+      },
+      duration: 5000, // Tempo para o snackbar desaparecer se não houver interação
+      horizontalPosition: 'center', // Centraliza para melhor visibilidade da confirmação
+      verticalPosition: 'bottom',
+      panelClass: ['confirm-snackbar'] // Opcional: para estilos específicos
+    });
+
+    snackBarRef.onAction().subscribe(() => {
+      // Ação clicada (botão "Sim")
       this.studentService.deleteStudent(id).subscribe({
         next: () => {
           this.loadStudents();
@@ -167,6 +167,13 @@ export class StudentListComponent implements OnInit {
           });
         }
       });
-    }
+    });
+
+    // Opcional: Se quiser fazer algo quando o snackbar for fechado sem ação (ex: tempo limite)
+    snackBarRef.afterDismissed().subscribe(info => {
+      if (!info.dismissedByAction) {
+        console.log('Confirmação de exclusão ignorada ou tempo limite atingido.');
+      }
+    });
   }
 }
