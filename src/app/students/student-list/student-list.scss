@@ -64,16 +64,16 @@ $background-color: #f5f5f5; // Grey 100
   font-weight: 600;
 }
 
-.error-message {
-  color: $warn-color;
-  background-color: lighten($warn-color, 40%);
-  border: 1px solid $warn-color;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  text-align: center;
-  font-weight: bold;
-}
+// .error-message { // No longer needed
+//   color: $warn-color;
+//   background-color: lighten($warn-color, 40%);
+//   border: 1px solid $warn-color;
+//   padding: 10px;
+//   margin-bottom: 15px;
+//   border-radius: 4px;
+//   text-align: center;
+//   font-weight: bold;
+// }
 
 /* Estilos para a grade de cards de alunos */
 .student-grid {
@@ -212,5 +212,22 @@ button[mat-stroked-button] {
     width: 100%;
     margin-left: 0;
     margin-top: 10px;
+  }
+}
+
+/* Snackbar Styles (duplicate from student-create.scss for consistency, or move to a global styles file) */
+.success-snackbar {
+  background-color: #4CAF50 !important; /* Green */
+  color: white !important;
+  .mat-simple-snackbar-action {
+    color: white !important;
+  }
+}
+
+.error-snackbar {
+  background-color: #f44336 !important; /* Red */
+  color: white !important;
+  .mat-simple-snackbar-action {
+    color: white !important;
   }
 }
