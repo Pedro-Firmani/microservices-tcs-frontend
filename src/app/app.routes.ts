@@ -12,6 +12,8 @@ import { DailyListComponent } from './dailies/daily-list.component';
 import { DailyFormComponent } from './dailies/daily-form/daily-form.component';
 import { AtividadeListComponent } from './atividades/atividade-list/atividade-list.component';
 import { AtividadeFormComponent } from './atividades/atividade-form/atividade-form.component';
+import { TagListComponent } from './tags/tag-list/tag-list.component'; // Import TagListComponent
+import { TagFormComponent } from './tags/tag-form/tag-form.component'; // Import TagFormComponent
 import { HomeComponent } from './home/home';
 
 export const routes: Routes = [
@@ -82,9 +84,28 @@ export const routes: Routes = [
     data: { expectedRole: 'PROFESSOR' }
   },
 
+  // ✅ NOVO: Rota para a lista de tags
+  {
+    path: 'tags',
+    component: TagListComponent,
+    canActivate: [loginGuard] // Ou authGuard, dependendo se precisa de alguma role específica
+  },
+  {
+    path: 'tags/new',
+    component: TagFormComponent,
+    canActivate: [authGuard],
+    data: { expectedRole: 'PROFESSOR' } // Apenas professor pode criar tags
+  },
+  {
+    path: 'tags/edit/:id',
+    component: TagFormComponent,
+    canActivate: [authGuard],
+    data: { expectedRole: 'PROFESSOR' } // Apenas professor pode editar tags
+  },
+
   // ✅ Página inicial
   { path: '', component: HomeComponent },
 
   // Rota coringa para qualquer URL inválida
-  { path: '**', redirectTo: '/grupos' }
+  { path: '**', redirectTo: '/' }
 ];
