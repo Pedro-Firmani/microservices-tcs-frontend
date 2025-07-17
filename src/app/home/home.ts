@@ -7,14 +7,16 @@ import { Component, AfterViewInit } from '@angular/core';
 })
 export class HomeComponent implements AfterViewInit {
   ngAfterViewInit(): void {
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
+          obs.unobserve(entry.target);
         }
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    const elements = document.querySelectorAll('.reveal');
+    elements.forEach(el => observer.observe(el));
   }
 }

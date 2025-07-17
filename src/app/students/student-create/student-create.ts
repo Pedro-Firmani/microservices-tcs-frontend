@@ -1,100 +1,79 @@
-import { Component, OnInit } from '@angular/core'; // Adicionado OnInit
-import { CommonModule, Location } from '@angular/common'; // Adicionado Location
-import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router'; // Adicionado ActivatedRoute
-
-import { StudentService, StudentRequest, StudentResponse } from '../student.service';
-
-// Angular Material Imports
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
+
+import { StudentService, StudentRequest } from '../student.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogContentComponent } from '../../shared/dialog/dialog-content.component';
 
 @Component({
-  selector: 'app-student-create', // O seletor continua o mesmo
+  selector: 'app-student-create',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     MatCardModule,
+    MatButtonModule,
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatIconModule
   ],
   templateUrl: './student-create.html',
   styleUrls: ['./student-create.scss']
 })
-export class StudentCreateComponent implements OnInit { // Implementado OnInit
-  // Renomeado para 'student' para ser mais genérico
+export class StudentCreateComponent implements OnInit {
   student: StudentRequest = {
     name: '',
     idTcs: '',
-    description: ''
+    description: '',
+    grupoId: 0
   };
 
-  isEditMode = false;
-  private studentId: number | null = null;
+  private router = inject(Router);
+  private studentService = inject(StudentService);
+  private dialog = inject(MatDialog);
 
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
+  ngOnInit(): void {}
 
-  constructor(
-    private studentService: StudentService,
-    private router: Router,
-    private route: ActivatedRoute, // Injetado para ler a URL
-    private location: Location // Injetado para o botão 'voltar'
-  ) {}
-
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEditMode = true;
-      this.studentId = Number(id);
-      this.studentService.getStudentById(this.studentId).subscribe(data => {
-        this.student = data; // Popula o formulário com os dados do aluno
+  saveStudent(form: NgForm): void {
+    if (!this.student.name || !this.student.idTcs) {
+      this.dialog.open(DialogContentComponent, {
+        data: {
+          title: 'Erro',
+          message: 'Preencha todos os campos obrigatórios.'
+        }
       });
+      return;
     }
-  }
 
-  // Renomeado para 'saveStudent'
-  saveStudent(): void {
-    this.successMessage = null;
-    this.errorMessage = null;
-
-    if (this.isEditMode && this.studentId) {
-      // --- LÓGICA DE ATUALIZAÇÃO ---
-      this.studentService.updateStudent(this.studentId, this.student).subscribe({
-        next: () => {
-          this.successMessage = 'Aluno atualizado com sucesso! ✅';
-          setTimeout(() => this.router.navigate(['/students']), 1000);
-        },
-        error: (err) => this.handleError(err)
-      });
-    } else {
-      // --- LÓGICA DE CRIAÇÃO ---
-      this.studentService.createStudent(this.student).subscribe({
-        next: () => {
-          this.successMessage = 'Aluno criado com sucesso! ✅';
-          setTimeout(() => this.router.navigate(['/students']), 1000);
-        },
-        error: (err) => this.handleError(err)
-      });
-    }
-  }
-
-  // Função para tratar erros
-  private handleError(err: any): void {
-    console.error('Erro:', err);
-    this.errorMessage = 'Não foi possível salvar o aluno. ❌';
-    if (err.status === 409) {
-      this.errorMessage = 'Já existe um aluno com essa matrícula. ⚠️';
-    }
+    this.studentService.createStudent(this.student).subscribe({
+      next: () => {
+        this.dialog.open(DialogContentComponent, {
+          data: {
+            title: 'Sucesso',
+            message: 'Aluno criado com sucesso!'
+          }
+        });
+        form.resetForm();
+      },
+      error: () => {
+        this.dialog.open(DialogContentComponent, {
+          data: {
+            title: 'Erro',
+            message: 'Não foi possível criar o aluno.'
+          }
+        });
+      }
+    });
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/students']);
   }
 }

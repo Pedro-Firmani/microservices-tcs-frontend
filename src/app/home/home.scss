@@ -10,6 +10,17 @@
   padding: 40px 20px;
 }
 
+.reveal {
+  opacity: 0;
+  transform: translateY(100px);
+  transition: opacity 1s ease, transform 1.6s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .home-container {
   max-width: 1000px;
@@ -39,7 +50,6 @@
     pointer-events: none;
   }
 }
-
 
 h1 {
   font-size: 2.8em;
@@ -219,15 +229,4 @@ h2 {
       max-width: 260px;
     }
   }
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-
-  .reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
 }
