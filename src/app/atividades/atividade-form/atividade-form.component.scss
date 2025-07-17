@@ -1,0 +1,44 @@
+/* Cores Base */
+$primary-color: #673ab7;
+$warn-color: #f44336;
+
+.atividade-form-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+mat-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+mat-card-header {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+mat-card-title {
+  color: $primary-color;
+  font-size: 1.8em;
+  font-weight: 500;
+}
+
+mat-card-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 24px !important;
+  gap: 10px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 20px;
+}

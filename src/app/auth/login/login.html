@@ -1,0 +1,16 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onLogin()">
+    <div>
+      <label for="username">Usuário:</label>
+      <input type="text" id="username" [(ngModel)]="username" name="username" required>
+    </div>
+    <div>
+      <label for="password">Senha:</label>
+      <input type="password" id="password" [(ngModel)]="password" name="password" required>
+    </div>
+    <button type="submit">Entrar</button>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </form>
+  <p>Não tem uma conta? <a routerLink="/register">Faça seu cadastro aqui</a></p>
+</div>

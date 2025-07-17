@@ -1,0 +1,122 @@
+/* Cores Base (Paleta Púrpura/Azul) - adaptado de student-list.scss e grupo-list.scss */
+$primary-color: #673ab7;
+$primary-dark-color: #512da8;
+$primary-light-color: #d1c4e9;
+$accent-color: #ff4081;
+$warn-color: #f44336;
+$text-color: #333;
+$light-text-color: #666;
+$border-color: #e0e0e0;
+$background-color: #f5f5f5;
+
+@use "sass:color";
+
+/* Container principal, seguindo o padrão de student-list.container */
+.atividade-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.atividade-list-container h2 {
+  text-align: center;
+  color: $primary-color;
+  margin-bottom: 20px;
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+/* Grid de cards, replicando .student-grid */
+.atividade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* */
+  gap: 25px;
+  padding: 20px 0;
+}
+
+/* Card individual, replicando .student-card */
+.atividade-card {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12); /* */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 10px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-8px); /* */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* */
+  }
+
+  mat-card-header {
+    background-color: $primary-light-color; /* */
+    padding: 18px;
+    border-bottom: 1px solid color.adjust($primary-light-color, $lightness: -10%);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  mat-card-title {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: $primary-dark-color;
+  }
+
+  mat-card-subtitle {
+    color: $light-text-color;
+    margin-top: 5px;
+  }
+
+  mat-card-content {
+    padding: 20px;
+    flex-grow: 1;
+
+    p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      color: $text-color;
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: flex-end; /* */
+    padding: 12px 20px 20px 20px;
+    border-top: 1px solid lighten($border-color, 5%);
+    margin-top: auto;
+
+    button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.no-items-message {
+  text-align: center;
+  color: $light-text-color;
+  margin-top: 30px;
+  font-size: 1.2em;
+  padding: 20px;
+  border: 2px dashed $border-color;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+/* Estilos de botões, para garantir consistência */
+button[mat-raised-button][color="primary"] {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="accent"] {
+  background-color: lighten($primary-color, 15%) !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="warn"] {
+  background-color: lighten($warn-color, 15%) !important;
+  color: #ffffff !important;
+}

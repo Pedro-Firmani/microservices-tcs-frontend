@@ -1,0 +1,62 @@
+<div class="atividade-form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ isEditMode ? 'Editar Atividade' : 'Nova Atividade' }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="atividadeForm" (ngSubmit)="onSubmit()">
+        
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Título</mat-label>
+          <input matInput formControlName="titulo" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Descrição</mat-label>
+          <textarea
+            matInput
+            formControlName="descricao"
+            rows="5"
+            required
+          ></textarea>
+        </mat-form-field>
+
+        <div>
+            <button mat-stroked-button type="button" (click)="fileInput.click()">
+                <mat-icon>attach_file</mat-icon>
+                Importar .txt
+            </button>
+            <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".txt">
+        </div>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Data de Entrega (Opcional)</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dataEntrega" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+      </form>
+    </mat-card-content>
+    
+    <mat-card-actions>
+        <button
+          type="button"
+          mat-stroked-button
+          [routerLink]="['/atividades']"
+        >
+          Cancelar
+        </button>
+        <button
+          (click)="onSubmit()"
+          type="submit"
+          mat-raised-button
+          color="primary"
+          [disabled]="atividadeForm.invalid"
+        >
+          {{ isEditMode ? 'Salvar Alterações' : 'Criar Atividade' }}
+        </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

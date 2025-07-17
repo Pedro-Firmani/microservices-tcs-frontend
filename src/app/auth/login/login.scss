@@ -1,0 +1,113 @@
+/* Estilos para login.component.scss */
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-container {
+  background-color: #FFFFFF;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h2 {
+  color: #0F0A0A;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+div {
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #6E7271;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: calc(100% - 20px);
+  padding: 12px 10px;
+  border: 1px solid #6E7271;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+  color: #0F0A0A;
+  background-color: #FFFFFF; /* Alterado para Branco */
+  &:focus {
+    border-color: #6A0DAD;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(#6A0DAD, 0.25);
+  }
+}
+
+button[type="submit"] {
+  background-color: #6A0DAD;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #D0B8E8;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+p {
+  margin-top: 20px;
+  color: #6E7271;
+  font-size: 0.9em;
+}
+
+a {
+  color: #6A0DAD;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #0F0A0A;
+    text-decoration: underline;
+  }
+}
+
+.error-message {
+  color: #6A0DAD;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+/* Para aplicar ao p *ngIf="errorMessage" */
+p[style="color: red;"] {
+  color: #6A0DAD !important;
+  margin-top: 10px;
+  font-size: 0.9em;
+}

@@ -1,0 +1,105 @@
+<div class="grupo-list-container">
+  <h2>Lista de Grupos</h2>
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+  <div *ngIf="isProfessor" class="grupo-form-section">
+    <h3>{{ editMode ? 'Editar Grupo' : 'Novo Grupo' }}</h3>
+    <div class="form-controls">
+      <mat-form-field appearance="fill">
+        <mat-label>Nome do Grupo</mat-label>
+        <input matInput [(ngModel)]="currentGrupo.nome" placeholder="Nome do Grupo" type="text">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Descrição do Grupo</mat-label>
+        <input matInput [(ngModel)]="currentGrupo.descricao" placeholder="Descrição do Grupo" type="text">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="saveGrupo()">
+        <mat-icon>{{ editMode ? 'save' : 'add' }}</mat-icon> {{ editMode ? 'Salvar Edição' : 'Criar Grupo' }}
+      </button>
+      <button mat-stroked-button color="warn" *ngIf="editMode" (click)="cancelEdit()">
+        <mat-icon>cancel</mat-icon> Cancelar
+      </button>
+    </div>
+
+    <div *ngIf="editMode && currentGrupo.id" class="manage-students-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Gerenciar Alunos para o Grupo "{{ currentGrupo.nome }}"</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <h4>Alunos neste Grupo:</h4>
+          <ng-container *ngIf="getStudentsInCurrentGroup() as alunosDoGrupoAtual">
+            <div *ngIf="alunosDoGrupoAtual.length > 0; else noStudentsInGroup">
+              <mat-list>
+                <mat-list-item *ngFor="let student of alunosDoGrupoAtual">
+                  <span>{{ student.name }} ({{ student.idTcs }})</span>
+                  <button mat-icon-button (click)="removeStudentFromGroup(student)">
+                    <mat-icon>person_remove</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-list>
+            </div>
+            <ng-template #noStudentsInGroup>
+              <p class="no-alunos">Nenhum aluno neste grupo.</p>
+            </ng-template>
+          </ng-container>
+
+          <mat-divider></mat-divider>
+
+          <h4>Adicionar Aluno ao Grupo:</h4>
+          <div *ngIf="availableStudentsForAddition.length > 0; else noAvailableStudents">
+            <mat-list>
+              <mat-list-item *ngFor="let student of availableStudentsForAddition">
+                <span>
+                  {{ student.name }} ({{ student.idTcs }})
+                  <span *ngIf="student.grupoId !== null && student.grupoId !== undefined && student.grupoId !== currentGrupo.id" class="grupo-info">
+                    (Atualmente no grupo: {{ student.grupoNome || 'Desconhecido' }})
+                  </span>
+                </span>
+                <button mat-icon-button (click)="addStudentToCurrentGroup(student)">
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <ng-template #noAvailableStudents>
+            <p class="no-alunos">Nenhum aluno disponível para adicionar.</p>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <br>
+  <mat-divider></mat-divider>
+  <br>
+
+  <div *ngIf="grupos.length > 0" class="grupos-grid">
+    <mat-card *ngFor="let grupo of grupos" class="grupo-card">
+      <mat-card-header>
+        <mat-card-title>{{ grupo.nome }}</mat-card-title>
+        <mat-card-subtitle>ID: {{ grupo.id }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Descrição:</strong> {{ grupo.descricao }}</p>
+        <p><strong>Alunos:</strong></p>
+        <ul *ngIf="grupo.nomesDosAlunos && grupo.nomesDosAlunos.length > 0">
+          <li *ngFor="let alunoNome of grupo.nomesDosAlunos">{{ alunoNome }}</li>
+        </ul>
+        <span *ngIf="!grupo.nomesDosAlunos || grupo.nomesDosAlunos.length === 0" class="no-alunos">Nenhum aluno</span>
+      </mat-card-content>
+      <mat-card-actions *ngIf="isProfessor">
+        <button mat-raised-button color="accent" (click)="editGrupo(grupo)">
+          <mat-icon>edit</mat-icon> Editar
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteGrupo(grupo.id!)">
+          <mat-icon>delete</mat-icon> Excluir
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="grupos.length === 0 && !errorMessage">
+    <p class="no-items-message">Nenhum grupo encontrado.</p>
+  </div>
+</div>

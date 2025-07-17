@@ -1,0 +1,78 @@
+<div class="daily-form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{
+        isEditMode ? "Editar Daily" : "Registrar Nova Daily"
+      }}</mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="dailyForm" (ngSubmit)="onSubmit()">
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="fill" class="form-field">
+            <mat-label>Selecione o Aluno</mat-label>
+            <mat-select formControlName="studentId" required>
+              <mat-option *ngFor="let student of students" [value]="student.id">
+                {{ student.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="form-field">
+            <mat-label>Data da Daily</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="annotationDate"
+              required
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- CAMPO DE DESCRIÇÃO -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Descrição da Daily</mat-label>
+          <textarea
+            matInput
+            formControlName="annotationText"
+            rows="6"
+            required
+            placeholder="Descreva o andamento, dúvidas ou pontos importantes..."
+          ></textarea>
+        </mat-form-field>
+
+        <!-- BOTÃO DE IMPORTAÇÃO E INPUT ESCONDIDO -->
+        <div>
+            <button mat-stroked-button type="button" (click)="fileInput.click()">
+                <mat-icon>attach_file</mat-icon>
+                Importar .txt
+            </button>
+            <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".txt">
+        </div>
+
+        <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-stroked-button [routerLink]="['/dailies']">
+          Cancelar
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="dailyForm.invalid"
+        >
+          <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
+          {{ isEditMode ? "Salvar Alterações" : "Registrar Daily" }}
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

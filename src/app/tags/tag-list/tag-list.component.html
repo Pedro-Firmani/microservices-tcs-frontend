@@ -1,0 +1,31 @@
+<div class="tag-list-container">
+  <h2>Lista de Tags</h2>
+
+  <button class="create-button" routerLink="/tags/new">Criar Nova Tag</button>
+
+  <div *ngIf="tags.length === 0; else tagsTable" class="no-tags-message">
+    <p>Nenhuma tag encontrada.</p>
+  </div>
+
+  <ng-template #tagsTable>
+    <table class="tag-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tag of tags">
+          <td>{{ tag.id }}</td>
+          <td>{{ tag.name }}</td>
+          <td>
+            <button class="edit-button" [routerLink]="['/tags/edit', tag.id]">Editar</button>
+            <button class="delete-button" (click)="deleteTag(tag.id)">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
+</div>

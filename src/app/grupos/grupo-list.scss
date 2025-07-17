@@ -1,0 +1,367 @@
+/* Cores Base (Paleta Púrpura/Azul) */
+$primary-color: #673ab7;
+$primary-dark-color: #512da8;
+$primary-light-color: #d1c4e9;
+$accent-color: #ff4081;
+$warn-color: #f44336;
+$text-color: #333;
+$light-text-color: #666;
+$border-color: #e0e0e0;
+$background-color: #f5f5f5;
+
+/* SOBRESCREVENDO AS VARIÁVEIS CSS DO ANGULAR MATERIAL */
+:root {
+  --mdc-theme-primary: #{$primary-color};
+  --mdc-theme-on-primary: #ffffff;
+  --mdc-theme-secondary: #{$accent-color};
+  --mdc-theme-on-secondary: #ffffff;
+  --mdc-theme-error: #{$warn-color};
+  --mdc-theme-on-error: #ffffff;
+
+  /* ESSAS LINHAS ALTERAM A COR DO TEXTO DO LABEL para #e0e2ec */
+  --mat-form-field-label-text-color: #e0e2ec;
+  --mat-form-field-focus-label-text-color: #e0e2ec;
+  --mat-form-field-floating-label-text-color: #e0e2ec;
+
+  --mat-form-field-underline-color: #{$border-color};
+  --mat-form-field-focus-underline-color: #{$primary-dark-color};
+  --mat-form-field-filled-indicator-color: transparent; /* Certifica que não há cor extra */
+
+  --mat-form-field-error-text-color: #{$warn-color};
+  --mat-form-field-disabled-label-text-color: #9e9e9e;
+  --mat-form-field-disabled-underline-color: #bdbdbd;
+
+  /* Cores para os botões do Material */
+  --mat-button-toggle-text-color: #{$primary-color};
+  --mat-button-toggle-checked-text-color: #ffffff;
+  --mat-button-toggle-checked-background-color: #{$primary-color};
+  --mat-raised-button-text-color: #ffffff;
+  --mat-raised-button-background-color: #{$primary-color};
+}
+
+/* Garante que o autofill do navegador tenha o fundo #e0e2ec e o texto padrão */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #e0e2ec inset !important;
+  -webkit-text-fill-color: #{$text-color} !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* *** ATUALIZAÇÃO IMPORTANTE AQUI PARA O FUNDO DO CAMPO *** Este é o seletor mais comum para a cor de fundo em 'filled'.
+   Adicionamos :not(.mat-form-field-empty) e focus para garantir.
+*/
+.mat-mdc-form-field-has-flat-underline.mat-mdc-form-field-appearance-fill .mat-mdc-form-field-flex,
+.mat-mdc-form-field-has-flat-underline.mat-mdc-form-field-appearance-fill .mat-mdc-form-field-flex:hover,
+.mat-mdc-form-field-has-flat-underline.mat-mdc-form-field-appearance-fill.mat-focused .mat-mdc-form-field-flex {
+  background-color: #e0e2ec !important;
+}
+
+/* Garante que o input real dentro do flex também não tenha um fundo diferente e a cor do texto digitado */
+.mat-form-field-appearance-fill .mat-mdc-input-element.mdc-text-field__input {
+  background-color: transparent !important; /* O input em si é transparente para mostrar o fundo do pai */
+  color: #{$text-color} !important; /* Cor do texto que você digita */
+}
+
+/* SE PRECISAR SER AINDA MAIS ESPECÍFICO PARA O TEXTO DA LABEL FLUTUANTE (em foco/com valor) */
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label.mat-mdc-floating-label,
+.mat-mdc-form-field-has-value .mat-mdc-floating-label.mat-mdc-floating-label {
+  color: #e0e2ec !important;
+}
+
+/* Estilos para o container principal da lista de grupos */
+.grupo-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Título principal da página */
+h2 {
+  text-align: center;
+  color: $primary-color;
+  margin-bottom: 20px;
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+/* Mensagens de erro */
+.error-message {
+  color: $warn-color;
+  background-color: lighten($warn-color, 40%);
+  border: 1px solid $warn-color;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Estilos para a seção do formulário (criar/editar grupo) */
+.grupo-form-section {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  border-top: 5px solid $primary-color;
+}
+
+.grupo-form-section h3 {
+  color: $primary-dark-color;
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: 500;
+}
+
+.form-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.form-controls mat-form-field {
+  flex: 1;
+  min-width: 280px;
+}
+
+.form-controls button {
+  margin-top: 15px;
+  min-width: 150px;
+  height: 48px;
+}
+
+button[mat-raised-button][color="primary"] {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="accent"] {
+  background-color: lighten($primary-color, 15%) !important;
+  color: #ffffff !important;
+}
+
+button[mat-raised-button][color="warn"],
+button[mat-stroked-button][color="warn"] {
+  background-color: lighten($warn-color, 15%) !important;
+  color: #ffffff !important;
+  border-color: lighten($warn-color, 15%) !important;
+}
+
+button[mat-stroked-button] {
+  color: $primary-color !important;
+  border-color: $primary-color !important;
+  background-color: transparent !important;
+}
+
+.manage-students-section {
+  margin-top: 30px;
+}
+
+.manage-students-section mat-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid $border-color;
+  background-color: $background-color;
+}
+
+.manage-students-section mat-card-header {
+  background-color: $primary-light-color;
+  padding: 16px;
+  border-bottom: 1px solid darken($primary-light-color, 10%);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.manage-students-section mat-card-title {
+  color: $primary-dark-color;
+  font-size: 1.4em;
+}
+
+.manage-students-section h4 {
+  color: $text-color;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 10px;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+.manage-students-section mat-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px dashed lighten($border-color, 10%);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.no-alunos {
+  font-style: italic;
+  color: $light-text-color;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.grupo-info {
+  font-size: 0.88em;
+  color: $primary-dark-color;
+  font-style: italic;
+  margin-left: 10px;
+}
+
+.grupos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 20px 0;
+}
+
+.grupo-card {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 10px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  mat-card-header {
+    background-color: $primary-light-color;
+    padding: 18px;
+    border-bottom: 1px solid darken($primary-light-color, 10%);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  mat-card-title {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: $primary-dark-color;
+  }
+
+  mat-card-subtitle {
+    color: $light-text-color;
+    margin-top: 5px;
+  }
+
+  mat-card-content {
+    padding: 20px;
+    flex-grow: 1;
+
+    p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      color: $text-color;
+    }
+
+    strong {
+      color: $text-color;
+    }
+
+    ul {
+      padding-left: 25px;
+      margin-top: 8px;
+      list-style-type: disc;
+      color: $text-color;
+
+      li {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 20px 20px 20px;
+    border-top: 1px solid lighten($border-color, 5%);
+    margin-top: auto;
+
+    button {
+      margin-left: 10px;
+    }
+  }
+}
+
+/* Mensagem quando não há itens na lista principal */
+.no-items-message {
+  text-align: center;
+  color: $light-text-color;
+  margin-top: 30px;
+  font-size: 1.2em;
+  padding: 20px;
+  border: 2px dashed $border-color;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+/* Ajustes para telas menores (responsividade) */
+@media (max-width: 768px) {
+  .grupo-list-container {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 2em;
+  }
+
+  .grupo-form-section h3 {
+    font-size: 1.6em;
+  }
+
+  .form-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .form-controls mat-form-field {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .grupo-card {
+    mat-card-title {
+      font-size: 1.6em;
+    }
+    mat-card-content {
+      font-size: 0.9em;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .grupo-list-container {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.8em;
+  }
+
+  .grupos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  mat-card-actions button {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}

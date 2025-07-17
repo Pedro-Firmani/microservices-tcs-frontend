@@ -1,0 +1,151 @@
+/* Estilos para register.component.scss */
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #F4F2FA; /* Mantido roxo mais claro */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-container {
+  background-color: #FFFFFF;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+h2 {
+  color: #0F0A0A;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+div {
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #6E7271;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+/* Estilos para inputs de texto e senha */
+input[type="text"],
+input[type="password"] {
+  width: calc(100% - 20px);
+  padding: 12px 10px;
+  border: 1px solid #6E7271;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+  color: #0F0A0A;
+  background-color: #FFFFFF; /* Alterado para Branco */
+  &:focus {
+    border-color: #6A0DAD;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(#6A0DAD, 0.25);
+  }
+}
+
+/* Estilos específicos para o select */
+select {
+  width: calc(100% - 20px);
+  padding: 12px 10px;
+  border: 1px solid #6E7271;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+  background-color: #FFFFFF; /* Alterado para Branco */
+  color: #0F0A0A;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236A0DAD%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.7L146.2%20202.7%2018.7%2075.1a17.6%2017.6%200%200%200-25.7%2023.1L133.5%20247.2a17.6%2017.6%200%200%200%2025.7%200L287%2092.5c4.6-4.6%204.6-12.2%200-16.9z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px;
+
+  &:focus {
+    border-color: #6A0DAD;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(#6A0DAD, 0.25);
+  }
+}
+
+button[type="submit"] {
+  background-color: #6A0DAD;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #D0B8E8;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+p {
+  margin-top: 20px;
+  color: #6E7271;
+  font-size: 0.9em;
+}
+
+a {
+  color: #6A0DAD;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #0F0A0A;
+    text-decoration: underline;
+  }
+}
+
+.error-message-box {
+  background-color: #D0B8E8;
+  color: #6A0DAD;
+  border: 1px solid #6A0DAD;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-top: 15px;
+  text-align: center;
+  font-size: 0.95em;
+  font-weight: bold;
+}
+
+.success-message {
+  color: #0F0A0A;
+  margin-top: 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #6A0DAD;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
