@@ -1,0 +1,17 @@
+<div class="tag-form-container">
+  <h2>{{ formTitle }}</h2>
+  <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Nome da Tag:</label>
+      <input id="name" type="text" formControlName="name" placeholder="Ex: Backend" />
+      <div *ngIf="tagForm.get('name')?.invalid && tagForm.get('name')?.touched" class="error-message">
+        Nome da tag é obrigatório.
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="tagForm.invalid">{{ isEditMode ? 'Atualizar' : 'Criar' }}</button>
+      <button type="button" (click)="onCancel()" class="cancel-button">Cancelar</button>
+    </div>
+  </form>
+</div>
