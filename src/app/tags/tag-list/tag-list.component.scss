@@ -2,6 +2,9 @@
 $primary-color: #673ab7;
 $primary-dark-color: #512da8;
 $primary-light-color: #d1c4e9;
+$accent-color: #ff4081; // Mantido para botões de destaque/ações
+$warn-color: #f44336;
+$text-color: #333;
 $light-text-color: #666;
 $border-color: #e0e0e0;
 $background-color: #f5f5f5;
@@ -11,21 +14,59 @@ $background-color: #f5f5f5;
 
 .tag-list-container {
   padding: 20px;
-  max-width: 1000px;
+  max-width: 1200px; // Aumentado para acomodar o grid
   margin: 20px auto;
   font-family: 'Roboto', sans-serif;
+  background-color: #ffffff; // Fundo branco para o container principal
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-start; // Alinha o botão à esquerda
+  margin-bottom: 20px; // Espaçamento abaixo do botão
+  padding-left: 20px; // Alinha com o conteúdo principal
 }
 
 h2 {
   color: $primary-dark-color;
-  text-align: center;
-  margin-bottom: 25px;
+  text-align: center; // Mantém o título centralizado
+  margin-bottom: 20px; // Espaçamento abaixo do título
   font-size: 2.2em;
   font-weight: 700;
 }
 
-button[mat-raised-button] {
-  margin-bottom: 20px;
+/* Estilos de botões padronizados */
+button[mat-raised-button][color="primary"] {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+  height: 48px;
+  min-width: 150px;
+  font-weight: 500;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary-color, 10%) !important;
+    box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+  }
+}
+
+button[mat-icon-button] {
+  color: $primary-color;
+  transition: color 0.2s ease, transform 0.2s ease;
+  &:hover {
+    color: $accent-color;
+    transform: scale(1.1);
+  }
+}
+
+button[mat-icon-button][color="warn"] {
+  color: $warn-color;
+  &:hover {
+    color: darken($warn-color, 10%);
+  }
 }
 
 .no-items-message {
@@ -39,65 +80,183 @@ button[mat-raised-button] {
   background-color: #ffffff;
 }
 
-.table-container {
-  border-radius: 8px;
-  overflow: hidden;
-  // Adiciona uma sombra suave para elevar a tabela
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+/* Novo Grid para as Tags */
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); // Ajustado para acomodar o novo formato
+  gap: 25px; // Espaçamento entre as tags
+  padding: 20px 0;
 }
 
-.tag-table {
-  width: 100%;
-  background-color: #ffffff; // Fundo branco para a tabela
+.tag-card {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  align-items: center; /* Alinha a flag e os detalhes horizontalmente */
+  padding: 10px; /* Padding interno do card */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 
-  th.mat-header-cell {
-    background-color: #f9f8fc; // Um roxo/cinza muito claro e suave
-    color: $primary-dark-color;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    // Linha de destaque sutil abaixo do header
-    border-bottom: 2px solid $primary-light-color; 
-    padding: 16px;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Estilo da Flag (marca-páginas lateral) */
+.tag-flag {
+  position: relative;
+  width: 180px; /* Largura para 11 caracteres */
+  height: 50px; /* Altura padrão */
+  text-align: center;
+  color: white;
+  font-size: 1.2em; /* Ajustado para caber o texto */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px; /* Ajustado */
+  border-radius: 0; /* Removido border-radius para clip-path */
+  margin-right: 15px; /* Espaço entre a flag e os detalhes */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px; /* Padding horizontal interno */
+
+  // A cor de fundo principal e o gradiente para a ponta escura
+  background: linear-gradient(
+    to right, // Gradiente da esquerda para a direita
+    var(--tag-color, #{$primary-color}) 85%, // Cor principal da tag
+    var(--tag-darker-color, #{$primary-dark-color}) 100% // Tom mais escuro para a ponta
+  );
+
+  // Forma de marca-páginas com corte em V na parte inferior
+  clip-path: polygon(
+    0% 0%,        // Top-left
+    calc(100% - 15px) 0%, // Top-right (com recuo para o corte)
+    100% 50%,     // Ponta direita central
+    calc(100% - 15px) 100%, // Bottom-right (com recuo para o corte)
+    0% 100%       // Bottom-left
+  );
+
+  span {
+    display: block;
+    white-space: nowrap; /* Impede quebra de linha */
+    overflow: hidden; /* Esconde o que excede */
+    text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
+    max-width: 100%; /* Garante que o span respeite a largura do pai */
+  }
+}
+
+/* Ponteira na parte superior do marca-páginas (agora na esquerda) */
+.tag-flag::before {
+  content: '';
+  position: absolute;
+  top: 50%; /* Centralizado verticalmente */
+  left: -10px; /* Posicionado à esquerda para simular a ponteira */
+  transform: translateY(-50%); /* Centraliza verticalmente */
+  width: 15px; // Largura da ponteira
+  height: 40px; // Altura da ponteira
+  background-color: #4CAF50; // Cor contrastante (verde/azul como na imagem)
+  border-top-left-radius: 5px; /* Arredondamento */
+  border-bottom-left-radius: 5px; /* Arredondamento */
+  z-index: 3; // Garante que fique acima da flag
+}
+
+.tag-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-grow: 1; /* Permite que os detalhes ocupem o espaço restante */
+}
+
+.tag-flag-id {
+  font-size: 0.9em;
+  font-weight: 400;
+  color: $light-text-color;
+  margin-bottom: 5px;
+}
+
+/* Ações dos botões dentro do card */
+.tag-actions {
+  display: flex;
+  gap: 5px; /* Espaço menor entre os ícones */
+  margin-top: auto; /* Empurra os botões para o final do card */
+}
+
+/* --- ESTILOS DOS SNACKBARS --- */
+
+// Estilo para snackbar de sucesso
+.success-snackbar {
+  background-color: #4CAF50; /* Verde de sucesso */
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+}
+
+// Estilo para snackbar de erro
+.error-snackbar {
+  background-color: $warn-color; /* Vermelho de erro */
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+}
+
+// Estilo para o container do snackbar de confirmação
+.confirm-snackbar {
+  /* No momento, o MatSnackBarContainer usa uma cor de fundo padrão.
+     Se precisar de um fundo, defina aqui. Por exemplo:
+     background-color: #f0f0f0;
+     color: #333;
+  */
+}
+
+// Estilo para o conteúdo dentro do confirm-snackbar-component
+.confirm-snackbar-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px; // Padding interno
+  min-width: 280px; // Largura mínima
+  box-sizing: border-box;
+
+  p {
+    margin: 0 0 15px 0; // Espaço abaixo da mensagem
+    font-size: 1em;
+    color: #333; // Cor do texto da mensagem
+    text-align: center;
   }
 
-  td.mat-cell {
-    // Remove a borda de cada célula individual
-    border-bottom: none; 
-    padding: 16px;
-    color: $light-text-color;
-    vertical-align: middle;
-  }
-  
-  // Adiciona uma borda suave apenas entre as linhas
-  tr.mat-row {
-    border-bottom: 1px solid #f1f1f1; // Borda de linha muito suave
-    transition: background-color 0.2s ease-in-out;
-  }
+  .confirm-buttons {
+    display: flex;
+    gap: 15px; // Espaço entre os botões
+    justify-content: center;
+    width: 100%;
 
-  // Remove a borda da última linha para um visual limpo
-  tr.mat-row:last-child {
-    border-bottom: none;
-  }
+    button {
+      flex: 1; // Botões ocupam espaço igual
+      font-weight: bold;
+      height: 40px;
+      line-height: 40px; // Centraliza texto verticalmente
+    }
 
-  tr.mat-row:hover {
-    background-color: $background-color; // Efeito hover sutil
-  }
+    // Estilo para o botão "Sim" (roxo)
+    .mat-mdc-button.mat-mdc-button-base.confirm-button {
+      background-color: $primary-color !important;
+      color: white !important;
+      &:hover {
+        background-color: darken($primary-color, 10%) !important;
+      }
+    }
 
-  .color-preview {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 10px;
-    border: 1px solid rgba(0,0,0,0.1);
-  }
-
-  // Mantém o alinhamento das ações
-  td.mat-cell:last-child,
-  th.mat-header-cell:last-child {
-      text-align: right;
+    // Estilo para o botão "Não" (vermelho)
+    .mat-mdc-button.mat-mdc-button-base.cancel-button {
+      background-color: $warn-color !important;
+      color: white !important;
+      &:hover {
+        background-color: darken($warn-color, 10%) !important;
+      }
+    }
   }
 }
