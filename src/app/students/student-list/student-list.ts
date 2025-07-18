@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth';
 import { StudentService, StudentResponse, StudentRequest } from '../student.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TagService } from '../../tags/tag.service';
+import { Tag } from '../../tags/tag.model';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -14,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select'; // MatOption é exportado por este módulo
 
 // Importe o novo componente de confirmação do snackbar
 import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confirm-snackbar.component';
@@ -31,9 +34,7 @@ import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confi
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    // Adicione o ConfirmSnackbarComponent aqui se ele for usado como parte do módulo,
-    // mas se ele for um componente para ser injetado, não precisa estar nos imports do @Component.
-    // MatSnackBar já faz a injeção do componente dinamicamente.
+    MatSelectModule, // Apenas o MatSelectModule é necessário aqui
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
@@ -45,21 +46,45 @@ export class StudentListComponent implements OnInit {
   editedName: string = '';
   editedIdTcs: string = '';
   editedDescription: string = '';
+  tags: Tag[] = [];
+  editedTagId: number | null = null;
 
   constructor(
     private studentService: StudentService,
     private router: Router,
     public authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private tagService: TagService
   ) {}
 
   ngOnInit(): void {
     this.loadStudents();
+    this.loadTags();
   }
+
+ loadTags(): void {
+  this.tagService.getAllTags().subscribe(data => {
+    console.log('%c1. Tags Carregadas:', 'color: green; font-weight: bold;', data); 
+    this.tags = data;
+  });
+}
+  // ======================================================
+  // ============== FUNÇÃO ADICIONADA AQUI ================
+  // ======================================================
+ getTagName(tagId: number | null | undefined): string {
+  if (!tagId) {
+    return '';
+  }
+  const tag = this.tags.find(t => t.id === tagId);
+  // Separa o nome em letras e junta com uma quebra de linha HTML
+  return tag ? tag.name.split('').join('<br>') : '';
+}
+
 
   loadStudents(): void {
     this.studentService.getAllStudents().subscribe({
       next: (data: StudentResponse[]) => {
+              console.log('%c2. Alunos Carregados:', 'color: blue; font-weight: bold;', data); // <-- ADICIONE ESTA LINHA
         this.students = data;
       },
       error: (err: HttpErrorResponse) => {
@@ -84,23 +109,18 @@ export class StudentListComponent implements OnInit {
     this.editedName = student.name;
     this.editedIdTcs = student.idTcs;
     this.editedDescription = student.description || '';
+    this.editedTagId = student.tagId || null;
   }
 
   saveStudent(id: number): void {
     const studentToUpdate = this.students.find(s => s.id === id);
     if (studentToUpdate) {
-      const updatedStudentData: StudentResponse = {
-        ...studentToUpdate,
+      const requestData: StudentRequest = {
         name: this.editedName,
         idTcs: this.editedIdTcs,
-        description: this.editedDescription
-      };
-
-      const requestData: StudentRequest = {
-        name: updatedStudentData.name,
-        idTcs: updatedStudentData.idTcs,
-        description: updatedStudentData.description,
-        grupoId: updatedStudentData.grupoId
+        description: this.editedDescription,
+        grupoId: studentToUpdate.grupoId,
+        tagId: this.editedTagId
       };
 
       this.studentService.updateStudent(id, requestData).subscribe({
@@ -132,21 +152,19 @@ export class StudentListComponent implements OnInit {
   }
 
   deleteStudent(id: number): void {
-    // Substitui o confirm() nativo pelo MatSnackBar com componente de confirmação
     const snackBarRef = this.snackBar.openFromComponent(ConfirmSnackbarComponent, {
       data: {
         message: 'Tem certeza que deseja excluir este aluno?',
         confirmText: 'Sim',
         cancelText: 'Não'
       },
-      duration: 5000, // Tempo para o snackbar desaparecer se não houver interação
-      horizontalPosition: 'center', // Centraliza para melhor visibilidade da confirmação
+      duration: 5000,
+      horizontalPosition: 'center',
       verticalPosition: 'bottom',
-      panelClass: ['confirm-snackbar'] // Opcional: para estilos específicos
+      panelClass: ['confirm-snackbar']
     });
 
     snackBarRef.onAction().subscribe(() => {
-      // Ação clicada (botão "Sim")
       this.studentService.deleteStudent(id).subscribe({
         next: () => {
           this.loadStudents();
@@ -169,7 +187,6 @@ export class StudentListComponent implements OnInit {
       });
     });
 
-    // Opcional: Se quiser fazer algo quando o snackbar for fechado sem ação (ex: tempo limite)
     snackBarRef.afterDismissed().subscribe(info => {
       if (!info.dismissedByAction) {
         console.log('Confirmação de exclusão ignorada ou tempo limite atingido.');

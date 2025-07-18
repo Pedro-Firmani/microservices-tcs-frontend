@@ -10,7 +10,9 @@
 
   <div *ngIf="students.length > 0; else noStudentsFound" class="student-grid">
     <mat-card *ngFor="let student of students" class="student-card">
-
+<div *ngIf="student.tagId" class="student-tag-flag">
+  <span [innerHTML]="getTagName(student.tagId)"></span>
+</div>    
       <ng-container *ngIf="editingStudentId !== student.id">
         <mat-card-header>
           <mat-card-title>{{ student.name }}</mat-card-title>
@@ -36,14 +38,27 @@
             <mat-label>Nome do Aluno</mat-label>
             <input matInput [(ngModel)]="editedName">
           </mat-form-field>
+          
           <mat-form-field appearance="fill" class="full-width-field">
             <mat-label>Matrícula (ID TCS)</mat-label>
             <input matInput [(ngModel)]="editedIdTcs">
           </mat-form-field>
+          
           <mat-form-field appearance="fill" class="full-width-field">
             <mat-label>Descrição</mat-label>
             <textarea matInput [(ngModel)]="editedDescription"></textarea>
           </mat-form-field>
+
+          <mat-form-field appearance="fill" class="full-width-field">
+            <mat-label>Tag</mat-label>
+            <mat-select [(ngModel)]="editedTagId">
+              <mat-option [value]="null">Nenhuma</mat-option>
+              <mat-option *ngFor="let tag of tags" [value]="tag.id">
+                {{ tag.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
         </mat-card-content>
         <mat-card-actions>
           <button mat-raised-button color="primary" (click)="saveStudent(student.id)">
