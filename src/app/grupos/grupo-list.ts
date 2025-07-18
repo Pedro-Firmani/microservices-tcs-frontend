@@ -17,6 +17,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 
+// Importações dos módulos do Snackbar
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ConfirmSnackbarComponent } from '../shared/components/snackBar/confirm-snackbar.component';
+
 @Component({
   selector: 'app-grupo-list',
   standalone: true,
@@ -30,163 +34,194 @@ import { MatTableModule } from '@angular/material/table';
     MatIconModule,
     MatListModule,
     MatDividerModule,
-    MatTableModule
+    MatTableModule,
+    MatSnackBarModule,
+    ConfirmSnackbarComponent // Adicione o componente de confirmação aqui
   ],
   templateUrl: './grupo-list.html',
   styleUrls: ['./grupo-list.scss']
 })
 export class GrupoListComponent implements OnInit {
   grupos: GrupoComNomesAlunosResponse[] = [];
-  errorMessage: string | null = null;
-  editMode: boolean = false;
-  currentGrupo: GrupoModelRequest = { nome: '', descricao: '' };
-  gruposComDetalhes: GrupoComAlunosResponse[] = [];
-  allStudents: StudentResponse[] = [];
+  gruposComAlunosDetalhes: GrupoComAlunosResponse[] = [];
+  todosAlunos: StudentResponse[] = []; // Lista de todos os alunos
+  // alunosNoGrupo: StudentResponse[] = []; // Removido, substituído por getStudentsInCurrentGroup()
+  // alunosDisponiveis: StudentResponse[] = []; // Removido, substituído por availableStudentsForAddition
 
-  public isProfessor: boolean = false; // <<< NOVO: Propriedade para controlar a visibilidade
+  currentGrupo: GrupoModelRequest = {
+    nome: '',
+    descricao: ''
+  };
+  editMode: boolean = false;
+  errorMessage: string | null = null; // Mantido conforme pedido
+  isProfessor: boolean = false;
 
   constructor(
     private grupoService: GrupoService,
     private studentService: StudentService,
-    private authService: AuthService // <<< NOVO: Injete o AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar // Injete MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    // <<< NOVO: Verifica a role do usuário assim que o componente é carregado
     this.isProfessor = this.authService.hasRole('PROFESSOR');
-
     this.carregarGrupos();
     this.carregarGruposComAlunosDetalhes();
     this.carregarTodosAlunos();
   }
 
-  displayedColumns: string[] = ['id', 'nome', 'descricao', 'alunos', 'actions'];
-
   carregarGrupos(): void {
     this.grupoService.getGruposComNomesAlunos().subscribe({
-        next: (data: GrupoComNomesAlunosResponse[]) => {
-            this.grupos = data;
-        },
-        error: (err: any) => {
-            this.errorMessage = 'Não foi possível carregar a lista de grupos.';
-        }
+      next: (data) => {
+        this.grupos = data;
+        this.errorMessage = null; // Limpa a mensagem de erro da tela
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage = 'Erro ao carregar grupos. Tente novamente mais tarde.';
+        this.openSnackBar('Não foi possível carregar os grupos. ❌', 'error'); // Exibe também no snackbar
+        console.error('Erro ao carregar grupos:', err);
+      }
     });
   }
 
   carregarGruposComAlunosDetalhes(): void {
     this.grupoService.getGruposComAlunosDetalhes().subscribe({
-        next: (data: GrupoComAlunosResponse[]) => {
-            this.gruposComDetalhes = data;
-        },
-        error: (err: any) => {
-            this.errorMessage = 'Não foi possível carregar os detalhes dos alunos nos grupos.';
-        }
+      next: (data) => {
+        this.gruposComAlunosDetalhes = data;
+        // Não chame filtrarAlunosParaGerenciamento aqui diretamente,
+        // pois getStudentsInCurrentGroup e availableStudentsForAddition
+        // já farão o trabalho quando acessados pelo HTML.
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar grupos com detalhes dos alunos:', err);
+        this.openSnackBar('Não foi possível carregar detalhes dos grupos e alunos. ❌', 'error');
+      }
     });
   }
 
   carregarTodosAlunos(): void {
     this.studentService.getAllStudents().subscribe({
-        next: (data: StudentResponse[]) => {
-            this.allStudents = data;
-        },
-        error: (err: any) => {
-            this.errorMessage = 'Não foi possível carregar a lista de alunos.';
-        }
+      next: (data) => {
+        this.todosAlunos = data;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar todos os alunos:', err);
+        this.openSnackBar('Não foi possível carregar a lista de todos os alunos. ❌', 'error');
+      }
     });
   }
 
+  // MÉTODO: Retorna os alunos que estão no grupo atualmente em edição
+  getStudentsInCurrentGroup(): StudentResponse[] {
+    if (!this.editMode || !this.currentGrupo.id || !this.gruposComAlunosDetalhes) {
+      return [];
+    }
+    const grupoDetalhes = this.gruposComAlunosDetalhes.find(g => g.id === this.currentGrupo.id);
+    return grupoDetalhes ? grupoDetalhes.alunos : [];
+  }
+
+  // GETTER: Retorna os alunos disponíveis para adicionar ao grupo em edição
+  get availableStudentsForAddition(): StudentResponse[] {
+    if (!this.editMode || !this.currentGrupo.id || !this.todosAlunos) {
+      return [];
+    }
+    const alunosNoGrupoAtual = this.getStudentsInCurrentGroup();
+    // Filtra todos os alunos para encontrar aqueles que não estão no grupo atual
+    return this.todosAlunos.filter(aluno =>
+      !alunosNoGrupoAtual.some(a => a.id === aluno.id)
+    );
+  }
+
   saveGrupo(): void {
-    if (!this.currentGrupo.nome || !this.currentGrupo.descricao) {
-      this.errorMessage = 'Nome e Descrição do grupo são obrigatórios.';
+    // Validação para impedir criação/atualização de grupos vazios
+    if (!this.currentGrupo.nome) {
+      this.openSnackBar('Nome do grupo é obrigatório. ⚠️', 'error'); // Adicionado emoji
       return;
     }
     this.errorMessage = null; // Limpa qualquer erro anterior de validação do formulário
 
-    if (this.editMode) {
-        if (this.currentGrupo.id) {
-            this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
-                next: (response: GrupoComNomesAlunosResponse) => {
-                    alert('Grupo atualizado com sucesso!');
-                    this.carregarGrupos();
-                    this.carregarGruposComAlunosDetalhes();
-                    this.resetForm();
-                },
-                error: (err: HttpErrorResponse) => {
-                    if (err.error && typeof err.error === 'string') {
-                        this.errorMessage = err.error;
-                    } else {
-                        this.errorMessage = 'Não foi possível atualizar o grupo.';
-                    }
-                }
-            });
+    if (this.editMode && this.currentGrupo.id) {
+      this.grupoService.atualizarGrupo(this.currentGrupo.id, this.currentGrupo).subscribe({
+        next: () => {
+          this.openSnackBar('Grupo atualizado com sucesso! ✅', 'success');
+          this.resetForm();
+          this.carregarGrupos();
+          this.carregarGruposComAlunosDetalhes();
+          this.carregarTodosAlunos(); // Recarrega alunos para atualizar disponibilidade
+        },
+        error: (err: HttpErrorResponse) => {
+          this.errorMessage = 'Não foi possível atualizar o grupo.';
+          this.openSnackBar('Não foi possível atualizar o grupo. ❌', 'error');
+          console.error('Erro ao atualizar grupo:', err);
         }
+      });
     } else {
-        this.grupoService.criarGrupo(this.currentGrupo).subscribe({
-            next: () => {
-                alert('Grupo criado com sucesso!');
-                this.carregarGrupos();
-                this.carregarGruposComAlunosDetalhes();
-                this.resetForm();
-            },
-            error: (err: any) => {
-                this.errorMessage = 'Não foi possível criar o grupo.';
-            }
-        });
+      this.grupoService.criarGrupo(this.currentGrupo).subscribe({
+        next: () => {
+          this.openSnackBar('Grupo criado com sucesso! ✅', 'success');
+          this.resetForm();
+          this.carregarGrupos();
+          this.carregarGruposComAlunosDetalhes();
+          this.carregarTodosAlunos(); // Recarrega alunos para atualizar disponibilidade
+        },
+        error: (err: HttpErrorResponse) => {
+          this.errorMessage = 'Não foi possível criar o grupo. Verifique os dados.';
+          this.openSnackBar('Não foi possível criar o grupo. ❌', 'error');
+          console.error('Erro ao criar grupo:', err);
+        }
+      });
     }
   }
 
   editGrupo(grupo: GrupoComNomesAlunosResponse): void {
-      this.editMode = true;
-      this.currentGrupo = { id: grupo.id, nome: grupo.nome, descricao: grupo.descricao };
+    this.editMode = true;
+    this.currentGrupo = { id: grupo.id, nome: grupo.nome, descricao: grupo.descricao }; // Copia os dados para edição
+    // Não precisa chamar filtrarAlunosParaGerenciamento aqui, os getters farão o trabalho
   }
 
   cancelEdit(): void {
-      this.resetForm();
+    this.resetForm();
   }
 
-  deleteGrupo(id: number): void {
-      if (confirm('Tem certeza que deseja excluir este grupo?')) {
-          this.grupoService.deletarGrupo(id).subscribe({
-              next: () => {
-                  alert('Grupo excluído com sucesso!');
-                  this.carregarGrupos();
-                  this.carregarGruposComAlunosDetalhes();
-              },
-              error: (err: any) => {
-                  this.errorMessage = 'Não foi possível excluir o grupo.';
-              }
-          });
+  // Método para exibir o snackbar de confirmação para exclusão de grupo
+  confirmDeleteGrupo(id: number): void {
+    const snackBarRef = this.snackBar.openFromComponent(ConfirmSnackbarComponent, {
+      data: {
+        message: 'Tem certeza que deseja excluir este grupo? Esta ação é irreversível.',
+        confirmText: 'Sim', // Revertido para 'Sim'
+        cancelText: 'Não' // Revertido para 'Não'
+      },
+      duration: 5000,
+      horizontalPosition: 'center', // Este continua centralizado
+      verticalPosition: 'bottom',
+      panelClass: ['confirm-snackbar']
+    });
+
+    snackBarRef.onAction().subscribe(() => {
+      this._performDeleteGrupo(id); // Chama o método real de exclusão após confirmação
+    });
+  }
+
+  // Método privado que executa a exclusão real
+  private _performDeleteGrupo(id: number): void {
+    this.grupoService.deletarGrupo(id).subscribe({
+      next: () => {
+        this.openSnackBar('Grupo excluído com sucesso! ✅', 'success');
+        this.carregarGrupos();
+        this.carregarGruposComAlunosDetalhes();
+        this.carregarTodosAlunos(); // Recarrega alunos para desvincular do grupo
+      },
+      error: (err: HttpErrorResponse) => {
+        this.openSnackBar('Não foi possível excluir o grupo. ❌', 'error');
+        console.error('Erro ao excluir grupo:', err);
       }
-  }
-  
-  getStudentsInCurrentGroup(): StudentResponse[] {
-    if (!this.currentGrupo.id) {
-        return [];
-    }
-    const grupoDetalhe = this.gruposComDetalhes.find(g => g.id === this.currentGrupo.id);
-    return grupoDetalhe ? grupoDetalhe.alunos : [];
+    });
   }
 
-  isStudentInCurrentGroup(student: StudentResponse): boolean {
-    return student.grupoId === this.currentGrupo.id;
-  }
-
-  /**
-   * Retorna uma lista de alunos que NÃO ESTÃO no grupo atual.
-   * Isso inclui alunos sem grupo e alunos que pertencem a OUTROS grupos.
-   */
-  get availableStudentsForAddition(): StudentResponse[] {
-    if (!this.currentGrupo.id || !this.allStudents) {
-      return [];
-    }
-    // Filtra para incluir apenas alunos cujo grupoId é diferente do grupo atual
-    // ou que não possuem grupoId (são null/undefined)
-    return this.allStudents.filter(student => student.grupoId !== this.currentGrupo.id);
-  }
-
+  // CORRIGIDO: Renomeado para addStudentToCurrentGroup para corresponder ao HTML
   addStudentToCurrentGroup(student: StudentResponse): void {
     if (!this.currentGrupo.id) {
-        alert('Selecione ou crie um grupo primeiro.');
+        this.openSnackBar('Selecione um grupo para adicionar o aluno. ❌', 'error');
         return;
     }
 
@@ -199,13 +234,13 @@ export class GrupoListComponent implements OnInit {
 
     this.studentService.updateStudent(student.id!, studentToUpdate).subscribe({
         next: () => {
-            alert(`${student.name} adicionado ao grupo.`);
+            this.openSnackBar(`${student.name} adicionado ao grupo. ✅`, 'success');
             this.carregarGrupos();
             this.carregarGruposComAlunosDetalhes();
             this.carregarTodosAlunos();
         },
         error: (err) => {
-            this.errorMessage = `Não foi possível adicionar ${student.name}.`;
+            this.openSnackBar(`Não foi possível adicionar ${student.name}. ❌`, 'error');
         }
     });
   }
@@ -220,13 +255,13 @@ export class GrupoListComponent implements OnInit {
 
     this.studentService.updateStudent(student.id!, studentToUpdate).subscribe({
         next: () => {
-            alert(`${student.name} removido do grupo.`);
+            this.openSnackBar(`${student.name} removido do grupo. ✅`, 'success');
             this.carregarGrupos();
             this.carregarGruposComAlunosDetalhes();
             this.carregarTodosAlunos();
         },
         error: (err) => {
-            this.errorMessage = `Não foi possível remover ${student.name}.`;
+            this.openSnackBar(`Não foi possível remover ${student.name}. ❌`, 'error');
         }
     });
   }
@@ -234,6 +269,16 @@ export class GrupoListComponent implements OnInit {
   private resetForm(): void {
       this.editMode = false;
       this.currentGrupo = { nome: '', descricao: '' };
-      this.errorMessage = null;
+      this.errorMessage = null; // Limpa a mensagem de erro na tela ao resetar
+  }
+
+  // Método auxiliar para abrir snackbars de sucesso/erro
+  private openSnackBar(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 3000,
+      panelClass: [type === 'success' ? 'success-snackbar' : 'error-snackbar'],
+      horizontalPosition: 'right', // Definido para a direita
+      verticalPosition: 'bottom'
+    });
   }
 }

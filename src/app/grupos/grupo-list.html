@@ -7,7 +7,7 @@
     <div class="form-controls">
       <mat-form-field appearance="fill">
         <mat-label>Nome do Grupo</mat-label>
-        <input matInput [(ngModel)]="currentGrupo.nome" placeholder="Nome do Grupo" type="text">
+        <input matInput [(ngModel)]="currentGrupo.nome" placeholder="Nome do Grupo" type="text" required>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Descrição do Grupo</mat-label>
@@ -92,7 +92,7 @@
         <button mat-raised-button color="accent" (click)="editGrupo(grupo)">
           <mat-icon>edit</mat-icon> Editar
         </button>
-        <button mat-raised-button color="warn" (click)="deleteGrupo(grupo.id!)">
+        <button mat-raised-button color="warn" (click)="confirmDeleteGrupo(grupo.id!)">
           <mat-icon>delete</mat-icon> Excluir
         </button>
       </mat-card-actions>
