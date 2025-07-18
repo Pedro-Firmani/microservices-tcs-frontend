@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+// Importações do Angular Material para datas e localidade
+import { MatDatepickerModule } from '@angular/material/datepicker';
+// Adicionado DateAdapter e NativeDateAdapter
+import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter, NativeDateAdapter } from '@angular/material/core';
 
 // Serviços e Modelos
 import { DailyService } from '../daily.service';
@@ -17,8 +22,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+
+
+// Definição do formato de data para o Datepicker
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-daily-form',
@@ -26,7 +43,14 @@ import { MatNativeDateModule } from '@angular/material/core';
   imports: [
     CommonModule, ReactiveFormsModule, RouterModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatSelectModule,
-    MatDatepickerModule, MatNativeDateModule
+    MatDatepickerModule, MatNativeDateModule,
+    MatSnackBarModule
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }, // Define o locale para português do Brasil
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }, // Aplica o formato de data personalizado
+    // Força o NativeDateAdapter a usar o locale pt-BR
+    { provide: DateAdapter, useClass: NativeDateAdapter, deps: [MAT_DATE_LOCALE] }
   ],
   templateUrl: './daily-form.component.html',
   styleUrls: ['./daily-form.component.scss']
@@ -35,7 +59,6 @@ export class DailyFormComponent implements OnInit {
   dailyForm: FormGroup;
   isEditMode = false;
   dailyId: number | null = null;
-  errorMessage: string | null = null;
   students: StudentResponse[] = [];
 
   constructor(
@@ -48,7 +71,7 @@ export class DailyFormComponent implements OnInit {
   ) {
     this.dailyForm = this.fb.group({
       studentId: [null, Validators.required],
-      annotationText: ['', Validators.required], // Este é o campo que vamos preencher
+      annotationText: ['', Validators.required],
       annotationDate: [new Date(), Validators.required],
     });
   }
@@ -61,27 +84,37 @@ export class DailyFormComponent implements OnInit {
       this.isEditMode = true;
       this.dailyId = +idParam;
       
-      this.dailyForm.get('studentId')?.disable();
+      this.dailyForm.get('studentId')?.disable(); // Desabilita o campo studentId em modo de edição
 
-      this.dailyService.getDailyById(this.dailyId).subscribe(data => {
-        this.dailyForm.patchValue({
-          studentId: data.studentId,
-          annotationText: data.annotationText,
-          annotationDate: new Date(data.annotationDate)
-        });
+      this.dailyService.getDailyById(this.dailyId).subscribe({
+        next: (data) => {
+          this.dailyForm.patchValue({
+            studentId: data.studentId,
+            annotationText: data.annotationText,
+            // Certifique-se de que a data é um objeto Date válido
+            annotationDate: data.annotationDate ? new Date(data.annotationDate) : null
+          });
+        },
+        error: (err) => {
+          this.openSnackBar('Erro ao carregar daily para edição. ❌', 'error');
+          console.error(err);
+        }
       });
     }
   }
 
   loadStudents(): void {
-    this.studentService.getAllStudents().subscribe((students: StudentResponse[]) => {
-      this.students = students;
+    this.studentService.getAllStudents().subscribe({
+      next: (students: StudentResponse[]) => {
+        this.students = students;
+      },
+      error: (err) => {
+        this.openSnackBar('Erro ao carregar a lista de alunos. ❌', 'error');
+        console.error(err);
+      }
     });
   }
 
-  // ===================================================================
-  // NOVA FUNÇÃO PARA IMPORTAR O ARQUIVO
-  // ===================================================================
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
 
@@ -89,7 +122,7 @@ export class DailyFormComponent implements OnInit {
       const file = input.files[0];
 
       if (file.type !== 'text/plain') {
-        this.snackBar.open('Erro: Por favor, selecione um arquivo .txt', 'Fechar', { duration: 3000 });
+        this.openSnackBar('Erro: Por favor, selecione um arquivo .txt ❌', 'error');
         return;
       }
       
@@ -103,31 +136,33 @@ export class DailyFormComponent implements OnInit {
           annotationText: text
         });
 
+        this.openSnackBar('Arquivo .txt importado com sucesso! ✅', 'success');
         // Limpa o valor do input para permitir selecionar o mesmo arquivo novamente
         input.value = '';
       };
 
       reader.onerror = () => {
-          this.snackBar.open('Erro ao ler o arquivo.', 'Fechar', { duration: 3000 });
+          this.openSnackBar('Erro ao ler o arquivo. ❌', 'error');
           console.error("Erro ao ler o arquivo", reader.error);
       };
 
       reader.readAsText(file);
     }
   }
-  // ===================================================================
 
   onSubmit(): void {
+    // Validação para campos obrigatórios
     if (this.dailyForm.invalid) {
+      // Verifica se o erro é devido a campos desabilitados em modo de edição
       if (this.isEditMode && this.dailyForm.get('annotationText')?.valid && this.dailyForm.get('annotationDate')?.valid) {
         // Permite o envio se apenas os campos editáveis forem válidos
       } else {
+        this.openSnackBar('Por favor, preencha todos os campos obrigatórios. ⚠️', 'error');
         return;
       }
     }
-    this.errorMessage = null;
 
-    const formValue = this.dailyForm.getRawValue();
+    const formValue = this.dailyForm.getRawValue(); // Usa getRawValue para incluir campos desabilitados
 
     const dailyRequest: DailyAnnotationRequest = {
       studentId: formValue.studentId,
@@ -143,12 +178,12 @@ export class DailyFormComponent implements OnInit {
 
     action.subscribe({
       next: () => {
-        const message = this.isEditMode ? 'Daily atualizada com sucesso!' : 'Daily registrada com sucesso!';
-        this.snackBar.open(message, 'Fechar', { duration: 3000 });
+        const message = this.isEditMode ? 'Daily atualizada com sucesso! ✅' : 'Daily registrada com sucesso! ✅';
+        this.openSnackBar(message, 'success');
         this.router.navigate(['/dailies']);
       },
       error: (err) => {
-        this.errorMessage = 'Ocorreu um erro ao salvar a daily.';
+        this.openSnackBar('Ocorreu um erro ao salvar a daily. ❌', 'error');
         console.error(err);
       }
     });
@@ -160,5 +195,15 @@ export class DailyFormComponent implements OnInit {
     const day = ('0' + d.getDate()).slice(-2);
     const year = d.getFullYear();
     return `${year}-${month}-${day}`;
+  }
+
+  // Método auxiliar para abrir snackbars de sucesso/erro
+  private openSnackBar(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 3000,
+      panelClass: [type === 'success' ? 'success-snackbar' : 'error-snackbar'],
+      horizontalPosition: 'right', // Definido para a direita
+      verticalPosition: 'bottom'
+    });
   }
 }

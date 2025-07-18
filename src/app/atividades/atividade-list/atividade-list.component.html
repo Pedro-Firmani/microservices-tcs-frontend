@@ -9,7 +9,7 @@
   <mat-divider></mat-divider>
   <br>
 
-  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  <!-- Removido: <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p> -->
 
   <div *ngIf="atividades.length > 0; else noAtividadesFound" class="atividade-grid">
     <mat-card *ngFor="let atividade of atividades" class="atividade-card">
@@ -23,12 +23,11 @@
         <p>{{ atividade.descricao }}</p>
       </mat-card-content>
 
-      <!-- 4. CORREÇÃO APLICADA AQUI -->
-      <!-- A secção de ações agora usa o authService -->
       <mat-card-actions *ngIf="authService.hasRole('PROFESSOR')">
         <button mat-raised-button color="accent" [routerLink]="['/atividades/editar', atividade.id]">
           <mat-icon>edit</mat-icon> Editar
         </button>
+        <!-- Alterado para chamar o método de confirmação -->
         <button mat-raised-button color="warn" (click)="deleteAtividade(atividade.id)">
           <mat-icon>delete</mat-icon> Excluir
         </button>

@@ -48,26 +48,25 @@
 
         <!-- BOTÃO DE IMPORTAÇÃO E INPUT ESCONDIDO -->
         <div>
-            <button mat-stroked-button type="button" (click)="fileInput.click()">
+            <!-- Adicionado color="primary" para consistência com outros botões de ação -->
+            <button mat-stroked-button type="button" color="primary" (click)="fileInput.click()">
                 <mat-icon>attach_file</mat-icon>
                 Importar .txt
             </button>
             <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".txt">
         </div>
 
-        <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-stroked-button [routerLink]="['/dailies']">
+        <!-- Adicionado color="warn" para consistência com botões de cancelar -->
+        <button mat-stroked-button color="warn" [routerLink]="['/dailies']">
           Cancelar
         </button>
         <button
           mat-raised-button
           color="primary"
           type="submit"
-          [disabled]="dailyForm.invalid"
         >
           <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
           {{ isEditMode ? "Salvar Alterações" : "Registrar Daily" }}

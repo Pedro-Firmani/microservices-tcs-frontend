@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Importe MatSnackBar e MatSnackBarModule
 // Serviços e Modelos
 import { AtividadeService } from '../atividade.service';
 import { Atividade } from '../atividade.model';
@@ -22,7 +22,8 @@ import { MatNativeDateModule } from '@angular/material/core';
   imports: [
     CommonModule, ReactiveFormsModule, RouterModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule,
-    MatDatepickerModule, MatNativeDateModule
+    MatDatepickerModule, MatNativeDateModule,
+    MatSnackBarModule // Adicione MatSnackBarModule aqui
   ],
   templateUrl: './atividade-form.component.html',
   styleUrls: ['./atividade-form.component.scss']
@@ -51,16 +52,21 @@ export class AtividadeFormComponent implements OnInit {
     if (idParam) {
       this.isEditMode = true;
       this.atividadeId = +idParam;
-      this.atividadeService.getAtividade(this.atividadeId).subscribe(data => {
-        this.atividadeForm.patchValue({
-          titulo: data.titulo,
-          descricao: data.descricao,
-          dataEntrega: data.dataEntrega ? new Date(data.dataEntrega) : null
-        });
+      this.atividadeService.getAtividade(this.atividadeId).subscribe({
+        next: (data) => {
+          this.atividadeForm.patchValue({
+            titulo: data.titulo,
+            descricao: data.descricao,
+            dataEntrega: data.dataEntrega ? new Date(data.dataEntrega) : null
+          });
+        },
+        error: (err) => {
+          this.openSnackBar('Erro ao carregar atividade para edição. ❌', 'error');
+          console.error(err);
+        }
       });
     }
   }
-
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -69,7 +75,7 @@ export class AtividadeFormComponent implements OnInit {
       const file = input.files[0];
 
       if (file.type !== 'text/plain') {
-        this.snackBar.open('Erro: Por favor, selecione um arquivo .txt', 'Fechar', { duration: 3000 });
+        this.openSnackBar('Erro: Por favor, selecione um arquivo .txt ❌', 'error');
         return;
       }
       
@@ -83,22 +89,23 @@ export class AtividadeFormComponent implements OnInit {
           descricao: text
         });
 
+        this.openSnackBar('Arquivo .txt importado com sucesso! ✅', 'success');
         // Limpa o valor do input para permitir selecionar o mesmo arquivo novamente
         input.value = '';
       };
 
       reader.onerror = () => {
-          this.snackBar.open('Erro ao ler o arquivo.', 'Fechar', { duration: 3000 });
+          this.openSnackBar('Erro ao ler o arquivo. ❌', 'error');
           console.error("Erro ao ler o arquivo", reader.error);
       };
 
       reader.readAsText(file);
     }
   }
-  // ===================================================================
 
   onSubmit(): void {
     if (this.atividadeForm.invalid) {
+      this.openSnackBar('Por favor, preencha todos os campos obrigatórios. ⚠️', 'error');
       return;
     }
 
@@ -115,12 +122,12 @@ export class AtividadeFormComponent implements OnInit {
 
     action.subscribe({
       next: () => {
-        const message = this.isEditMode ? 'Atividade atualizada com sucesso!' : 'Atividade criada com sucesso!';
-        this.snackBar.open(message, 'Fechar', { duration: 3000 });
+        const message = this.isEditMode ? 'Atividade atualizada com sucesso! ✅' : 'Atividade criada com sucesso! ✅';
+        this.openSnackBar(message, 'success');
         this.router.navigate(['/atividades']);
       },
       error: (err) => {
-        this.snackBar.open('Erro ao salvar a atividade.', 'Fechar', { duration: 3000 });
+        this.openSnackBar('Erro ao salvar a atividade. ❌', 'error');
         console.error(err);
       }
     });
@@ -131,5 +138,15 @@ export class AtividadeFormComponent implements OnInit {
     d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     d.setHours(23, 59, 59);
     return d.toISOString().slice(0, 19);
+  }
+
+  // Método auxiliar para abrir snackbars de sucesso/erro
+  private openSnackBar(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 3000,
+      panelClass: [type === 'success' ? 'success-snackbar' : 'error-snackbar'],
+      horizontalPosition: 'right', // Definido para a direita
+      verticalPosition: 'bottom'
+    });
   }
 }
