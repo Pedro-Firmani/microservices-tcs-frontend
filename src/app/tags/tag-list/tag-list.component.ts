@@ -87,7 +87,7 @@ export class TagListComponent implements OnInit {
         cancelText: 'Não'
       },
       duration: 5000,
-      horizontalPosition: 'right', // Alterado para 'right'
+      horizontalPosition: 'center', // Alterado para 'center'
       verticalPosition: 'bottom',
       panelClass: ['confirm-snackbar']
     });

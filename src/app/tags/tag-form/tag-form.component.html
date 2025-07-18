@@ -2,16 +2,28 @@
   <h2>{{ formTitle }}</h2>
   <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <label for="name">Nome da Tag:</label>
-      <input id="name" type="text" formControlName="name" placeholder="Ex: Backend" />
-      <div *ngIf="tagForm.get('name')?.invalid && tagForm.get('name')?.touched" class="error-message">
-        Nome da tag é obrigatório.
-      </div>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nome da Tag</mat-label>
+        <input matInput id="name" type="text" formControlName="name" placeholder="Ex: Backend" />
+        <mat-error *ngIf="tagForm.get('name')?.hasError('required') && tagForm.get('name')?.touched">
+          Nome da tag é obrigatório.
+        </mat-error>
+        <mat-error *ngIf="tagForm.get('name')?.hasError('minlength') && tagForm.get('name')?.touched">
+          Nome da tag deve ter no mínimo 2 caracteres.
+        </mat-error>
+        <mat-error *ngIf="tagForm.get('name')?.hasError('maxlength') && tagForm.get('name')?.touched">
+          Nome da tag deve ter no máximo 10 caracteres.
+        </mat-error>
+      </mat-form-field>
     </div>
 
     <div class="form-actions">
-      <button type="submit" [disabled]="tagForm.invalid">{{ isEditMode ? 'Atualizar' : 'Criar' }}</button>
-      <button type="button" (click)="onCancel()" class="cancel-button">Cancelar</button>
+      <button mat-stroked-button color="warn" type="button" (click)="onCancel()">
+        <mat-icon>cancel</mat-icon> Cancelar
+      </button>
+      <button mat-raised-button color="primary" type="submit">
+        <mat-icon>save</mat-icon> {{ isEditMode ? 'Salvar Edição' : 'Criar Tag' }}
+      </button>
     </div>
   </form>
 </div>

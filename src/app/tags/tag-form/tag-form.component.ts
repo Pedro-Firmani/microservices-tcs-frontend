@@ -43,8 +43,10 @@ export class TagFormComponent implements OnInit {
     private snackBar: MatSnackBar // Injeta o SnackBar
   ) {
     this.tagForm = this.fb.group({
-      // Adiciona as validações e o campo de cor
-      name: ['', [Validators.required, Validators.maxLength(10)]],
+      // Adicionado Validators.minLength(2) e Validators.maxLength(10)
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)]],
+      // Adicione o campo de cor, se a interface Tag tiver 'color'
+      // color: ['#673ab7'] // Exemplo: cor padrão
     });
   }
 
@@ -65,20 +67,24 @@ export class TagFormComponent implements OnInit {
       next: (tag) => {
         this.tagForm.patchValue({
           name: tag.name,
+          // color: tag.color // Se a interface Tag tiver 'color'
         });
       },
       error: (err) => {
         console.error('Erro ao carregar dados da tag:', err);
-        this.showErrorSnackbar('Erro ao carregar tag. A redirecionar...');
+        this.showErrorSnackbar('Erro ao carregar tag. A redirecionar... ❌'); // Adicionado emoji
         this.router.navigate(['/tags']);
       }
     });
   }
 
   onSubmit(): void {
+    // Marca todos os campos como "touched" para exibir as mensagens de validação
+    this.tagForm.markAllAsTouched();
+
     if (this.tagForm.invalid) {
-      this.showErrorSnackbar('Por favor, corrija os erros no formulário.');
-      return;
+      this.showErrorSnackbar('Por favor, corrija os erros no formulário. ⚠️'); // Adicionado emoji
+      return; // Retorna para que a requisição não seja feita com dados inválidos
     }
 
     const tagData = this.tagForm.value;
@@ -91,7 +97,7 @@ export class TagFormComponent implements OnInit {
 
     operation.subscribe({
       next: () => {
-        this.showSuccessSnackbar(`Tag ${this.isEditMode ? 'atualizada' : 'criada'} com sucesso!`);
+        this.showSuccessSnackbar(`Tag ${this.isEditMode ? 'atualizada' : 'criada'} com sucesso! ✅`); // Adicionado emoji
         this.router.navigate(['/tags']);
       },
       error: (err) => this.handleApiError(err, actionText)
@@ -104,20 +110,20 @@ export class TagFormComponent implements OnInit {
 
   // Funções auxiliares para feedback ao usuário
   private showSuccessSnackbar(message: string): void {
-    this.snackBar.open(message, '✅', { duration: 3000, panelClass: 'success-snackbar' });
+    this.snackBar.open(message, 'Fechar', { duration: 3000, panelClass: 'success-snackbar', horizontalPosition: 'right', verticalPosition: 'bottom' }); // Botão 'Fechar' e posição à direita
   }
 
   private showErrorSnackbar(message: string): void {
-    this.snackBar.open(message, '❌', { duration: 5000, panelClass: 'error-snackbar' });
+    this.snackBar.open(message, 'Fechar', { duration: 5000, panelClass: 'error-snackbar', horizontalPosition: 'right', verticalPosition: 'bottom' }); // Botão 'Fechar' e posição à direita
   }
 
   private handleApiError(err: any, action: string): void {
     console.error(`Erro ao ${action} tag:`, err);
     if (err.status === 403) {
-      this.showErrorSnackbar(`Você não tem permissão para ${action} tags.`);
+      this.showErrorSnackbar(`Você não tem permissão para ${action} tags. ❌`); // Adicionado emoji
     } else {
       const serverError = err.error?.errors?.[0] || err.error?.message;
-      const errorMessage = serverError || `Ocorreu um erro ao ${action} a tag.`;
+      const errorMessage = serverError || `Ocorreu um erro ao ${action} a tag. ❌`; // Adicionado emoji
       this.showErrorSnackbar(errorMessage);
     }
   }
