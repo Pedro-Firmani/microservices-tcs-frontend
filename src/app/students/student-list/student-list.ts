@@ -31,9 +31,6 @@ import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confi
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    // Adicione o ConfirmSnackbarComponent aqui se ele for usado como parte do módulo,
-    // mas se ele for um componente para ser injetado, não precisa estar nos imports do @Component.
-    // MatSnackBar já faz a injeção do componente dinamicamente.
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
