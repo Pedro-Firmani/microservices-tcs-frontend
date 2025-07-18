@@ -10,6 +10,7 @@ export interface StudentResponse {
   grupoId?: number | null;
   grupoNome?: string;
   description?: string | null;
+  tagId?: number | null;
 }
 
 export interface StudentRequest {
@@ -17,6 +18,7 @@ export interface StudentRequest {
   idTcs: string;
   grupoId?: number | null;
   description?: string | null;
+  tagId?: number | null;
 }
 
 @Injectable({

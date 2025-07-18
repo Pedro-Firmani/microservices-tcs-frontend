@@ -200,3 +200,46 @@ button[mat-stroked-button] {
   grid-template-columns: 1fr;
  }
 }
+
+.student-tag-flag {
+  position: absolute;
+  top: 0;
+  right: 15px; // Posiciona a fita no canto superior direito
+  
+  // Dimensões e fundo
+  width: 40px; // Mais estreito para o texto vertical
+  padding: 12px 0;
+  background-color: #673ab7; // Cor padrão (pode ser alterada dinamicamente)
+  text-align: center; // Centraliza o conteúdo (o span) dentro da fita
+  
+  // Sombra para dar profundidade
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  
+  // Garante que fique por cima
+  z-index: 10;
+
+  // Estilo do texto dentro da fita
+  span {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.5; // Espaçamento entre as letras na vertical
+  }
+
+  // Efeito de "corte de fita" na parte de baixo
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; // Posiciona abaixo da fita principal
+    left: 0;
+    // Cria um triângulo usando bordas
+    border-top: 10px solid #492a82; // Um tom mais escuro da cor da fita
+    border-left: 20px solid transparent; // Metade da largura
+    border-right: 20px solid transparent; // Metade da largura
+    height: 2px;
+    width: 0;
+  }
+}
