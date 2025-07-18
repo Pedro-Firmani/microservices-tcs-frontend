@@ -190,7 +190,8 @@ button[mat-stroked-button] {
 .student-tag-flag {
   position: absolute;
   top: 0;
-  right: 15px; // Posiciona a fita no canto superior direito
+  right: 15px; 
+  opacity: 80%;
   
   // Dimensões e fundo
   width: 40px; // Mais estreito para o texto vertical
