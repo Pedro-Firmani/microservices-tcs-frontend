@@ -2,7 +2,7 @@
 
   <!-- Vídeo de introdução -->
   <div class="video-wrapper reveal">
-    <video autoplay muted playsinline class="intro-video" onended="this.pause(); this.currentTime=this.duration;">
+    <video #introVideo autoplay muted playsinline class="intro-video">
       <source src="/videoMM.mp4" type="video/mp4">
       Seu navegador não suporta a reprodução de vídeo.
     </video>
@@ -24,10 +24,43 @@
     <h3>Tecnologias Utilizadas</h3>
     <p class="tooltip-hint">Passe o mouse sobre os ícones para saber mais.</p>
     <div class="icons">
+      <!-- Front-end -->
       <div class="icon reveal">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg" alt="Angular">
         <span>Angular</span>
         <div class="tooltip">Framework front-end para aplicações web modernas</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
+        <span>HTML5</span>
+        <div class="tooltip">Linguagem de marcação para a web</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
+        <span>CSS3</span>
+        <div class="tooltip">Linguagem de estilo para a web</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap">
+        <span>Bootstrap</span>
+        <div class="tooltip">Framework front-end para desenvolvimento responsivo</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://vitejs.dev/logo.svg" alt="Vite" style="width: 50px; height: 50px;">
+        <span>Vite</span>
+        <div class="tooltip">Build tool rápido para projetos front-end modernos</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript">
+        <span>TypeScript</span>
+        <div class="tooltip">Superset do JavaScript que adiciona tipagem estática</div>
+      </div>
+
+      <!-- Back-end & Arquitetura -->
+      <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+        <span>Java 21</span>
+        <div class="tooltip">Linguagem de programação utilizada no backend do projeto</div>
       </div>
       <div class="icon reveal">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot">
@@ -35,15 +68,47 @@
         <div class="tooltip">Framework Java para criação de APIs e aplicações robustas</div>
       </div>
       <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg" alt="Hibernate">
+        <span>Hibernate</span>
+        <div class="tooltip">ORM para persistência de dados em bancos relacionais com Java</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jwt/jwt-plain.svg" alt="JWT" style="width: 50px; height: 50px;">
+        <span>JWT</span>
+        <div class="tooltip">JSON Web Tokens para autenticação segura</div>
+      </div>
+      <div class="icon reveal">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/MVC_Logo.svg/1200px-MVC_Logo.svg.png" alt="MVC" style="width: 50px; height: 50px;">
+        <span>MVC</span>
+        <div class="tooltip">Padrão de arquitetura Model-View-Controller</div>
+      </div>
+      <div class="icon reveal">
+        <!-- Ícone de Microserviços (interconectados) -->
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="6" cy="6" r="3" fill="#ffffff"/>
+          <circle cx="18" cy="6" r="3" fill="#ffffff"/>
+          <circle cx="6" cy="18" r="3" fill="#ffffff"/>
+          <circle cx="18" cy="18" r="3" fill="#ffffff"/>
+          <path d="M6 9V15M18 9V15M9 6H15M9 18H15" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 9L18 15M6 15L18 9" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Microserviços</span>
+        <div class="tooltip">Arquitetura de software para aplicações distribuídas</div>
+      </div>
+
+      <!-- Bancos de Dados -->
+      <div class="icon reveal">
         <img src="https://dbdb.io/media/logos/h2-logo.svg" alt="H2 Database">
         <span>H2 Database</span>
         <div class="tooltip">Banco de dados em memória para testes e desenvolvimento</div>
       </div>
       <div class="icon reveal">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
-        <span>Java 21</span>
-        <div class="tooltip">Linguagem de programação utilizada no backend do projeto</div>
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL">
+        <span>SQL</span>
+        <div class="tooltip">Linguagem padrão para gerenciar bancos de dados relacionais</div>
       </div>
+
+      <!-- Ferramentas & DevOps -->
       <div class="icon reveal">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="filter: brightness(0) invert(1);">
         <span>GitHub</span>
@@ -55,19 +120,9 @@
         <div class="tooltip">Ferramenta para testar APIs REST e realizar requisições</div>
       </div>
       <div class="icon reveal">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg" alt="Hibernate">
-        <span>Hibernate</span>
-        <div class="tooltip">ORM para persistência de dados em bancos relacionais com Java</div>
-      </div>
-      <div class="icon reveal">
-        <img src="https://vitejs.dev/logo.svg" alt="Vite" style="width: 50px; height: 50px;">
-        <span>Vite</span>
-        <div class="tooltip">Build tool rápido para projetos front-end modernos</div>
-      </div>
-      <div class="icon reveal">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript">
-        <span>TypeScript</span>
-        <div class="tooltip">Superset do JavaScript que adiciona tipagem estática</div>
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
+        <span>Docker</span>
+        <div class="tooltip">Plataforma para desenvolver, enviar e executar aplicações em contêineres</div>
       </div>
     </div>
   </div>
