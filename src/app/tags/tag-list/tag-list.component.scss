@@ -201,13 +201,6 @@ button[mat-icon-button][color="warn"] {
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 }
 
-.confirm-snackbar {
-  /* No momento, o MatSnackBarContainer usa uma cor de fundo padrão.
-     Se precisar de um fundo, defina aqui. Por exemplo:
-     background-color: #f0f0f0;
-     color: #333;
-  */
-}
 
 .confirm-snackbar-content {
   display: flex;

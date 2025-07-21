@@ -24,9 +24,8 @@ import { MatDividerModule } from "@angular/material/divider";
     MatTooltipModule,
     MatCardModule, 
     MatSnackBarModule,
-    MatDividerModule, 
-    ConfirmSnackbarComponent // Adicione ConfirmSnackbarComponent
-  ],
+    MatDividerModule
+    ],
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.scss']
 })

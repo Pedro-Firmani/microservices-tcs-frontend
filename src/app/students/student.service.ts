@@ -1,6 +1,6 @@
 // src/app/students/student.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http'; // Adicione HttpParams
 import { Observable } from 'rxjs';
 
 export interface StudentResponse {
@@ -27,12 +27,17 @@ export interface StudentRequest {
   providedIn: 'root'
 })
 export class StudentService {
-  private baseUrl = 'http://localhost:8080/students'; // URL correta
+  private baseUrl = 'http://localhost:8080/students';
 
   constructor(private http: HttpClient) { }
 
-  getAllStudents(): Observable<StudentResponse[]> {
-    return this.http.get<StudentResponse[]>(this.baseUrl);
+  // Modifique getAllStudents para aceitar um tagId opcional
+  getAllStudents(tagId?: number | null): Observable<StudentResponse[]> { // Modificado
+    let params = new HttpParams(); // Novo
+    if (tagId) { // Novo
+      params = params.set('tagId', tagId.toString()); // Novo
+    } // Novo
+    return this.http.get<StudentResponse[]>(this.baseUrl, { params: params }); // Modificado
   }
 
   getStudentById(id: number): Observable<StudentResponse> {
@@ -47,9 +52,6 @@ export class StudentService {
     return this.http.post<StudentResponse>(this.baseUrl, studentData);
   }
 
-  // VVV CORREÇÃO AQUI VVV
-  // A função estava usando 'this.apiUrl', que não existe.
-  // O correto é usar 'this.baseUrl'.
   deleteStudent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }

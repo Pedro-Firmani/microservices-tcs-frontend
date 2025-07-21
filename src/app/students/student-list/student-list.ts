@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth';
-import { StudentService, StudentResponse, StudentRequest } from '../student.service'; // Mantenha StudentRequest aqui
+import { StudentService, StudentResponse, StudentRequest } from '../student.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TagService } from '../../tags/tag.service'; // Importe TagService
-import { Tag } from '../../tags/tag.model'; // Importe o modelo Tag
+import { TagService } from '../../tags/tag.service';
+import { Tag } from '../../tags/tag.model';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -34,7 +34,7 @@ import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confi
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    MatSelectModule,
+    MatSelectModule, // Certifique-se que MatSelectModule está aqui
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
@@ -48,18 +48,19 @@ export class StudentListComponent implements OnInit {
   editedDescription: string = '';
   tags: Tag[] = [];
   editedTagId: number | null = null;
+  selectedTagIdFilter: number | null = null; // Nova propriedade para o filtro
 
   constructor(
     private studentService: StudentService,
     private router: Router,
     public authService: AuthService,
     private snackBar: MatSnackBar,
-    public tagService: TagService // <--- CORREÇÃO CRÍTICA AQUI: PRECISA SER PÚBLICO
+    public tagService: TagService
   ) {}
 
   ngOnInit(): void {
-    this.loadStudents();
     this.loadTags();
+    this.loadStudents(); // Altere a ordem para carregar tags primeiro
   }
 
   loadTags(): void {
@@ -69,7 +70,6 @@ export class StudentListComponent implements OnInit {
     });
   }
 
-  // <--- CORREÇÃO CRÍTICA AQUI: MÉTODOS getTagColor e getTagName SÃO ESSENCIAIS
   getTagColor(studentColor: string | null | undefined): string {
       if (!studentColor) {
           return '#673ab7'; // Cor padrão (roxo) se não houver cor
@@ -84,15 +84,15 @@ export class StudentListComponent implements OnInit {
     const tag = this.tags.find(t => t.id === tagId);
     return tag ? tag.name.split('').join('<br>') : '';
   }
-  // <--- FIM DOS MÉTODOS ESSENCIAIS
-
 
   loadStudents(): void {
-    this.studentService.getAllStudents().subscribe({
+    // Passa o tagId selecionado para o serviço, se houver.
+    // Se selectedTagIdFilter for null, getAllStudents trará todos os alunos.
+    this.studentService.getAllStudents(this.selectedTagIdFilter).subscribe({ // Modificado
       next: (data: StudentResponse[]) => {
         console.log('%c2. Alunos Carregados (Frontend):', 'color: blue; font-weight: bold;', data);
         data.forEach(student => {
-          console.log(`Aluno: ${student.name}, ID TCS: ${student.idTcs}, Cor da Tag: ${student.color}`); // ESTE LOG É CHAVE
+          console.log(`Aluno: ${student.name}, ID TCS: ${student.idTcs}, Cor da Tag: ${student.color}`);
         });
         this.students = data;
       },
@@ -108,6 +108,12 @@ export class StudentListComponent implements OnInit {
       }
     });
   }
+
+  // Novo método para lidar com a mudança no filtro de tag
+  onTagFilterChange(): void { // Novo
+    this.loadStudents(); // Recarrega os alunos com base no filtro selecionado
+  } // Novo
+
 
   goToCreateStudent(): void {
     this.router.navigate(['/students/create']);
@@ -133,7 +139,7 @@ export class StudentListComponent implements OnInit {
         description: this.editedDescription,
         grupoId: studentToUpdate.grupoId,
         tagId: this.editedTagId,
-        color: tagColor // <<-- ESTE CAMPO ESTÁ SENDO ENVIADO AO BACKEND
+        color: tagColor
       };
 
       this.studentService.updateStudent(id, requestData).subscribe({

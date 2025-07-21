@@ -35,8 +35,7 @@ import { ConfirmSnackbarComponent } from '../shared/components/snackBar/confirm-
     MatListModule,
     MatDividerModule,
     MatTableModule,
-    MatSnackBarModule,
-    ConfirmSnackbarComponent // Adicione o componente de confirmação aqui
+    MatSnackBarModule// Adicione o componente de confirmação aqui
   ],
   templateUrl: './grupo-list.html',
   styleUrls: ['./grupo-list.scss']

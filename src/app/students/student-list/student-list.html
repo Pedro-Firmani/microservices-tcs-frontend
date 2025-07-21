@@ -1,10 +1,22 @@
 <div class="student-list-container">
   <div class="content-white-background">
-    <h2>Lista de Alunos</h2> <button mat-raised-button color="primary" (click)="goToCreateStudent()" *ngIf="authService.hasRole('PROFESSOR')">
+    <h2>Lista de Alunos</h2>
+    <button mat-raised-button color="primary" (click)="goToCreateStudent()" *ngIf="authService.hasRole('PROFESSOR')">
       <mat-icon>person_add</mat-icon> Adicionar Novo Aluno
     </button>
     <br><br>
     <mat-divider></mat-divider>
+    <br>
+
+    <mat-form-field appearance="fill" class="filter-tag-field">
+      <mat-label>Filtrar por Tag</mat-label>
+      <mat-select [(ngModel)]="selectedTagIdFilter" (selectionChange)="onTagFilterChange()">
+        <mat-option [value]="null">Todas as Tags</mat-option>
+        <mat-option *ngFor="let tag of tags" [value]="tag.id">
+          {{ tag.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <br>
 
     <div *ngIf="students.length > 0; else noStudentsFound" class="student-grid">
@@ -78,4 +90,5 @@
     <ng-template #noStudentsFound>
       <p class="no-items-message">Nenhum aluno encontrado.</p>
     </ng-template>
-  </div> </div>
+  </div>
+</div>
