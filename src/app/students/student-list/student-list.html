@@ -6,8 +6,8 @@
     </button>
     <mat-divider></mat-divider>
 
-    <mat-form-field appearance="fill" class="filter-tag-field">
-      <mat-label>Filtrar por Tag</mat-label>
+    <mat-form-field appearance="fill" class="filter-tag-field" style="width: 300px;">
+      <mat-label><mat-icon>filter_list</mat-icon> Filtrar por Tag</mat-label>
       <mat-select [(ngModel)]="selectedTagIdFilter" (selectionChange)="onTagFilterChange()">
         <mat-option [value]="null">Todas as Tags</mat-option>
         <mat-option *ngFor="let tag of tags" [value]="tag.id">

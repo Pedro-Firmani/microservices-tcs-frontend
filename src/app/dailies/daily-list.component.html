@@ -1,7 +1,6 @@
 <div class="daily-list-container">
   <h2>Dailies</h2>
 
-  <!-- Botão de criar nova Daily -->
   <button
     mat-raised-button
     color="primary"
@@ -12,14 +11,14 @@
     Registrar Nova Daily
   </button>
 
-  <br /><br />
+  <br><br>
 
   <mat-divider></mat-divider>
 
-  <br />
+  <br>
 
   <mat-form-field appearance="fill" style="width: 300px;">
-    <mat-label>Filtrar por Aluno</mat-label>
+    <mat-label><mat-icon>filter_list</mat-icon> Filtrar por Aluno</mat-label>
     <mat-select [(ngModel)]="selectedStudentId" (selectionChange)="filterByStudent()">
       <mat-option [value]="null">Todos os alunos</mat-option>
       <mat-option *ngFor="let student of students" [value]="student.id">
@@ -28,9 +27,6 @@
     </mat-select>
   </mat-form-field>
 
-  <br />
-
-  <!-- Lista de Dailies -->
   <div *ngIf="dailies.length > 0; else noDailiesFound" class="daily-grid">
     <mat-card *ngFor="let daily of dailies" class="daily-card">
       <mat-card-header>
@@ -53,15 +49,20 @@
         >
           <mat-icon>edit</mat-icon> Editar
         </button>
-        <button mat-raised-button color="warn" (click)="confirmDeleteDaily(daily.id!)">
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="confirmDeleteDaily(daily.id!)"
+        >
           <mat-icon>delete</mat-icon> Excluir
         </button>
       </mat-card-actions>
     </mat-card>
   </div>
 
-  <!-- Mensagem quando não há dailies -->
   <ng-template #noDailiesFound>
-    <p class="no-items-message">Nenhuma daily encontrada.</p>
+    <div class="no-items-message">
+      Nenhuma daily encontrada. Comece adicionando uma nova!
+    </div>
   </ng-template>
 </div>
