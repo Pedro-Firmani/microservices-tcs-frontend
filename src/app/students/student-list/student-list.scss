@@ -249,3 +249,8 @@ button[mat-stroked-button] {
     width: 0;
   }
 }
+
+mat-divider {
+  border-top-color: $primary-color !important; /* Cor roxa */
+  border-top-width: 3px !important; /* Espessura */
+}

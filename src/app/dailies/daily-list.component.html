@@ -14,7 +14,10 @@
 
   <br /><br />
 
-  <!-- Filtro por Aluno -->
+  <mat-divider></mat-divider>
+
+  <br />
+
   <mat-form-field appearance="fill" style="width: 300px;">
     <mat-label>Filtrar por Aluno</mat-label>
     <mat-select [(ngModel)]="selectedStudentId" (selectionChange)="filterByStudent()">
@@ -25,9 +28,6 @@
     </mat-select>
   </mat-form-field>
 
-  <br />
-
-  <mat-divider></mat-divider>
   <br />
 
   <!-- Lista de Dailies -->

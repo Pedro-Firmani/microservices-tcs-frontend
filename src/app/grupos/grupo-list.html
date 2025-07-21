@@ -1,6 +1,5 @@
 <div class="grupo-list-container">
   <h2>Lista de Grupos</h2>
-  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
   <div *ngIf="isProfessor" class="grupo-form-section">
     <h3>{{ editMode ? 'Editar Grupo' : 'Novo Grupo' }}</h3>
@@ -43,9 +42,7 @@
               <p class="no-alunos">Nenhum aluno neste grupo.</p>
             </ng-template>
           </ng-container>
-
-          <mat-divider></mat-divider>
-
+          <br/>
           <h4>Adicionar Aluno ao Grupo:</h4>
           <div *ngIf="availableStudentsForAddition.length > 0; else noAvailableStudents">
             <mat-list>
@@ -69,10 +66,6 @@
       </mat-card>
     </div>
   </div>
-
-  <br>
-  <mat-divider></mat-divider>
-  <br>
 
   <div *ngIf="grupos.length > 0" class="grupos-grid">
     <mat-card *ngFor="let grupo of grupos" class="grupo-card">

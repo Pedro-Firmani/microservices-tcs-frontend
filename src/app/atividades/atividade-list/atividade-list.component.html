@@ -9,8 +9,6 @@
   <mat-divider></mat-divider>
   <br>
 
-  <!-- Removido: <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p> -->
-
   <div *ngIf="atividades.length > 0; else noAtividadesFound" class="atividade-grid">
     <mat-card *ngFor="let atividade of atividades" class="atividade-card">
       <mat-card-header>
