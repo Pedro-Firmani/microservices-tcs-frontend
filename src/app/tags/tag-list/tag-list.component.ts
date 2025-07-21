@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TagService } from '../tag.service';
-import { Tag } from '../tag.model'; 
+import { Tag } from '../tag.model';
+import { AuthService } from '../../auth/auth'; // Importe AuthService
 
 // Importações dos módulos do Angular Material
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatCardModule } from '@angular/material/card'; 
+import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confirm-snackbar.component';
-import { MatDividerModule } from "@angular/material/divider"; 
+import { MatDividerModule } from "@angular/material/divider";
 
 @Component({
   selector: 'app-tag-list',
@@ -22,10 +23,10 @@ import { MatDividerModule } from "@angular/material/divider";
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatCardModule, 
+    MatCardModule,
     MatSnackBarModule,
     MatDividerModule
-    ],
+  ],
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.scss']
 })
@@ -34,7 +35,8 @@ export class TagListComponent implements OnInit {
 
   constructor(
     public tagService: TagService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public authService: AuthService // Injete AuthService e torne-o público
   ) { }
 
   ngOnInit(): void {
@@ -53,9 +55,6 @@ export class TagListComponent implements OnInit {
     });
   }
 
-  
-
-
   deleteTag(id: number): void {
     const snackBarRef = this.snackBar.openFromComponent(ConfirmSnackbarComponent, {
       data: {
@@ -64,7 +63,7 @@ export class TagListComponent implements OnInit {
         cancelText: 'Não'
       },
       duration: 5000,
-      horizontalPosition: 'center', 
+      horizontalPosition: 'center',
       verticalPosition: 'bottom',
       panelClass: ['confirm-snackbar']
     });
@@ -95,11 +94,8 @@ export class TagListComponent implements OnInit {
     this.snackBar.open(message, 'Fechar', {
       duration: 3000,
       panelClass: [type === 'success' ? 'success-snackbar' : 'error-snackbar'],
-      horizontalPosition: 'right', 
+      horizontalPosition: 'right',
       verticalPosition: 'bottom'
     });
   }
 }
-
-
-

@@ -2,7 +2,7 @@
 
   <h2>Gerenciamento de Tags</h2>
   <div class="button-container">
-    <button mat-raised-button color="primary" routerLink="/tags/new">
+    <button mat-raised-button color="primary" routerLink="/tags/new" *ngIf="authService.hasRole('PROFESSOR')">
       <mat-icon>add</mat-icon>
       Criar Tag
     </button>
@@ -15,16 +15,16 @@
   <ng-template #tagsGrid>
     <div class="tags-grid">
       <div *ngFor="let tag of tags" class="tag-card">
-        <div 
-          class="tag-flag" 
+        <div
+          class="tag-flag"
           [style.--tag-color]="tag.color || '#673ab7'"
           [style.--tag-darker-color]="tagService.getDarkerColor(tag.color || '#673ab7', 15)"
           [style.--tag-text-color]="tagService.getTextColor(tag.color || '#673ab7')" >
-          <span [style.color]="'var(--tag-text-color)'">{{ tag.name }}</span> </div>
+          <span [style.color]="'var(--tag-text-color)'">{{ tag.name }}</span>
+        </div>
         <div class="tag-details">
           <div class="tag-flag-id">#{{tag.id}}</div>
-          <div class="tag-actions">
-            <button mat-icon-button color="accent" [routerLink]="['/tags/edit', tag.id]" matTooltip="Editar Tag">
+          <div class="tag-actions" *ngIf="authService.hasRole('PROFESSOR')"> <button mat-icon-button color="accent" [routerLink]="['/tags/edit', tag.id]" matTooltip="Editar Tag">
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button color="warn" (click)="deleteTag(tag.id!)" matTooltip="Excluir Tag">
