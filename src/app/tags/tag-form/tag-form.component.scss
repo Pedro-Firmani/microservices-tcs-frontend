@@ -12,7 +12,9 @@ $background-color: #f5f5f5; // Grey 100
 /* Import para as novas funções de cor do Sass */
 @use "sass:color";
 
-/* SOBRESCREVENDO AS VARIÁVEIS CSS DO ANGULAR MATERIAL PARA O TEMA GLOBAL (se aplicável) */
+/* SOBRESCREVENDO AS VARIÁVEIS CSS DO ANGULAR MATERIAL PARA O TEMA GLOBAL */
+// Estas regras devem ser globais (no seu styles.scss), mas as mantemos aqui se não estiverem surtindo efeito.
+// Se já estiverem no styles.scss, você pode remover este bloco.
 :root {
   --mdc-theme-primary: #{$primary-color};
   --mdc-theme-on-primary: #ffffff;
@@ -21,20 +23,18 @@ $background-color: #f5f5f5; // Grey 100
   --mdc-theme-error: #{$warn-color};
   --mdc-theme-on-error: #ffffff;
 
-  /* ESSAS LINHAS ALTERAM A COR DO TEXTO DO LABEL para #e0e2ec */
   --mat-form-field-label-text-color: #e0e2ec;
   --mat-form-field-focus-label-text-color: #e0e2ec;
   --mat-form-field-floating-label-text-color: #e0e2ec;
 
   --mat-form-field-underline-color: #{$border-color};
   --mat-form-field-focus-underline-color: #{$primary-dark-color};
-  --mat-form-field-filled-indicator-color: transparent; /* Certifica que não há cor extra */
+  --mat-form-field-filled-indicator-color: transparent;
 
   --mat-form-field-error-text-color: #{$warn-color};
   --mat-form-field-disabled-label-text-color: #9e9e9e;
   --mat-form-field-disabled-underline-color: #bdbdbd;
 
-  /* Cores para os botões do Material */
   --mat-button-toggle-text-color: #{$primary-color};
   --mat-button-toggle-checked-text-color: #ffffff;
   --mat-button-toggle-checked-background-color: #{$primary-color};
@@ -42,14 +42,7 @@ $background-color: #f5f5f5; // Grey 100
   --mat-raised-button-background-color: #{$primary-color};
 }
 
-/* SE PRECISAR SER AINDA MAIS ESPECÍFICO PARA O TEXTO DA LABEL FLUTUANTE (em foco/com valor) */
-// Aplicando o padrão de cores do student-create.scss
-.mat-mdc-form-field.mat-focused .mat-mdc-floating-label.mat-mdc-floating-label,
-.mat-mdc-form-field-has-value .mat-mdc-floating-label.mat-mdc-floating-label {
-  color: #e0e2ec !important;
-}
-
-
+/* Container principal do formulário */
 .tag-form-container {
   padding: 20px;
   max-width: 500px;
@@ -58,26 +51,52 @@ $background-color: #f5f5f5; // Grey 100
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  h2 {
-    color: $primary-dark-color; // Usando cor da paleta
+  mat-card-title { // Usando o seletor mat-card-title diretamente
+    color: $primary-dark-color;
     text-align: center;
     margin-bottom: 20px;
-    font-size: 2em; // Aumentado para consistência
-    font-weight: 600; // Aumentado para consistência
+    font-size: 2em;
+    font-weight: 600;
   }
 
-  .form-group {
-    margin-bottom: 15px;
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; // Espaçamento entre os campos Material
+  }
 
-    mat-form-field {
-      width: 100%; // Ocupa a largura total
-    }
+  .full-width {
+    width: 100%;
+  }
 
-    .error-message { // Este estilo será substituído por mat-error
-      color: $warn-color;
-      font-size: 14px;
-      margin-top: 5px;
-    }
+  /* Estilos para o fundo dos campos de formulário Material */
+  .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: #e0e2ec !important; /* Cor de fundo para campos preenchidos */
+    border-radius: 4px 4px 0 0 !important;
+  }
+
+  .mat-form-field-appearance-fill .mat-mdc-text-field-wrapper {
+    background-color: #e0e2ec !important; /* fallback para versões mais antigas ou outros componentes */
+  }
+
+  .mat-mdc-input-element.mdc-text-field__input {
+    color: $text-color !important; /* Cor do texto digitado */
+  }
+
+  /* Estilos para o autofill do navegador */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px #e0e2ec inset !important;
+    -webkit-text-fill-color: #{$text-color} !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Cor da label flutuante em foco/com valor */
+  .mat-mdc-form-field.mat-focused .mat-mdc-floating-label,
+  .mat-mdc-form-field-has-value .mat-mdc-floating-label {
+    color: $primary-dark-color !important; // Ou uma cor que contraste bem
   }
 
   .form-actions {
@@ -87,57 +106,51 @@ $background-color: #f5f5f5; // Grey 100
     margin-top: 20px;
 
     button {
-      // Estilos base para botões Material
       height: 48px;
       min-width: 120px;
       font-weight: 500;
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
       &[type="submit"] {
-        // Estilo para o botão primário (Salvar/Criar)
         background-color: $primary-color !important;
         color: white !important;
         box-shadow: 0 3px 5px rgba(0,0,0,0.2);
 
         &:hover {
-          background-color: darken($primary-color, 10%) !important;
+          background-color: color.adjust($primary-color, $lightness: -10%) !important; // Corrigido
           box-shadow: 0 5px 8px rgba(0,0,0,0.3);
         }
       }
 
-      &[type="button"] {
-        // Estilo para o botão de cancelar
+      &[type="button"] { // Estilo para o botão de cancelar
         color: $warn-color !important;
         border-color: $warn-color !important;
         background-color: transparent !important;
 
         &:hover {
-          background-color: lighten($warn-color, 40%) !important; // Um leve hover para stroked buttons
+          background-color: color.adjust($warn-color, $lightness: 40%) !important; // Corrigido
         }
       }
     }
   }
 }
 
-/* --- ESTILOS DOS SNACKBARS (Adicionados para padronização) --- */
-
-// Estilo para snackbar de sucesso
+/* --- ESTILOS DOS SNACKBARS (Padronização) --- */
 .success-snackbar {
-  background-color: #4CAF50; /* Verde de sucesso */
+  background-color: #4CAF50;
   color: white;
   border-radius: 4px;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 }
 
-// Estilo para snackbar de erro
 .error-snackbar {
-  background-color: $warn-color; /* Vermelho de erro */
+  background-color: $warn-color;
   color: white;
   border-radius: 4px;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 }
 
-// Estilo para o container do snackbar de confirmação
+// Estilo para o container do confirm-snackbar-component (que é programático)
 .confirm-snackbar {
   /* No momento, o MatSnackBarContainer usa uma cor de fundo padrão.
      Se precisar de um fundo, defina aqui. Por exemplo:
@@ -146,50 +159,70 @@ $background-color: #f5f5f5; // Grey 100
   */
 }
 
-// Estilo para o conteúdo dentro do confirm-snackbar-component
+
+/* tag-form.component.scss */
+input[type="color"] {
+  height: 40px;
+  width: 60px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+}
+
+// Estilo para o conteúdo dentro do confirm-snackbar-component (que é renderizado dentro do MatSnackBarContainer)
 .confirm-snackbar-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px; // Padding interno
-  min-width: 280px; // Largura mínima
+  padding: 16px;
+  min-width: 280px;
   box-sizing: border-box;
 
   p {
-    margin: 0 0 15px 0; // Espaço abaixo da mensagem
+    margin: 0 0 15px 0;
     font-size: 1em;
-    color: #333; // Cor do texto da mensagem
+    color: #333;
     text-align: center;
   }
 
   .confirm-buttons {
     display: flex;
-    gap: 15px; // Espaço entre os botões
+    gap: 15px;
     justify-content: center;
     width: 100%;
 
     button {
-      flex: 1; // Botões ocupam espaço igual
+      flex: 1;
       font-weight: bold;
       height: 40px;
-      line-height: 40px; // Centraliza texto verticalmente
-    }
+      line-height: 40px;
 
-    // Estilo para o botão "Sim" (roxo)
-    .mat-mdc-button.mat-mdc-button-base.confirm-button {
-      background-color: $primary-color !important;
-      color: white !important;
-      &:hover {
-        background-color: darken($primary-color, 10%) !important;
+      // Estilo para o botão "Sim" (roxo)
+      .mat-mdc-button.mat-mdc-button-base.confirm-button {
+        background-color: $primary-color !important;
+        color: white !important;
+        &:hover {
+          background-color: color.adjust($primary-color, $lightness: -10%) !important; // Corrigido
+        }
       }
-    }
 
-    // Estilo para o botão "Não" (vermelho)
-    .mat-mdc-button.mat-mdc-button-base.cancel-button {
-      background-color: $warn-color !important;
-      color: white !important;
-      &:hover {
-        background-color: darken($warn-color, 10%) !important;
+      // Estilo para o botão "Não" (vermelho)
+      .mat-mdc-button.mat-mdc-button-base.cancel-button {
+        background-color: $warn-color !important;
+        color: white !important;
+        &:hover {
+          background-color: color.adjust($warn-color, $lightness: -10%) !important; // Corrigido
+        }
       }
     }
   }

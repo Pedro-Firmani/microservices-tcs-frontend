@@ -1,29 +1,62 @@
 <div class="tag-form-container">
-  <h2>{{ formTitle }}</h2>
-  <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Nome da Tag</mat-label>
-        <input matInput id="name" type="text" formControlName="name" placeholder="Ex: Backend" />
-        <mat-error *ngIf="tagForm.get('name')?.hasError('required') && tagForm.get('name')?.touched">
-          Nome da tag é obrigatório.
-        </mat-error>
-        <mat-error *ngIf="tagForm.get('name')?.hasError('minlength') && tagForm.get('name')?.touched">
-          Nome da tag deve ter no mínimo 2 caracteres.
-        </mat-error>
-        <mat-error *ngIf="tagForm.get('name')?.hasError('maxlength') && tagForm.get('name')?.touched">
-          Nome da tag deve ter no máximo 10 caracteres.
-        </mat-error>
-      </mat-form-field>
-    </div>
+  <mat-card>
+    <mat-card-title>{{ formTitle }}</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Nome da Tag</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Ex: Backend"
+            required
+          />
+          <mat-error
+            *ngIf="
+              tagForm.get('name')?.hasError('required') &&
+              tagForm.get('name')?.touched
+            "
+          >
+            O nome da tag é obrigatório.
+          </mat-error>
+          <mat-error
+            *ngIf="
+              tagForm.get('name')?.hasError('maxlength') &&
+              tagForm.get('name')?.touched
+            "
+          >
+            O nome da tag não pode ter mais de 10 caracteres.
+          </mat-error>
+        </mat-form-field>
 
-    <div class="form-actions">
-      <button mat-stroked-button color="warn" type="button" (click)="onCancel()">
-        <mat-icon>cancel</mat-icon> Cancelar
-      </button>
-      <button mat-raised-button color="primary" type="submit">
-        <mat-icon>save</mat-icon> {{ isEditMode ? 'Salvar Edição' : 'Criar Tag' }}
-      </button>
-    </div>
-  </form>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Cor da Tag</mat-label>
+          <input matInput type="color" formControlName="color" required />
+          <mat-error
+            *ngIf="
+              tagForm.get('color')?.hasError('required') &&
+              tagForm.get('color')?.touched
+            "
+          >
+            A cor da tag é obrigatória.
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="tagForm.invalid"
+          >
+            <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
+            {{ isEditMode ? "Salvar Edição" : "Criar Tag" }}
+          </button>
+          <button mat-button type="button" (click)="onCancel()">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

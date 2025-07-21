@@ -11,6 +11,7 @@ export interface StudentResponse {
   grupoNome?: string;
   description?: string | null;
   tagId?: number | null;
+  color?: string | null;
 }
 
 export interface StudentRequest {
@@ -19,6 +20,7 @@ export interface StudentRequest {
   grupoId?: number | null;
   description?: string | null;
   tagId?: number | null;
+  color?: string | null;
 }
 
 @Injectable({

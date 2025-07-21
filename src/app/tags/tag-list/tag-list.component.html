@@ -8,25 +8,19 @@
     </button>
   </div>
 
-  <br> <!-- Adiciona um espaço antes do divisor -->
-  <mat-divider></mat-divider> <!-- Divisor adicionado aqui -->
-  <br> <!-- Adiciona um espaço depois do divisor -->
-
-  <div *ngIf="!tags || tags.length === 0; else tagsGrid" class="no-items-message">
+  <br> <mat-divider></mat-divider> <br> <div *ngIf="!tags || tags.length === 0; else tagsGrid" class="no-items-message">
     <p>Nenhuma tag encontrada.</p>
   </div>
 
   <ng-template #tagsGrid>
     <div class="tags-grid">
       <div *ngFor="let tag of tags" class="tag-card">
-        <!-- Passando a cor mais escura como uma variável CSS -->
         <div 
           class="tag-flag" 
           [style.--tag-color]="tag.color || '#673ab7'"
-          [style.--tag-darker-color]="getDarkerColor(tag.color || '#673ab7', 15)"
-        >
-          <span>{{ tag.name }}</span>
-        </div>
+          [style.--tag-darker-color]="tagService.getDarkerColor(tag.color || '#673ab7', 15)"
+          [style.--tag-text-color]="tagService.getTextColor(tag.color || '#673ab7')" >
+          <span [style.color]="'var(--tag-text-color)'">{{ tag.name }}</span> </div>
         <div class="tag-details">
           <div class="tag-flag-id">#{{tag.id}}</div>
           <div class="tag-actions">

@@ -207,10 +207,13 @@ button[mat-stroked-button] {
   right: 15px; 
   opacity: 80%;
   
+  // CORREÇÃO CRÍTICA AQUI: DEVE USAR AS VARIÁVEIS CSS, NÃO CORES HARDCODED
+  background-color: var(--tag-color); /* <<< DEVE USAR A VARIÁVEL */
+  color: var(--tag-text-color); /* <<< DEVE USAR A VARIÁVEL */
+  
   // Dimensões e fundo
   width: 40px; // Mais estreito para o texto vertical
   padding: 12px 0;
-  background-color: #673ab7; // Cor padrão (pode ser alterada dinamicamente)
   text-align: center; // Centraliza o conteúdo (o span) dentro da fita
   
   // Sombra para dar profundidade
@@ -223,7 +226,9 @@ button[mat-stroked-button] {
 
   // Estilo do texto dentro da fita
   span {
-    color: white;
+    // Esta cor será sobrescrita pela cor definida na div.student-tag-flag
+    // Mas para garantir, podemos usar inherit ou var(--tag-text-color) para pegar a cor da div pai
+    color: inherit; /* <<< DEVE USAR INHERIT OU A VARIÁVEL */
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
@@ -237,7 +242,7 @@ button[mat-stroked-button] {
     bottom: -10px; // Posiciona abaixo da fita principal
     left: 0;
     // Cria um triângulo usando bordas
-    border-top: 10px solid #492a82; // Um tom mais escuro da cor da fita
+    border-top: 10px solid var(--tag-darker-color); /* <<< DEVE USAR A VARIÁVEL */
     border-left: 20px solid transparent; // Metade da largura
     border-right: 20px solid transparent; // Metade da largura
     height: 2px;

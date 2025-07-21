@@ -14,25 +14,25 @@ $background-color: #f5f5f5;
 
 .tag-list-container {
   padding: 20px;
-  max-width: 1200px; // Aumentado para acomodar o grid
+  max-width: 1200px;
   margin: 20px auto;
   font-family: 'Roboto', sans-serif;
-  background-color: #ffffff; // Fundo branco para o container principal
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .button-container {
   display: flex;
-  justify-content: flex-start; // Alinha o botão à esquerda
-  margin-bottom: 20px; // Espaçamento abaixo do botão
-  padding-left: 20px; // Alinha com o conteúdo principal
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  padding-left: 20px;
 }
 
 h2 {
   color: $primary-dark-color;
-  text-align: center; // Mantém o título centralizado
-  margin-bottom: 20px; // Espaçamento abaixo do título
+  text-align: center;
+  margin-bottom: 20px;
   font-size: 2.2em;
   font-weight: 700;
 }
@@ -48,7 +48,7 @@ button[mat-raised-button][color="primary"] {
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    background-color: darken($primary-color, 10%) !important;
+    background-color: color.adjust($primary-color, $lightness: -10%) !important; // Corrigido
     box-shadow: 0 5px 8px rgba(0,0,0,0.3);
   }
 }
@@ -65,7 +65,7 @@ button[mat-icon-button] {
 button[mat-icon-button][color="warn"] {
   color: $warn-color;
   &:hover {
-    color: darken($warn-color, 10%);
+    color: color.adjust($warn-color, $lightness: -10%); // Corrigido
   }
 }
 
@@ -83,8 +83,8 @@ button[mat-icon-button][color="warn"] {
 /* Novo Grid para as Tags */
 .tags-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); // Ajustado para acomodar o novo formato
-  gap: 25px; // Espaçamento entre as tags
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
   padding: 20px 0;
 }
 
@@ -95,8 +95,8 @@ button[mat-icon-button][color="warn"] {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   display: flex;
-  align-items: center; /* Alinha a flag e os detalhes horizontalmente */
-  padding: 10px; /* Padding interno do card */
+  align-items: center;
+  padding: 10px;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 
   &:hover {
@@ -108,44 +108,44 @@ button[mat-icon-button][color="warn"] {
 /* Estilo da Flag (marca-páginas lateral) */
 .tag-flag {
   position: relative;
-  width: 180px; /* Largura para 11 caracteres */
-  height: 50px; /* Altura padrão */
+  width: 180px;
+  height: 50px;
   text-align: center;
-  color: white;
-  font-size: 1.2em; /* Ajustado para caber o texto */
+  font-size: 1.2em;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px; /* Ajustado */
-  border-radius: 0; /* Removido border-radius para clip-path */
-  margin-right: 15px; /* Espaço entre a flag e os detalhes */
+  letter-spacing: 0.5px;
+  border-radius: 0;
+  margin-right: 15px;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px; /* Padding horizontal interno */
+  padding: 0 10px;
 
   // A cor de fundo principal e o gradiente para a ponta escura
   background: linear-gradient(
-    to right, // Gradiente da esquerda para a direita
-    var(--tag-color, #{$primary-color}) 85%, // Cor principal da tag
-    var(--tag-darker-color, #{$primary-dark-color}) 100% // Tom mais escuro para a ponta
+    to right,
+    var(--tag-color, #{$primary-color}) 85%,
+    var(--tag-darker-color, #{$primary-dark-color}) 100%
   );
 
   // Forma de marca-páginas com corte em V na parte inferior
   clip-path: polygon(
-    0% 0%,        // Top-left
-    calc(100% - 15px) 0%, // Top-right (com recuo para o corte)
-    100% 50%,     // Ponta direita central
-    calc(100% - 15px) 100%, // Bottom-right (com recuo para o corte)
-    0% 100%       // Bottom-left
+    0% 0%,
+    calc(100% - 15px) 0%,
+    100% 50%,
+    calc(100% - 15px) 100%,
+    0% 100%
   );
 
   span {
     display: block;
-    white-space: nowrap; /* Impede quebra de linha */
-    overflow: hidden; /* Esconde o que excede */
-    text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
-    max-width: 100%; /* Garante que o span respeite a largura do pai */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: var(--tag-text-color); /* Usando a variável para a cor do texto */
   }
 }
 
@@ -153,22 +153,22 @@ button[mat-icon-button][color="warn"] {
 .tag-flag::before {
   content: '';
   position: absolute;
-  top: 50%; /* Centralizado verticalmente */
-  left: -10px; /* Posicionado à esquerda para simular a ponteira */
-  transform: translateY(-50%); /* Centraliza verticalmente */
-  width: 15px; // Largura da ponteira
-  height: 40px; // Altura da ponteira
-  background-color: #4CAF50; // Cor contrastante (verde/azul como na imagem)
-  border-top-left-radius: 5px; /* Arredondamento */
-  border-bottom-left-radius: 5px; /* Arredondamento */
-  z-index: 3; // Garante que fique acima da flag
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 40px;
+  background-color: var(--tag-color, #{$primary-color}); // A ponteira terá a mesma cor base da tag
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  z-index: 3;
 }
 
 .tag-details {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  flex-grow: 1; /* Permite que os detalhes ocupem o espaço restante */
+  flex-grow: 1;
 }
 
 .tag-flag-id {
@@ -181,29 +181,26 @@ button[mat-icon-button][color="warn"] {
 /* Ações dos botões dentro do card */
 .tag-actions {
   display: flex;
-  gap: 5px; /* Espaço menor entre os ícones */
-  margin-top: auto; /* Empurra os botões para o final do card */
+  gap: 5px;
+  margin-top: auto;
 }
 
 /* --- ESTILOS DOS SNACKBARS --- */
 
-// Estilo para snackbar de sucesso
 .success-snackbar {
-  background-color: #4CAF50; /* Verde de sucesso */
+  background-color: #4CAF50;
   color: white;
   border-radius: 4px;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 }
 
-// Estilo para snackbar de erro
 .error-snackbar {
-  background-color: $warn-color; /* Vermelho de erro */
+  background-color: $warn-color;
   color: white;
   border-radius: 4px;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 }
 
-// Estilo para o container do snackbar de confirmação
 .confirm-snackbar {
   /* No momento, o MatSnackBarContainer usa uma cor de fundo padrão.
      Se precisar de um fundo, defina aqui. Por exemplo:
@@ -212,50 +209,47 @@ button[mat-icon-button][color="warn"] {
   */
 }
 
-// Estilo para o conteúdo dentro do confirm-snackbar-component
 .confirm-snackbar-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px; // Padding interno
-  min-width: 280px; // Largura mínima
+  padding: 16px;
+  min-width: 280px;
   box-sizing: border-box;
 
   p {
-    margin: 0 0 15px 0; // Espaço abaixo da mensagem
+    margin: 0 0 15px 0;
     font-size: 1em;
-    color: #333; // Cor do texto da mensagem
+    color: #333;
     text-align: center;
   }
 
   .confirm-buttons {
     display: flex;
-    gap: 15px; // Espaço entre os botões
+    gap: 15px;
     justify-content: center;
     width: 100%;
 
     button {
-      flex: 1; // Botões ocupam espaço igual
+      flex: 1;
       font-weight: bold;
       height: 40px;
-      line-height: 40px; // Centraliza texto verticalmente
-    }
+      line-height: 40px;
 
-    // Estilo para o botão "Sim" (roxo)
-    .mat-mdc-button.mat-mdc-button-base.confirm-button {
-      background-color: $primary-color !important;
-      color: white !important;
-      &:hover {
-        background-color: darken($primary-color, 10%) !important;
+      .mat-mdc-button.mat-mdc-button-base.confirm-button {
+        background-color: $primary-color !important;
+        color: white !important;
+        &:hover {
+          background-color: color.adjust($primary-color, $lightness: -10%) !important;
+        }
       }
-    }
 
-    // Estilo para o botão "Não" (vermelho)
-    .mat-mdc-button.mat-mdc-button-base.cancel-button {
-      background-color: $warn-color !important;
-      color: white !important;
-      &:hover {
-        background-color: darken($warn-color, 10%) !important;
+      .mat-mdc-button.mat-mdc-button-base.cancel-button {
+        background-color: $warn-color !important;
+        color: white !important;
+        &:hover {
+          background-color: color.adjust($warn-color, $lightness: -10%) !important;
+        }
       }
     }
   }

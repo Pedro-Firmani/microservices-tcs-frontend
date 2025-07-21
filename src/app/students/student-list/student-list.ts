@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth';
-import { StudentService, StudentResponse, StudentRequest } from '../student.service';
+import { StudentService, StudentResponse, StudentRequest } from '../student.service'; // Mantenha StudentRequest aqui
 import { HttpErrorResponse } from '@angular/common/http';
-import { TagService } from '../../tags/tag.service';
-import { Tag } from '../../tags/tag.model';
+import { TagService } from '../../tags/tag.service'; // Importe TagService
+import { Tag } from '../../tags/tag.model'; // Importe o modelo Tag
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -16,7 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatSelectModule } from '@angular/material/select'; // MatOption é exportado por este módulo
+import { MatSelectModule } from '@angular/material/select';
 
 // Importe o novo componente de confirmação do snackbar
 import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confirm-snackbar.component';
@@ -34,7 +34,7 @@ import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confi
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    MatSelectModule, // Apenas o MatSelectModule é necessário aqui
+    MatSelectModule,
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
@@ -54,7 +54,7 @@ export class StudentListComponent implements OnInit {
     private router: Router,
     public authService: AuthService,
     private snackBar: MatSnackBar,
-    private tagService: TagService
+    public tagService: TagService // <--- CORREÇÃO CRÍTICA AQUI: PRECISA SER PÚBLICO
   ) {}
 
   ngOnInit(): void {
@@ -62,29 +62,38 @@ export class StudentListComponent implements OnInit {
     this.loadTags();
   }
 
- loadTags(): void {
-  this.tagService.getAllTags().subscribe(data => {
-    console.log('%c1. Tags Carregadas:', 'color: green; font-weight: bold;', data); 
-    this.tags = data;
-  });
-}
-  // ======================================================
-  // ============== FUNÇÃO ADICIONADA AQUI ================
-  // ======================================================
- getTagName(tagId: number | null | undefined): string {
-  if (!tagId) {
-    return '';
+  loadTags(): void {
+    this.tagService.getAllTags().subscribe(data => {
+      console.log('%c1. Tags Carregadas (Frontend):', 'color: green; font-weight: bold;', data);
+      this.tags = data;
+    });
   }
-  const tag = this.tags.find(t => t.id === tagId);
-  // Separa o nome em letras e junta com uma quebra de linha HTML
-  return tag ? tag.name.split('').join('<br>') : '';
-}
+
+  // <--- CORREÇÃO CRÍTICA AQUI: MÉTODOS getTagColor e getTagName SÃO ESSENCIAIS
+  getTagColor(studentColor: string | null | undefined): string {
+      if (!studentColor) {
+          return '#673ab7'; // Cor padrão (roxo) se não houver cor
+      }
+      return studentColor;
+  }
+
+  getTagName(tagId: number | null | undefined): string {
+    if (!tagId) {
+      return '';
+    }
+    const tag = this.tags.find(t => t.id === tagId);
+    return tag ? tag.name.split('').join('<br>') : '';
+  }
+  // <--- FIM DOS MÉTODOS ESSENCIAIS
 
 
   loadStudents(): void {
     this.studentService.getAllStudents().subscribe({
       next: (data: StudentResponse[]) => {
-              console.log('%c2. Alunos Carregados:', 'color: blue; font-weight: bold;', data); // <-- ADICIONE ESTA LINHA
+        console.log('%c2. Alunos Carregados (Frontend):', 'color: blue; font-weight: bold;', data);
+        data.forEach(student => {
+          console.log(`Aluno: ${student.name}, ID TCS: ${student.idTcs}, Cor da Tag: ${student.color}`); // ESTE LOG É CHAVE
+        });
         this.students = data;
       },
       error: (err: HttpErrorResponse) => {
@@ -115,12 +124,16 @@ export class StudentListComponent implements OnInit {
   saveStudent(id: number): void {
     const studentToUpdate = this.students.find(s => s.id === id);
     if (studentToUpdate) {
+      const selectedTag = this.tags.find(t => t.id === this.editedTagId);
+      const tagColor = selectedTag ? selectedTag.color : null;
+
       const requestData: StudentRequest = {
         name: this.editedName,
         idTcs: this.editedIdTcs,
         description: this.editedDescription,
         grupoId: studentToUpdate.grupoId,
-        tagId: this.editedTagId
+        tagId: this.editedTagId,
+        color: tagColor // <<-- ESTE CAMPO ESTÁ SENDO ENVIADO AO BACKEND
       };
 
       this.studentService.updateStudent(id, requestData).subscribe({
