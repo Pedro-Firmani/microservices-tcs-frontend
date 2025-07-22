@@ -124,7 +124,7 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  align-items: flex-end;
+  align-items: baseline; /* ALTERADO AQUI: de 'flex-end' para 'baseline' */
   justify-content: center;
 }
 
@@ -290,7 +290,7 @@ button[mat-stroked-button] {
     display: flex;
     justify-content: flex-end;
     padding: 12px 20px 20px 20px;
-    border-top: 1px solid lighten($border-color, 5%);
+    border-top: 3px solid lighten($border-color, 5%);
     margin-top: auto;
 
     button {
@@ -441,4 +441,9 @@ button[mat-stroked-button] {
       }
     }
   }
+}
+
+mat-divider {
+  border-top-color: $primary-color !important; /* Cor roxa */
+  border-top-width: 3px !important; /* Espessura */
 }

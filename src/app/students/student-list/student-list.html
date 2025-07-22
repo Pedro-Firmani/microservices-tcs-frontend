@@ -19,10 +19,11 @@
 
     <div *ngIf="students.length > 0; else noStudentsFound" class="student-grid">
       <mat-card *ngFor="let student of students" class="student-card">
-        <div *ngIf="student.tagId" class="student-tag-flag" [style.--tag-color]="getTagColor(student.color)"
-          [style.--tag-darker-color]="tagService.getDarkerColor(getTagColor(student.color), 15)"
-          [style.--tag-text-color]="tagService.getTextColor(getTagColor(student.color))"> <span
-            [innerHTML]="getTagName(student.tagId)"></span>
+        <div *ngIf="student.tagId"
+             class="student-tag-flag"
+             [style.--tag-color]="getTagColor(student.color)"
+             [style.--tag-darker-color]="tagService.getDarkerColor(getTagColor(student.color), 15)"
+             [style.--tag-text-color]="tagService.getTextColor(getTagColor(student.color))"> <span [innerHTML]="getTagName(student.tagId)"></span>
         </div>
         <ng-container *ngIf="editingStudentId !== student.id">
           <mat-card-header>
@@ -60,15 +61,15 @@
               <textarea matInput [(ngModel)]="editedDescription"></textarea>
             </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width-field">
-              <mat-label>Tag</mat-label>
-              <mat-select [(ngModel)]="editedTagId">
-                <mat-option [value]="null">Nenhuma</mat-option>
-                <mat-option *ngFor="let tag of tags" [value]="tag.id">
-                  {{ tag.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width-field">
+            <mat-label>Tag</mat-label>
+            <mat-select [(ngModel)]="editedTagId">
+              <mat-option [value]="null">Nenhuma</mat-option>
+              <mat-option *ngFor="let tag of tags" [value]="tag.id">
+                {{ tag.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
           </mat-card-content>
           <mat-card-actions>
