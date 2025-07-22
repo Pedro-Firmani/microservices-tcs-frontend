@@ -1,18 +1,16 @@
 <div class="atividade-form-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ isEditMode ? 'Editar Atividade' : 'Nova Atividade' }}</mat-card-title>
-    </mat-card-header>
+  <h2>{{ isEditMode ? 'Editar Atividade' : 'Nova Atividade' }}</h2>
 
+  <mat-card class="atividade-form-card">
     <mat-card-content>
       <form [formGroup]="atividadeForm" (ngSubmit)="onSubmit()">
         
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="fill">
           <mat-label>Título</mat-label>
           <input matInput formControlName="titulo" required />
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="fill">
           <mat-label>Descrição</mat-label>
           <textarea
             matInput
@@ -22,7 +20,7 @@
           ></textarea>
         </mat-form-field>
 
-        <div>
+        <div class="import-txt-container">
             <button mat-stroked-button type="button" (click)="fileInput.click()">
                 <mat-icon>attach_file</mat-icon>
                 Importar .txt
@@ -30,32 +28,32 @@
             <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".txt">
         </div>
 
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="fill">
           <mat-label>Data de Entrega (Opcional)</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="dataEntrega" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-
+        
+        <div class="form-actions">
+          <button
+            type="button"
+            mat-stroked-button
+            color="warn"
+            [routerLink]="['/atividades']"
+          >
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+          <button
+            (click)="onSubmit()"
+            type="submit"
+            mat-raised-button
+            color="primary"
+          >
+            <mat-icon>save</mat-icon> {{ isEditMode ? 'Salvar Alterações' : 'Criar Atividade' }}
+          </button>
+        </div>
       </form>
     </mat-card-content>
-    
-    <mat-card-actions>
-        <button
-          type="button"
-          mat-stroked-button
-          [routerLink]="['/atividades']"
-        >
-          Cancelar
-        </button>
-        <button
-          (click)="onSubmit()"
-          type="submit"
-          mat-raised-button
-          color="primary"
-        >
-          {{ isEditMode ? 'Salvar Alterações' : 'Criar Atividade' }}
-        </button>
-    </mat-card-actions>
   </mat-card>
 </div>

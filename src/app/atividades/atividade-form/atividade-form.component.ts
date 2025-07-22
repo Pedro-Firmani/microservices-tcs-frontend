@@ -2,12 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Importe MatSnackBar e MatSnackBarModule
-// Serviços e Modelos
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AtividadeService } from '../atividade.service';
 import { Atividade } from '../atividade.model';
-
-// Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,8 +19,7 @@ import { MatNativeDateModule } from '@angular/material/core';
   imports: [
     CommonModule, ReactiveFormsModule, RouterModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule,
-    MatDatepickerModule, MatNativeDateModule,
-    MatSnackBarModule // Adicione MatSnackBarModule aqui
+    MatDatepickerModule, MatNativeDateModule
   ],
   templateUrl: './atividade-form.component.html',
   styleUrls: ['./atividade-form.component.scss']
@@ -84,13 +80,11 @@ export class AtividadeFormComponent implements OnInit {
       reader.onload = () => {
         const text = reader.result as string;
         
-        // Atualiza o valor do campo 'descricao' no formulário de atividade
         this.atividadeForm.patchValue({
           descricao: text
         });
 
         this.openSnackBar('Arquivo .txt importado com sucesso! ✅', 'success');
-        // Limpa o valor do input para permitir selecionar o mesmo arquivo novamente
         input.value = '';
       };
 
@@ -140,12 +134,11 @@ export class AtividadeFormComponent implements OnInit {
     return d.toISOString().slice(0, 19);
   }
 
-  // Método auxiliar para abrir snackbars de sucesso/erro
   private openSnackBar(message: string, type: 'success' | 'error'): void {
     this.snackBar.open(message, 'Fechar', {
       duration: 3000,
       panelClass: [type === 'success' ? 'success-snackbar' : 'error-snackbar'],
-      horizontalPosition: 'right', // Definido para a direita
+      horizontalPosition: 'right',
       verticalPosition: 'bottom'
     });
   }
