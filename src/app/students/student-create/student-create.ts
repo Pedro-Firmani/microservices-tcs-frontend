@@ -47,7 +47,7 @@ export class StudentCreateComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -61,7 +61,6 @@ export class StudentCreateComponent implements OnInit {
   }
 
   saveStudent(): void {
-    // --- Nova Lógica de Validação Front-end ---
     if (!this.student.name || this.student.name.trim() === '') {
       this.snackBar.open('O nome do aluno é obrigatório. ⚠️', 'Fechar', {
         duration: 3000,
@@ -69,20 +68,30 @@ export class StudentCreateComponent implements OnInit {
         horizontalPosition: 'right',
         verticalPosition: 'bottom'
       });
-      return; // Impede a execução do restante da função
+      return;
     }
 
-    if (!this.student.idTcs || this.student.idTcs.trim() === '') {
+    const idTcsNumber = Number(this.student.idTcs);
+
+    if (!this.student.idTcs || this.student.idTcs.trim() === '' || this.student.idTcs === '0') {
       this.snackBar.open('A matrícula (ID TCS) é obrigatória. ⚠️', 'Fechar', {
         duration: 3000,
         panelClass: ['error-snackbar'],
         horizontalPosition: 'right',
         verticalPosition: 'bottom'
       });
-      return; // Impede a execução do restante da função
+      return;
+    } else if (isNaN(idTcsNumber) || !Number.isInteger(idTcsNumber) || idTcsNumber < 0) {
+      this.snackBar.open('A matrícula (ID TCS) deve ser um número inteiro positivo. 🔢', 'Fechar', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom'
+      });
+      return;
+    } else {
+      console.log('Matrícula (ID TCS) válida: ' + this.student.idTcs);
     }
-    // --- Fim da Nova Lógica de Validação Front-end ---
-
 
     if (this.isEditMode && this.studentId) {
       this.studentService.updateStudent(this.studentId, this.student).subscribe({
