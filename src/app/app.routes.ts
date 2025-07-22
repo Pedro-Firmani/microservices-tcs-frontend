@@ -12,35 +12,49 @@ import { DailyListComponent } from './dailies/daily-list.component';
 import { DailyFormComponent } from './dailies/daily-form/daily-form.component';
 import { AtividadeListComponent } from './atividades/atividade-list/atividade-list.component';
 import { AtividadeFormComponent } from './atividades/atividade-form/atividade-form.component';
-import { TagListComponent } from './tags/tag-list/tag-list.component'; // Import TagListComponent
-import { TagFormComponent } from './tags/tag-form/tag-form.component'; // Import TagFormComponent
+import { TagListComponent } from './tags/tag-list/tag-list.component';
+import { TagFormComponent } from './tags/tag-form/tag-form.component';
 import { HomeComponent } from './home/home';
+import { Error403Component } from './error403/error403'; // Importe o componente de erro 403
 
 export const routes: Routes = [
-  // Rotas públicas
+  // Rotas públicas (não precisam de autenticação)
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: '', component: HomeComponent, canActivate: [loginGuard] }, // Rota home, protegida por loginGuard
 
-  // Rotas que exigem apenas que o usuário esteja logado
+  // Rota para a página de acesso negado (403)
+  { path: '403', component: Error403Component },
+
+  // --- ROTAS PARA ESTUDANTES ---
   {
     path: 'students',
     component: StudentListComponent,
-    canActivate: [loginGuard]
+    canActivate: [loginGuard] // Exige apenas login
   },
+  {
+    path: 'students/create',
+    component: StudentCreateComponent,
+    canActivate: [authGuard], // Exige login E role específica
+    data: { expectedRole: 'PROFESSOR' } // Apenas PROFESSOR pode criar alunos
+  },
+
+  // --- ROTAS PARA GRUPOS ---
   {
     path: 'grupos',
     component: GrupoListComponent,
-    canActivate: [loginGuard]
+    canActivate: [loginGuard] // Exige apenas login
   },
 
-  // *** ROTAS PARA DAILIES ***
+  // --- ROTAS PARA DAILIES ---
   {
     path: 'dailies',
     component: DailyListComponent,
-    canActivate: [loginGuard]
+    canActivate: [authGuard], // Exige login E role específica
+    data: { expectedRole: 'PROFESSOR' } // Apenas PROFESSOR pode ver dailies
   },
   {
-    path: 'dailies/create',
+    path: 'dailies/new',
     component: DailyFormComponent,
     canActivate: [authGuard],
     data: { expectedRole: 'PROFESSOR' }
@@ -71,41 +85,30 @@ export const routes: Routes = [
     data: { expectedRole: 'PROFESSOR' }
   },
   {
-    path: 'atividades/:id',
-    component: AtividadeFormComponent,
+    path: 'atividades/:id', // Esta rota parece ser para detalhes ou visualização de uma atividade específica
+    component: AtividadeFormComponent, // Verifique se este é o componente correto para visualização
     canActivate: [loginGuard]
   },
 
-  // Rota protegida que exige a role 'PROFESSOR'
-  {
-    path: 'students/create',
-    component: StudentCreateComponent,
-    canActivate: [authGuard],
-    data: { expectedRole: 'PROFESSOR' }
-  },
-
-  // ✅ NOVO: Rota para a lista de tags
+  // --- ROTAS PARA TAGS ---
   {
     path: 'tags',
     component: TagListComponent,
-    canActivate: [loginGuard] // Ou authGuard, dependendo se precisa de alguma role específica
+    canActivate: [loginGuard] // Exige apenas login para ver a lista de tags
   },
   {
     path: 'tags/new',
     component: TagFormComponent,
     canActivate: [authGuard],
-    data: { expectedRole: 'PROFESSOR' } // Apenas professor pode criar tags
+    data: { expectedRole: 'PROFESSOR' } // Apenas PROFESSOR pode criar tags
   },
   {
     path: 'tags/edit/:id',
     component: TagFormComponent,
     canActivate: [authGuard],
-    data: { expectedRole: 'PROFESSOR' } // Apenas professor pode editar tags
+    data: { expectedRole: 'PROFESSOR' } // Apenas PROFESSOR pode editar tags
   },
 
-  // ✅ Página inicial
-  { path: '', component: HomeComponent },
-
-  // Rota coringa para qualquer URL inválida
-  { path: '**', redirectTo: '/' }
+  // Rota Wildcard (sempre a última!) - Redireciona para home ou 404
+  { path: '**', redirectTo: '/403' } // Redireciona qualquer rota não encontrada para 403
 ];

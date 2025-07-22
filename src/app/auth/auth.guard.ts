@@ -2,20 +2,38 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-// O guarda agora é uma função, que é a abordagem moderna do Angular
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Pega a role esperada para a rota (ex: 'PROFESSOR')
   const expectedRole = route.data['expectedRole'];
 
-  if (!authService.hasRole(expectedRole)) {
-    // Se não tiver a role, redireciona para a página de grupos
-    router.navigate(['/grupos']);
-    return false;
+  // Se a rota espera uma role específica E o usuário NÃO tem essa role
+  if (expectedRole && !authService.hasRole(expectedRole)) {
+    // Redireciona para a NOVA página de erro 403
+    router.navigate(['/403']); // <--- ALTERADO AQUI!
+    return false; // Impede o acesso à rota
   }
 
-  return true; // Permite o acesso
+  // Se não há role esperada ou o usuário tem a role, verifica apenas se está autenticado (se necessário para a rota)
+  return authService.isAuthenticated$.pipe(
+    (obs) => {
+      if (!authService.getToken()) {
+        router.navigate(['/login']);
+        return of(false);
+      }
+      return obs.pipe(
+        map(isLoggedIn => {
+          if (!isLoggedIn) {
+            router.navigate(['/login']);
+            return false;
+          }
+          return true;
+        })
+      );
+    }
+  );
 };
