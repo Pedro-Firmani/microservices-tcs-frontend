@@ -1,13 +1,9 @@
 <div class="daily-form-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{
-        isEditMode ? "Editar Daily" : "Registrar Nova Daily"
-      }}</mat-card-title>
-    </mat-card-header>
+  <h2>{{ isEditMode ? "Editar Daily" : "Registrar Nova Daily" }}</h2>
 
-    <form [formGroup]="dailyForm" (ngSubmit)="onSubmit()">
-      <mat-card-content>
+  <mat-card class="daily-form-card">
+    <mat-card-content>
+      <form [formGroup]="dailyForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
           <mat-form-field appearance="fill" class="form-field">
             <mat-label>Selecione o Aluno</mat-label>
@@ -34,8 +30,7 @@
           </mat-form-field>
         </div>
 
-        <!-- CAMPO DE DESCRIÇÃO -->
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="fill">
           <mat-label>Descrição da Daily</mat-label>
           <textarea
             matInput
@@ -46,32 +41,28 @@
           ></textarea>
         </mat-form-field>
 
-        <!-- BOTÃO DE IMPORTAÇÃO E INPUT ESCONDIDO -->
-        <div>
-            <!-- Adicionado color="primary" para consistência com outros botões de ação -->
-            <button mat-stroked-button type="button" color="primary" (click)="fileInput.click()">
-                <mat-icon>attach_file</mat-icon>
-                Importar .txt
-            </button>
-            <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".txt">
+        <div class="import-txt-container">
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            <mat-icon>attach_file</mat-icon>
+            Importar .txt
+          </button>
+          <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".txt">
         </div>
 
-      </mat-card-content>
-
-      <mat-card-actions>
-        <!-- Adicionado color="warn" para consistência com botões de cancelar -->
-        <button mat-stroked-button color="warn" [routerLink]="['/dailies']">
-          Cancelar
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-        >
-          <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
-          {{ isEditMode ? "Salvar Alterações" : "Registrar Daily" }}
-        </button>
-      </mat-card-actions>
-    </form>
+        <div class="form-actions">
+          <button mat-stroked-button color="warn" [routerLink]="['/dailies']">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+          >
+            <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
+            {{ isEditMode ? "Salvar Alterações" : "Registrar Daily" }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
   </mat-card>
 </div>
