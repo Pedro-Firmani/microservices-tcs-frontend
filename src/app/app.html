@@ -9,7 +9,7 @@
     <ng-container *ngIf="authService.isAuthenticated$ | async">
       <a routerLink="/students" routerLinkActive="active">Alunos</a>
       <a routerLink="/atividades" routerLinkActive="active">Atividades</a>
-      <a routerLink="/dailies" routerLinkActive="active">Dailies</a>
+      <a *ngIf="(authService.userRoles$ | async)?.includes('PROFESSOR')" routerLink="/dailies" routerLinkActive="active">Dailies</a>
       <a routerLink="/grupos" routerLinkActive="active">Grupos</a>
       <a routerLink="/tags" routerLinkActive="active">Tags</a>
     </ng-container>

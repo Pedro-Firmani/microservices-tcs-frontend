@@ -3,11 +3,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { jwtDecode } from 'jwt-decode'; // <<< NOVO: Importa a biblioteca
+import { jwtDecode } from 'jwt-decode';
 import { LoginRequest } from './dto/login-request';
 import { RegisterRequest } from './dto/register-request';
 
-// Interface para o conteúdo do nosso token JWT
 interface JwtPayload {
   sub: string;
   roles: string[];
@@ -23,16 +22,13 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/auth';
   private authTokenKey = 'jwt_token';
 
-  // BehaviorSubjects para reatividade em tempo real na UI
   private _isAuthenticated = new BehaviorSubject<boolean>(false);
   private _userRoles = new BehaviorSubject<string[]>([]);
 
-  // Observables públicos que os componentes podem "escutar"
   public isAuthenticated$ = this._isAuthenticated.asObservable();
   public userRoles$ = this._userRoles.asObservable();
 
   constructor(private http: HttpClient) {
-    // Ao iniciar o serviço, verifica se já existe um token válido
     this.checkTokenOnLoad();
   }
 
@@ -41,14 +37,14 @@ export class AuthService {
     if (token) {
       try {
         const decodedToken: JwtPayload = jwtDecode(token);
-        // Verifica se o token não expirou
         if (decodedToken.exp * 1000 > Date.now()) {
           this.updateAuthState(token);
         } else {
-          this.logout(); // Token expirado
+          this.logout();
         }
       } catch (error) {
-        this.logout(); // Token inválido
+        console.error('Erro ao decodificar token ou token inválido na carga inicial:', error);
+        this.logout();
       }
     }
   }
@@ -63,9 +59,8 @@ export class AuthService {
         this.updateAuthState(token);
       }),
       catchError(err => {
-        // Limpa o estado em caso de falha no login
         this.logout();
-        throw err; // Repassa o erro para o componente tratar
+        throw err;
       })
     );
   }
@@ -88,24 +83,24 @@ export class AuthService {
     return localStorage.getItem(this.authTokenKey);
   }
 
-  // <<< NOVO MÉTODO >>>
-  // Verifica se o usuário tem uma determinada role
   public hasRole(role: string): boolean {
-    // O backend salva como "ROLE_PROFESSOR", então removemos o "ROLE_"
-    const currentRoles = this._userRoles.getValue().map(r => r.replace('ROLE_', ''));
+    // Este método já lida com a remoção de 'ROLE_' se necessário, mas para o template
+    // é mais direto usar o array userRoles$ que já estará processado.
+    const currentRoles = this._userRoles.getValue(); // Já processado por updateAuthState
     return currentRoles.includes(role);
   }
 
-  // <<< NOVO MÉTODO >>>
-  // Atualiza o estado de autenticação e decodifica o token
   private updateAuthState(token: string): void {
     localStorage.setItem(this.authTokenKey, token);
     try {
         const decodedToken: JwtPayload = jwtDecode(token);
         this._isAuthenticated.next(true);
-        this._userRoles.next(decodedToken.roles || []);
+        // Processa os roles aqui para remover "ROLE_" antes de armazenar no BehaviorSubject
+        const processedRoles = (decodedToken.roles || []).map(r => r.replace('ROLE_', ''));
+        this._userRoles.next(processedRoles); // Atualiza os perfis já processados
     } catch(error) {
-        this.logout(); // Se o token for inválido, desloga
+        console.error('Erro ao decodificar token no updateAuthState:', error);
+        this.logout();
     }
   }
 }
