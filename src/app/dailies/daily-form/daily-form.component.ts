@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 // Definição do formato de data para o Datepicker
@@ -49,7 +50,6 @@ export const MY_DATE_FORMATS = {
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }, // Define o locale para português do Brasil
     { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }, // Aplica o formato de data personalizado
-    // Força o NativeDateAdapter a usar o locale pt-BR
     { provide: DateAdapter, useClass: NativeDateAdapter, deps: [MAT_DATE_LOCALE] }
   ],
   templateUrl: './daily-form.component.html',
@@ -84,7 +84,7 @@ export class DailyFormComponent implements OnInit {
       this.isEditMode = true;
       this.dailyId = +idParam;
       
-      this.dailyForm.get('studentId')?.disable(); // Desabilita o campo studentId em modo de edição
+      this.dailyForm.get('studentId')?.disable(); 
 
       this.dailyService.getDailyById(this.dailyId).subscribe({
         next: (data) => {
@@ -182,9 +182,13 @@ export class DailyFormComponent implements OnInit {
         this.openSnackBar(message, 'success');
         this.router.navigate(['/dailies']);
       },
-      error: (err) => {
-        this.openSnackBar('Ocorreu um erro ao salvar a daily. ❌', 'error');
-        console.error(err);
+      error: (err: HttpErrorResponse) => {
+        console.error('Ocorreu um erro ao salvar a daily:', err);
+        if (this.isEditMode && err.status === 403) {
+          this.openSnackBar('Você não tem permissão para editar esta daily, pois não foi você quem a criou. 🚫', 'error');
+        } else {
+          this.openSnackBar('Ocorreu um erro ao salvar a daily. ❌', 'error');
+        }
       }
     });
   }

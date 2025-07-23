@@ -15,13 +15,13 @@ import { AtividadeFormComponent } from './atividades/atividade-form/atividade-fo
 import { TagListComponent } from './tags/tag-list/tag-list.component';
 import { TagFormComponent } from './tags/tag-form/tag-form.component';
 import { HomeComponent } from './home/home';
-import { Error403Component } from './error403/error403'; // Importe o componente de erro 403
+import { Error403Component } from './error403/error403'; 
 
 export const routes: Routes = [
   // Rotas públicas (não precisam de autenticação)
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '', component: HomeComponent, canActivate: [loginGuard] }, // Rota home, protegida por loginGuard
+  { path: '', component: HomeComponent }, 
 
   // Rota para a página de acesso negado (403)
   { path: '403', component: Error403Component },

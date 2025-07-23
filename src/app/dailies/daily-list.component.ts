@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-daily-list',
@@ -124,17 +125,20 @@ export class DailyListComponent implements OnInit {
     });
   }
 
-  // NOVO: Método privado que executa a exclusão real após a confirmação
   private _performDeleteDaily(id: number): void {
     this.dailyService.deleteDaily(id).subscribe({
       next: () => {
-        this.openSnackBar('Daily excluída com sucesso! ✅', 'success'); // Usando snackbar com emoji e direita
+        this.openSnackBar('Daily excluída com sucesso! ✅', 'success');
         this.loadDailies(this.selectedStudentId || undefined);
       },
-      error: (err) => {
-        // this.errorMessage = 'Falha ao excluir a daily.'; // Removido
-        console.error(err);
-        this.openSnackBar('Falha ao excluir a daily. ❌', 'error'); // Usando snackbar com emoji e direita
+      // --- LÓGICA ATUALIZADA AQUI ---
+      error: (err: HttpErrorResponse) => {
+        console.error('Falha ao excluir a daily:', err);
+        if (err.status === 403) {
+          this.openSnackBar('Você não tem permissão para excluir esta daily, pois não foi você quem a criou. 🚫', 'error');
+        } else {
+          this.openSnackBar('Falha ao excluir a daily. ❌', 'error');
+        }
       }
     });
   }
