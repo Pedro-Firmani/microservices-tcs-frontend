@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { StudentService, StudentResponse, StudentRequest } from '../student.serv
 import { HttpErrorResponse } from '@angular/common/http';
 import { TagService } from '../../tags/tag.service';
 import { Tag } from '../../tags/tag.model';
+import { Subscription } from 'rxjs';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -34,12 +35,12 @@ import { ConfirmSnackbarComponent } from '../../shared/components/snackBar/confi
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    MatSelectModule, // Certifique-se que MatSelectModule está aqui
+    MatSelectModule,
   ],
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.scss']
 })
-export class StudentListComponent implements OnInit {
+export class StudentListComponent implements OnInit, OnDestroy {
   students: StudentResponse[] = [];
   isProfessor: boolean = true;
   editingStudentId: number | null = null;
@@ -48,7 +49,8 @@ export class StudentListComponent implements OnInit {
   editedDescription: string = '';
   tags: Tag[] = [];
   editedTagId: number | null = null;
-  selectedTagIdFilter: number | null = null; // Nova propriedade para o filtro
+  selectedTagIdFilter: number | null = null;
+  private tagUpdateSubscription!: Subscription;
 
   constructor(
     private studentService: StudentService,
@@ -59,14 +61,41 @@ export class StudentListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadTags();
-    this.loadStudents(); // Altere a ordem para carregar tags primeiro
+    this.loadTagsAndThenStudents();
+
+    this.tagUpdateSubscription = this.tagService.tagsUpdated$.subscribe(() => {
+      if (this.students.length > 0) {
+        console.log('Notificado sobre a atualização de tags. Atualizando cores...');
+        this.refreshTagsAndUpdateStudentColors();
+      }
+    });
   }
 
-  loadTags(): void {
-    this.tagService.getAllTags().subscribe(data => {
-      console.log('%c1. Tags Carregadas (Frontend):', 'color: green; font-weight: bold;', data);
-      this.tags = data;
+  ngOnDestroy(): void {
+    if (this.tagUpdateSubscription) {
+      this.tagUpdateSubscription.unsubscribe();
+    }
+  }
+
+  loadTagsAndThenStudents(): void {
+    this.tagService.getAllTags().subscribe(tags => {
+      this.tags = tags;
+      console.log('%c1. Tags Carregadas (Frontend):', 'color: green; font-weight: bold;', tags);
+      this.loadStudents();
+    });
+  }
+
+  refreshTagsAndUpdateStudentColors(): void {
+    this.tagService.getAllTags().subscribe(newTags => {
+      this.tags = newTags;
+      this.students.forEach(student => {
+        if (student.tagId) {
+          const correspondingTag = this.tags.find(tag => tag.id === student.tagId);
+          if (correspondingTag && student.color !== correspondingTag.color) {
+            student.color = correspondingTag.color;
+          }
+        }
+      });
     });
   }
 
@@ -86,12 +115,16 @@ export class StudentListComponent implements OnInit {
   }
 
   loadStudents(): void {
-    // Passa o tagId selecionado para o serviço, se houver.
-    // Se selectedTagIdFilter for null, getAllStudents trará todos os alunos.
-    this.studentService.getAllStudents(this.selectedTagIdFilter).subscribe({ // Modificado
+    this.studentService.getAllStudents(this.selectedTagIdFilter).subscribe({
       next: (data: StudentResponse[]) => {
         console.log('%c2. Alunos Carregados (Frontend):', 'color: blue; font-weight: bold;', data);
         data.forEach(student => {
+          if (student.tagId) {
+            const tag = this.tags.find(t => t.id === student.tagId);
+            if (tag) {
+                student.color = tag.color; // Garante que a cor está correta
+            }
+          }
           console.log(`Aluno: ${student.name}, ID TCS: ${student.idTcs}, Cor da Tag: ${student.color}`);
         });
         this.students = data;
@@ -109,11 +142,9 @@ export class StudentListComponent implements OnInit {
     });
   }
 
-  // Novo método para lidar com a mudança no filtro de tag
-  onTagFilterChange(): void { // Novo
-    this.loadStudents(); // Recarrega os alunos com base no filtro selecionado
-  } // Novo
-
+  onTagFilterChange(): void {
+    this.loadStudents();
+  }
 
   goToCreateStudent(): void {
     this.router.navigate(['/students/create']);

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Tag } from './tag.model'; 
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Tag } from './tag.model';
 
 export interface TagRequest {
   name: string;
@@ -14,9 +15,17 @@ export interface TagRequest {
 export class TagService {
   private apiUrl = 'http://localhost:8083/tags';
 
+  // NOVO: BehaviorSubject para notificar sobre atualizações
+  private tagsUpdatedSource = new BehaviorSubject<void>(undefined);
+  tagsUpdated$ = this.tagsUpdatedSource.asObservable();
+
   constructor(private http: HttpClient) { }
 
-  // Métodos existentes...
+  // NOVO: Método para emitir a notificação
+  notifyTagsUpdated(): void {
+    this.tagsUpdatedSource.next();
+  }
+
   getAllTags(): Observable<Tag[]> {
     return this.http.get<Tag[]>(this.apiUrl);
   }
@@ -25,19 +34,28 @@ export class TagService {
     return this.http.get<Tag>(`${this.apiUrl}/${id}`);
   }
 
+  // ATUALIZADO: Notifica após criar uma tag
   createTag(tag: TagRequest): Observable<Tag> {
-    return this.http.post<Tag>(this.apiUrl, tag);
+    return this.http.post<Tag>(this.apiUrl, tag).pipe(
+      tap(() => this.notifyTagsUpdated())
+    );
   }
 
+  // ATUALIZADO: Notifica após atualizar uma tag
   updateTag(id: number, tag: TagRequest): Observable<Tag> {
-    return this.http.put<Tag>(`${this.apiUrl}/${id}`, tag);
+    return this.http.put<Tag>(`${this.apiUrl}/${id}`, tag).pipe(
+      tap(() => this.notifyTagsUpdated())
+    );
   }
 
+  // ATUALIZADO: Notifica após excluir uma tag
   deleteTag(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this.notifyTagsUpdated())
+    );
   }
 
-  // Novos métodos para manipulação de cores
+  // Métodos para manipulação de cores
   getDarkerColor(hex: string, percent: number): string {
     if (!hex || !/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
       return '#512da8';
