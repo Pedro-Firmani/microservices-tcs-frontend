@@ -28,6 +28,7 @@ export class AtividadeFormComponent implements OnInit {
   atividadeForm: FormGroup;
   isEditMode = false;
   atividadeId: number | null = null;
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -98,12 +99,17 @@ export class AtividadeFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.atividadeForm.invalid) {
-      this.openSnackBar('Por favor, preencha todos os campos obrigatórios. ⚠️', 'error');
+    if (this.atividadeForm.invalid || this.isSubmitting) {
+      if (this.atividadeForm.invalid) {
+          this.openSnackBar('Por favor, preencha todos os campos obrigatórios. ⚠️', 'error');
+      }
       return;
     }
 
+    this.isSubmitting = true; 
     const formValue = this.atividadeForm.value;
+    
+    // **CORREÇÃO AQUI:** Definição do objeto atividadeRequest
     const atividadeRequest = {
       titulo: formValue.titulo,
       descricao: formValue.descricao,
@@ -121,8 +127,12 @@ export class AtividadeFormComponent implements OnInit {
         this.router.navigate(['/atividades']);
       },
       error: (err) => {
+        this.isSubmitting = false; 
         this.openSnackBar('Erro ao salvar a atividade. ❌', 'error');
         console.error(err);
+      },
+      complete: () => {
+        this.isSubmitting = false; // Garante que reabilite o botão mesmo que a navegação demore
       }
     });
   }
